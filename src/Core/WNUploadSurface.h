@@ -23,4 +23,5 @@
 @property (nonatomic, strong) WNLiveRig * paintRig;
 
 - (void)dealloc;
+- (struct CGContext *)context;
 @end
