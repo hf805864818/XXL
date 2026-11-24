@@ -600,30 +600,6 @@
     full.alpha   = 1.0f;
     full.clipX[3] = 0.0f;
     [self pd_drawMesh:mesh positions:pos textureObject:tex lookPtr:&full encoder:enc];
-
-    // 管线选择：blend=multiply 用乘算管线，否则普通管线
-    BOOL isMultiply = mesh && [mesh respondsToSelector:@selector(multiply)] ? [mesh multiply] : NO;
-    id<MTLRenderPipelineState> pipeline = isMultiply ? [self multiplyPipeline] : [self normalPipeline];
-    if (pipeline) [encoder setRenderPipelineState:pipeline];
-
-    NSUInteger offset = mesh && [mesh respondsToSelector:@selector(positionOffset)]
-        ? (NSUInteger)[mesh positionOffset] : 0;
-    if (positions) [encoder setVertexBuffer:positions offset:offset atIndex:0];
-    if (mesh && [mesh respondsToSelector:@selector(uv)]) {
-        [encoder setVertexBuffer:[mesh uv] offset:0 atIndex:1];
-    }
-    [encoder setFragmentBytes:look length:sizeof(WNLook) atIndex:0];
-    if (textureObject) [encoder setFragmentTexture:textureObject atIndex:0];
-
-    NSUInteger indexCount = mesh && [mesh respondsToSelector:@selector(indexCount)]
-        ? (NSUInteger)[mesh indexCount] : 0;
-    if (indexCount > 0 && mesh) {
-        [encoder drawIndexedPrimitives:MTLPrimitiveTypeTriangle
-                            indexCount:indexCount
-                             indexType:MTLIndexTypeUInt16
-                           indexBuffer:[mesh indices]
-                     indexBufferOffset:0];
-    }
 }
 
 
