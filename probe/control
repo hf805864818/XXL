@@ -1,0 +1,9 @@
+Package: com.ojbkclub.petdfy.probe
+Name: PetDFY 探针
+Version: 0.1
+Architecture: iphoneos-arm64e
+Description: 极简探针：纯 constructor，不 hook、不调用 substrate 符号。只写 /var/mobile/Media/petdfy-probe.txt 与 Caches 副本，用来判断 dylib 是否被注入器加载。
+Maintainer: hf805864818
+Author: hf805864818
+Section: Tweaks
+Depends: mobilesubstrate | ellekit | libhooker, firmware (>= 16.0)

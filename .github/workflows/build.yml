@@ -94,6 +94,15 @@ jobs:
           sed -i '' 's/^PetDFY_LIBRARIES = substrate/PetDFY_LDFLAGS = -Wl,-undefined,dynamic_lookup/' Makefile || true
           make clean all 2>&1 | tee build-fallback.log
 
+      - name: Build probe tweak
+        if: always() && !cancelled()
+        run: |
+          set -o pipefail
+          cd probe
+          make clean all 2>&1 | tee probe-build.log || true
+          make package FINALPACKAGE=1 2>&1 | tee probe-package.log || true
+          ls -l packages/ || true
+
       - name: Build diag tweak
         if: always() && !cancelled()
         run: |
@@ -186,6 +195,17 @@ jobs:
             diag/packages/*.deb
           fail_on_unmatched_files: false
           make_latest: true
+
+      - name: Upload probe
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PetDFYProbe-db${{ github.run_number }}
+          path: |
+            probe/packages/*.deb
+            probe/probe-build.log
+            probe/probe-package.log
+          if-no-files-found: warn
 
       - name: Upload diag
         if: always() && !cancelled()
