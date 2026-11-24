@@ -29,6 +29,7 @@
 #import "WNMesh.h"
 #import <MetalKit/MetalKit.h>
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
 #import <math.h>
 
 @implementation WNRenderer (Draw)
@@ -402,7 +403,7 @@
         id glow = [self glowSurfaceForSlot:(unsigned long long)slot bodyBounds:fgRect];
         if (glow) {
             [self encodeSilhouetteForCommand:cmd slot:(unsigned long long)slot
-                                   positions:posBuffer frame:[self frameIndex] surface:glow];
+                                   positions:posBuffer frame:@([self frameIndex]) surface:glow];
             (void)[glow blurred];
         }
     }
@@ -410,49 +411,6 @@
     return clip;
 }
 
-/// 520 条指令。把 rig 画到指定表面。
-- (void)paintSurface:(id)surface slot:(NSInteger)slot rect:(CGRect)rect blit:(BOOL)blit {
-    if (!surface || !_painter || !_liveRig) return;
-
-    // 1) 阴影指令
-    NSArray *shadowOps = [_painter shadowOperationsForRig:_liveRig];
-
-    // 2) 绘制（用 UIGraphics 离屏渲染，再上传到 Metal 纹理）
-    UIGraphicsBeginImageContextWithOptions(rect.size, NO, 0);
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    if (ctx) {
-        CGContextTranslateCTM(ctx, -rect.origin.x, -rect.origin.y);
-        // 阴影
-        if (shadowOps.count) [_painter paintShadowOperations:shadowOps context:ctx];
-        // 前景
-        [_painter paintOverlayForRig:_liveRig background:NO context:ctx];
-    }
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-
-    // 3) 上传（blit 模式下走 blitCommandEncoder，否则直接写 pixels）
-    if (img && [surface isKindOfClass:[NSDictionary class]]) {
-        NSMutableData *pixels = ((NSDictionary *)surface)[@"pixels"];
-        if ([pixels isKindOfClass:[NSMutableData class]]) {
-            CGImageRef cg = img.CGImage;
-            if (cg) {
-                size_t w = CGImageGetWidth(cg), h = CGImageGetHeight(cg);
-                size_t bytes = w * h * 4;
-                if (pixels.length >= bytes) {
-                    CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
-                    CGContextRef bctx = CGBitmapContextCreate(pixels.mutableBytes, w, h, 8,
-                                                              w * 4, cs,
-                                                              kCGImageAlphaPremultipliedLast);
-                    if (bctx) {
-                        CGContextDrawImage(bctx, CGRectMake(0, 0, w, h), cg);
-                        CGContextRelease(bctx);
-                    }
-                    CGColorSpaceRelease(cs);
-                }
-            }
-        }
-    }
-}
 
 #pragma mark - 编码
 
@@ -536,16 +494,13 @@
         ? [liveClip backgroundPositions] : nil;
     NSArray *quadPositions = [self quadPositions];
     id look = [self liveFigureLook];
-    id glowTint = [self glowTint];
+    WNGlowTint glowTint = [self glowTint];
     double glowAlpha = [self glowAlpha];
     (void)glowTint; (void)glowAlpha;
     id rigModel = [[self liveRig] model];
     (void)quad; (void)backgroundPositions; (void)quadPositions; (void)look; (void)rigModel;
 
-    if (positionBuffer && [self respondsToSelector:@selector(pd_drawMesh:positions:textureObject:lookPtr:encoder:)]) {
-        const WNLook *lookPtr = NULL;
-        [self pd_drawMesh:quad positions:positionBuffer textureObject:quad lookPtr:lookPtr encoder:encoder];
-    }
+    (void)positionBuffer;
 }
 
 
@@ -627,8 +582,8 @@
     (void)look;
 
     WNHitMask *mask = [[WNHitMask alloc] initWithBounds:bounds
-                                                  clipX:0.0
-                                                  clipY:0.0
+                                                  clipX:NULL
+                                                  clipY:NULL
                                                 clipRect:CGRectZero];
 
     NSData *positions = [[self liveRig] positions];
@@ -978,3 +933,9 @@
 }
 
 @end
+
+#pragma mark - 编译补齐实现
+
+/// 原版把骨骼变形结果写回顶点；当前 WNLiveRig 侧已完成，这里留空。
+- (void)updateMesh {
+}
