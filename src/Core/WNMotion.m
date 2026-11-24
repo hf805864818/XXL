@@ -269,7 +269,7 @@ static double WNReadNum(NSDictionary *d, id key, double fallback) {
 - (double)snoreSeconds { return _snoreSeconds; }
 - (void)setSnoreSeconds:(double)v { _snoreSeconds = v; }
 #pragma mark - 二进制存取器（逐条 8-16 指令，纯 ivar 读写）
-- (void)setGroupTilt:(void (^)(void))v { _groupTilt = [v copy]; }
+- (void)setGroupTilt:(double (^)(NSString *, double, double))v { _groupTilt = [v copy]; }
 
 #pragma mark - 五个薄封装 / 状态方法（Observed）
 
@@ -823,6 +823,11 @@ static NSString * const kWNMotionFaceGapDefault = @"<0x10f608>";
     }
 }
 #endif
+
+/// 编译补齐：二进制里 seed 通过 ivar randomState 暴露
+- (id)seed {
+    return @(randomState);
+}
 
 /// 568 B（0x43650）。初始化：seed 入 randomState、freeGround 入位，再落一整套默认状态。
 /// 常量区：0xc62c0=[1.05,560] 0xc62d0=[320,560] 0xc62e0=[9,0] 0xc6330=[104,241,150,241]。
