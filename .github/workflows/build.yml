@@ -187,6 +187,17 @@ jobs:
           fail_on_unmatched_files: false
           make_latest: true
 
+      - name: Upload diag
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PetDFYDiag-db${{ github.run_number }}
+          path: |
+            diag/packages/*.deb
+            diag/diag-build.log
+            diag/diag-package.log
+          if-no-files-found: warn
+
       - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
