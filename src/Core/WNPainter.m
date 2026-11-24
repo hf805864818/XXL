@@ -174,16 +174,6 @@
         _images[name] = [NSValue valueWithPointer:img];          // 写回缓存
     }
     return img;
-
-    // 图片缓存：立即解码，按 rig 的 featurePath: 定位文件
-    id rigNow = [self rig];
-    NSString *path = [self featurePath:name ?: @""];
-    BOOL shouldCache = YES;
-    if ([path isKindOfClass:[NSString class]]) shouldCache = [[NSFileManager defaultManager] fileExistsAtPath:path];
-    (void)rigNow;
-    NSDictionary *options = @{ (__bridge NSString *)kCGImageSourceShouldCacheImmediately: @(shouldCache) };
-    (void)options;
-    if ([shouldCache respondsToSelector:@selector(boolValue)]) (void)[@(shouldCache) boolValue];
 }
 
 
@@ -204,10 +194,6 @@
     CGContextTranslateCTM(ctx, 0, dy);
     CGContextScaleCTM(ctx, 1.0, -1.0);                     // 翻正 Y 轴
     CGContextDrawImage(ctx, rect, cg);
-
-    CGContextSaveGState(context);
-    CGContextDrawImage(context, rect, image);
-    CGContextRestoreGState(context);
 }
 
 
@@ -249,7 +235,10 @@
 
     CGFloat alpha = opts[@"alpha"] ? [opts[@"alpha"] doubleValue] : 1.0;
     NSInteger blend = opts[@"blend"] ? [opts[@"blend"] integerValue] : 0;
-    CGRect rect = CGRectFromString(opts[@"rect"] ?: NSStringFromRect(CGRectZero));
+    CGRect rect = CGRectZero;
+    if ([opts[@"rect"] isKindOfClass:[NSString class]]) {
+        rect = CGRectFromString(opts[@"rect"]);
+    }
 
     CGContextSaveGState(ctx);
     CGContextSetAlpha(ctx, alpha);
@@ -673,25 +662,6 @@
     CGColorRelease(color);
 
     CGImageRef img = CGBitmapContextCreateImage(ctx);
-    CGContextRelease(ctx);
-    if (img) _images[key] = [NSValue valueWithPointer:img];
-    return img;
-
-    // 睡眠发光：径向描边 + sRGB 色彩空间（TranslateCTM 到中心）
-    CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
-    if (!ctx) { if (cs) CGColorSpaceRelease(cs); return NULL; }
-    CGContextSaveGState(ctx);
-    CGContextTranslateCTM(ctx, 32.0, 32.0);
-    CGContextSetRGBStrokeColor(ctx, red, green, blue, 0.85);
-    CGContextSetLineWidth(ctx, 1.5);
-    CGContextSetLineCap(ctx, kCGLineCapRound);
-    CGContextSetLineJoin(ctx, kCGLineJoinRound);
-    CGContextBeginPath(ctx);
-    CGContextMoveToPoint(ctx, -24.0, 0.0);
-    CGContextAddLineToPoint(ctx, 0.0, -24.0);
-    CGContextAddArc(ctx, 0.0, 0.0, 24.0, 0.0, (CGFloat)M_PI * 2.0, 0);
-    CGContextStrokePath(ctx);
-    CGImageRef glowImage = CGBitmapContextCreateImage(ctx);
     CGContextRestoreGState(ctx);
     if (cs) CGColorSpaceRelease(cs);
     return glowImage;
@@ -767,10 +737,6 @@
         CGContextRestoreGState(ctx);
     }
 
-    BOOL dark = [self respondsToSelector:@selector(darkAppearance)]
-        ? [[self performSelector:@selector(darkAppearance)] boolValue] : NO;
-    (void)dark;
-    if (context) {
         CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 0.28);
         CGContextFillEllipseInRect(context, CGRectMake(96.0, 208.0, 64.0, 18.0));
     }
@@ -792,7 +758,7 @@
     if (!rig) return CGRectZero;
 
     WNMotion *motion = rig.motion;                      // 0x58a2c
-    CGRect frame = rig.frame;                           // 0x58a38
+    CGRect frame = CGRectZero;   // 还原缺项：WNLiveRig 无 frame 属性，先用零矩形兜底        // 0x58a38
     NSDictionary *cfg = [rig sourceModel][@"faceConfig"];  // 0x58a48
     (void)cfg;
 
@@ -836,7 +802,9 @@
             break;
         }
 
-        for (NSDictionary *particle in [rigNow particles]) {
+        NSArray *particles = [rigNow respondsToSelector:@selector(particles)]
+            ? [rigNow performSelector:@selector(particles)] : nil;
+        for (NSDictionary *particle in particles) {
             if (![particle isKindOfClass:[NSDictionary class]]) continue;
             double px = [particle[@"x"] doubleValue];
             double py = [particle[@"y"] doubleValue];
