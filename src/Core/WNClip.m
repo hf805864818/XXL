@@ -26,8 +26,8 @@
 @synthesize positionBuffer = _positionBuffer;
 @synthesize backgroundPositions = _backgroundPositions;
 
-@end
 
 - (id)quad {
     return nil;
 }
+@end
