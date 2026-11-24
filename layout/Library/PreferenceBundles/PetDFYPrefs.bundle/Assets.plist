@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>填写素材 ZIP 下载地址，启用后自动下载并解压。</string>
+			<key>id</key>
+			<string>PDAssetStatus</string>
+			<key>label</key>
+			<string>角色素材</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.susudear.petdfyprefs/saved</string>
+			<key>autocapitalizationType</key>
+			<integer>0</integer>
+			<key>autocorrectionType</key>
+			<integer>1</integer>
+			<key>cell</key>
+			<string>PSEditTextCell</string>
+			<key>default</key>
+			<string>https://repo.susubaby.cn/download/PetDFY-assets.zip</string>
+			<key>defaults</key>
+			<string>com.susudear.petdfyprefs</string>
+			<key>key</key>
+			<string>AssetDownloadURL</string>
+			<key>keyboard</key>
+			<string>URL</string>
+			<key>label</key>
+			<string>下载地址</string>
+			<key>placeholder</key>
+			<string>https://repo.susubaby.cn/download/PetDFY-assets.zip</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>retryAssets</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>下载／重试</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>importAssets</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>从文件导入 ZIP…</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>removeAssets</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>移除素材…</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>下载</string>
+</dict>
+</plist>

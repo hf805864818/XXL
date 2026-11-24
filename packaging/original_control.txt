@@ -1,0 +1,16 @@
+Package: com.ojbkclub.petdfy
+Name: 大肥鱼〇V〇
+Version: 0.1.7
+Architecture: iphoneos-arm64e
+Description: 大肥鱼〇V〇 · 桌面宠物、主题换装、触摸互动与 AI 对话。
+ 常驻桌面与 App 内显示，锁屏自动隐藏并暂停。
+ 服装支持：女仆装、冬装、店员装、jk水手服；素材通过 ZIP 导入或下载获取。
+ 首次使用请在「主题与服装 → 下载 → 从文件导入 ZIP…」选择素材包。
+ 素材以 repo.susubaby.cn 官方包为准（可在设置内直接下载）。
+ 本版附加 PDFYSecurity：数据目录 0700、密钥文件 0600。
+ 本版附加 PDFYEnhance：透明度、活动范围（仅主屏幕）、单击气泡。
+Maintainer: 屿哥精选
+Author: 屿哥精选
+Section: Tweaks
+Depends: mobilesubstrate
+QQ: 1768873372

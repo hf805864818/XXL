@@ -1,0 +1,184 @@
+name: build-petdfy
+
+# ── 铁律 1：代码变更才编译，文档变更不触发 ──────────────────────────
+# 只有 src/ layout/ assets_src/ Makefile control 与 workflow 本身会触发构建。
+# 任何 .md、docs/、MEMORY/ 的改动都不触发（也顺带防止 CI 回写记忆点时自激）。
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'MEMORY/**'
+      - '.gitignore'
+      - '.gitattributes'
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 40
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+      sha256: ${{ steps.verify.outputs.sha256 }}
+      arch: ${{ steps.verify.outputs.arch }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install toolchain
+        run: |
+          brew install ldid dpkg xz || brew upgrade ldid dpkg xz || true
+          echo "$(brew --prefix)/bin" >> $GITHUB_PATH
+
+      - name: Cache Theos
+        uses: actions/cache@v4
+        with:
+          path: ~/theos
+          key: theos-${{ runner.os }}-v1
+
+      - name: Setup Theos
+        run: |
+          export THEOS=$HOME/theos
+          if [ ! -d "$THEOS/makefiles" ]; then
+            rm -rf "$THEOS"
+            git clone --recursive --depth=1 https://github.com/theos/theos.git "$THEOS"
+          fi
+          if [ ! -d "$THEOS/sdks" ]; then
+            git clone --depth=1 https://github.com/theos/sdks.git "$THEOS/sdks"
+          fi
+          echo "THEOS=$THEOS" >> $GITHUB_ENV
+          echo "$THEOS/bin" >> $GITHUB_PATH
+          ls "$THEOS/sdks" | tail -5
+
+      # ── 铁律 2：每次编译自动递增版本号（base + build.N）──────────────
+      - name: Compute version
+        id: ver
+        run: |
+          BASE=$(grep '^Version:' control | awk '{print $2}' | cut -d'+' -f1)
+          B=$(printf "%03d" "${GITHUB_RUN_NUMBER}")
+          V="${BASE}+build.${B}"
+          sed -i '' "s|^Version: .*|Version: ${V}|" control
+          echo "version=${V}" >> $GITHUB_OUTPUT
+          echo "build=${B}" >> $GITHUB_OUTPUT
+          echo "base=${BASE}" >> $GITHUB_OUTPUT
+          echo "本轮版本：${V}"
+          grep '^Version:' control
+
+      - name: Prepare assets
+        run: |
+          make assets
+          du -sh "layout/Library/Application Support/PetDFY.bundle" || true
+
+      - name: Build (arm64 + arm64e)
+        run: |
+          make clean all 2>&1 | tee build.log
+          find .theos layout -name "*.dylib" -type f 2>/dev/null | while read f; do
+            echo "$f"; lipo -info "$f"; done
+
+      - name: Fallback build (dynamic_lookup, no libsubstrate)
+        if: failure()
+        run: |
+          sed -i '' 's/^PetDFY_LIBRARIES = substrate/PetDFY_LDFLAGS = -Wl,-undefined,dynamic_lookup/' Makefile
+          make clean all 2>&1 | tee build-fallback.log
+
+      - name: Package
+        run: |
+          make package FINALPACKAGE=1 2>&1 | tee package.log
+          ls -l packages/
+
+      - name: Verify deb
+        id: verify
+        if: success()
+        run: |
+          DEB=$(ls packages/*.deb | head -1)
+          ARCH=$(dpkg-deb -f "$DEB" Architecture)
+          SHA=$(shasum -a 256 "$DEB" | awk '{print $1}')
+          echo "sha256=${SHA}" >> $GITHUB_OUTPUT
+          echo "arch=${ARCH}" >> $GITHUB_OUTPUT
+          dpkg-deb -I "$DEB"
+          {
+            echo "### PetDFY build #${GITHUB_RUN_NUMBER}"
+            echo ""
+            echo "| 项 | 值 |"
+            echo "|---|---|"
+            echo "| 版本 | \`${{ steps.ver.outputs.version }}\` |"
+            echo "| deb | \`$(basename "$DEB")\` |"
+            echo "| 架构 | \`$ARCH\` |"
+            echo "| 大小 | $(du -h "$DEB" \| cut -f1) |"
+            echo "| SHA256 | \`$SHA\` |"
+          } >> $GITHUB_STEP_SUMMARY
+
+      - name: Collect dylibs
+        if: success()
+        run: |
+          mkdir -p out
+          cp -v packages/*.deb out/ 2>/dev/null || true
+          find layout .theos -name "*.dylib" -type f -exec cp -v {} out/ \; 2>/dev/null || true
+          lipo -info out/PetDFY.dylib || true
+          shasum -a 256 out/* | tee out/SHA256.txt
+
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PetDFY-${{ steps.ver.outputs.version }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ github.run_number }}
+          path: |
+            build.log
+            build-fallback.log
+            package.log
+          if-no-files-found: ignore
+
+      # ── 铁律 3：每次推送自动补记忆点 ─────────────────────────────────
+      - name: Append build memory
+        if: always()
+        run: |
+          D=$(date -u '+%Y-%m-%d %H:%M UTC')
+          MSG=$(git log -1 --pretty=%s | sed 's/|/\\|/g')
+          SHA=$(git rev-parse --short HEAD)
+          if [ "${{ job.status }}" = "success" ]; then
+            RES="✅ 成功"
+            VER="${{ steps.ver.outputs.version }}"
+            ARCH="${{ steps.verify.outputs.arch }}"
+            DSH="${{ steps.verify.outputs.sha256 }}"
+          else
+            RES="❌ 失败"
+            VER="${{ steps.ver.outputs.version }}"
+            ARCH="-"
+            DSH="-"
+          fi
+          cat >> MEMORY/03-构建日志.md <<EOF
+          | #${{ github.run_number }} | ${D} | \`${SHA}\` | ${MSG} | \`${VER}\` | ${ARCH} | ${RES} | \`${DSH:0:16}\` |
+          EOF
+          tail -3 MEMORY/03-构建日志.md
+
+      - name: Commit memory
+        if: always()
+        continue-on-error: true
+        run: |
+          git config user.name "petdfy-ci"
+          git config user.email "ci@petdfy.local"
+          git add MEMORY/03-构建日志.md
+          git diff --cached --quiet && exit 0
+          git commit -m "chore(memory): build #${{ github.run_number }} [skip ci]"
+          git pull --rebase --autostash || true
+          git push || echo "记忆点回写失败（不影响产物）"

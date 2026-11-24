@@ -1,0 +1,16 @@
+# Theos
+.theos/
+packages/
+obj/
+*.deb
+*.dylib.tmp
+
+# 构建日志
+build.log
+build-fallback.log
+package.log
+out/
+
+# 系统
+.DS_Store
+Thumbs.db

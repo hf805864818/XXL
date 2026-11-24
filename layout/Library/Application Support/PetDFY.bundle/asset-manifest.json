@@ -1,0 +1,1997 @@
+{
+ "asset_version": "ad294eba347cbc43",
+ "content_sha256": "ad294eba347cbc4348931f5854760104c4d670e88536c6a3c8be2cf791c8ce63",
+ "files": {
+  "live/model.json": {
+   "bytes": 85093,
+   "sha256": "b8b6a274374fe201981305bd62a5e41532719295a35a2ec514bce76ce2b25a58"
+  },
+  "originals/feat/dizzy_eyeL.png": {
+   "bytes": 16745,
+   "sha256": "dd1463fb71e5034db591d41f13facae2de128468c82fe936ea196029e6e68116"
+  },
+  "originals/feat/dizzy_eyeR.png": {
+   "bytes": 13345,
+   "sha256": "b839a9f1fbee7da9038e3d6fda6d2612a6417008d6559d2e352eb9061d9d0698"
+  },
+  "originals/feat/dizzy_mouth.png": {
+   "bytes": 2133,
+   "sha256": "b0861757ea0b751af93cb06f3e0a0ba8ddb6889b169cb63368044c3988f2fb70"
+  },
+  "originals/feat/drag_eyeL.png": {
+   "bytes": 8124,
+   "sha256": "b41719f8e76adf2432ca04c919d8897654beb05e6c5ccbe1e73001fa5d1252a1"
+  },
+  "originals/feat/drag_eyeR.png": {
+   "bytes": 5916,
+   "sha256": "7b17e4ef5aaf7a38319f2a1f4c243e0336680a213749b478b7757a960a4d18e1"
+  },
+  "originals/feat/drag_mouth.png": {
+   "bytes": 1611,
+   "sha256": "265a5ce51ba386c2802b7cbdd2a1b919a356ce33d3c260c72b91239f14ab1bbe"
+  },
+  "originals/feat/eyeL_ball.png": {
+   "bytes": 11129,
+   "sha256": "435909520885fcb643f50e6c6575241effb59625acd30731f2b9e1620b6119da"
+  },
+  "originals/feat/eyeL_hl.png": {
+   "bytes": 2140,
+   "sha256": "50d794a3f6048ec22d59b293037b0e43f16a97a43a5a5ae5c9db78594812b979"
+  },
+  "originals/feat/eyeL_iris.png": {
+   "bytes": 14623,
+   "sha256": "89e40041263e273653a18f5386982b60e2faaee6822606fde9e058a4416383ff"
+  },
+  "originals/feat/eyeL_lash.png": {
+   "bytes": 9577,
+   "sha256": "2ef528f4cfb39a0f2a9540d09f8c4dc59239bbb9a7a77e4c32f314a55af3f32b"
+  },
+  "originals/feat/eyeR_ball.png": {
+   "bytes": 6353,
+   "sha256": "b88ee68a205b3a842cfcf9888724fd8a7c1eaa28c2fbafc8686b75dbbeb65329"
+  },
+  "originals/feat/eyeR_hl.png": {
+   "bytes": 1488,
+   "sha256": "64abf1243df9f1434aba337c37a9c1af74e99b4eb76650e5a1ff872cf28f851b"
+  },
+  "originals/feat/eyeR_iris.png": {
+   "bytes": 7697,
+   "sha256": "700a17fb114f7cecb7f7c434991138e191fb785957185e5c3f098437706e9245"
+  },
+  "originals/feat/eyeR_lash.png": {
+   "bytes": 4800,
+   "sha256": "4300bfafe62200de7f17fb9dc5911c160c9e25988a4a8b25c4037fe73af814cf"
+  },
+  "originals/feat/happy_eyeL.png": {
+   "bytes": 8910,
+   "sha256": "5de1cbd7001c2e964bad0eb6af79120d1015047088d90d1650923c324301b8af"
+  },
+  "originals/feat/happy_eyeR.png": {
+   "bytes": 5720,
+   "sha256": "e615a5bb644596a1f549333072ac27c21acb753af9fa058e3829b8837e5c51f0"
+  },
+  "originals/feat/happy_mouth.png": {
+   "bytes": 3567,
+   "sha256": "77d34096e3af5608ba7d28aa4cf798f4aa1c486a578dd9c6c7a2bd862466ff2f"
+  },
+  "originals/feat/love_eyeL.png": {
+   "bytes": 30737,
+   "sha256": "4f0c07497c78af27f37adb48086711b174da168baa0ed514fafb525bbf586810"
+  },
+  "originals/feat/love_eyeR.png": {
+   "bytes": 18711,
+   "sha256": "cdb6c1ff8f8d64e4e85cf858c592c8a82d0d4346ec3ba06522d384849c2448ab"
+  },
+  "originals/feat/love_mouth.png": {
+   "bytes": 4280,
+   "sha256": "32560c259264a584794d3eb8974dff03aefaf696f037faa2034d969eb9014182"
+  },
+  "originals/feat/neutral_mouth.png": {
+   "bytes": 517,
+   "sha256": "de30a74f66cb297ea91449bb33f9f5c31c2cfc63f642dca252ab6a2e09685f62"
+  },
+  "originals/feat/sleep_eyeL.png": {
+   "bytes": 7200,
+   "sha256": "04ef045313de79211dac63e76add4b5d0213579ea9f7f15bec7e86c59c83489f"
+  },
+  "originals/feat/sleep_eyeR.png": {
+   "bytes": 4720,
+   "sha256": "959dace8251f06127865a1562572eedafcc14da1a94e485b5fc0366220baeeba"
+  },
+  "originals/feat/sleep_mouth.png": {
+   "bytes": 709,
+   "sha256": "68fc6f8ead67cb355219ed5858984af6dc72cd35e9e5f68ef51d63b3ff7c89c5"
+  },
+  "originals/feat/surprised_eyeL.png": {
+   "bytes": 33572,
+   "sha256": "1147850dbd6ff339778ace6f5a415b49f09f97cf5acc6e5ee01cd1c36e03e6f4"
+  },
+  "originals/feat/surprised_eyeR.png": {
+   "bytes": 17765,
+   "sha256": "c9f98ac083b53f617b6b880c50fa74e15bc374044311e0467afb6d5027d491bd"
+  },
+  "originals/feat/surprised_mouth.png": {
+   "bytes": 2967,
+   "sha256": "6dec5c7153e1e88e7d3501405be13942786e1ac63cff80d8ab6a1585ce79c2b3"
+  },
+  "originals/figure.json": {
+   "bytes": 21298,
+   "sha256": "cc18557d2d2d8726b3f31382c0ccec320c5a94aba404c7588200629c58a8af77"
+  },
+  "originals/model.json": {
+   "bytes": 37233,
+   "sha256": "22d0c87ffb2d25e168139694f989f09606e79ea72b37d2979cd1d0bfe2d9510c"
+  },
+  "originals/outfits/cape/arm_far.png": {
+   "bytes": 16494,
+   "sha256": "24c1153349983efbbfb6ac00ddff0c68b7cd9fcf8906138349b678c6a1238fd3"
+  },
+  "originals/outfits/cape/arm_far_end_front.png": {
+   "bytes": 8922,
+   "sha256": "f9951d6c0c180cda6020a859f2f7647c045385a45ec14d276a41a0a83abaf035"
+  },
+  "originals/outfits/cape/arm_near.png": {
+   "bytes": 22953,
+   "sha256": "606b05e1a07795465d2366c8d9f2a67da5b31bf18770d20a5ddf3f8f776b5e60"
+  },
+  "originals/outfits/cape/cloak.png": {
+   "bytes": 107106,
+   "sha256": "9b50dee4757527b18d732ed6a8048a59b8a984d2d122f33f52bcabb6b37c47a8"
+  },
+  "originals/outfits/cape/cloak_shoulder_cover.png": {
+   "bytes": 9913,
+   "sha256": "40f0792816801cd1fdd010ebe167ccf418cf7092fbfe5c9b0455d5cb4b1ce26d"
+  },
+  "originals/outfits/cape/hood_back.png": {
+   "bytes": 145392,
+   "sha256": "3ab965fd497d2fa425302b0d4b7a2fa1a9a81783893a7404d2bddede43d4b8f6"
+  },
+  "originals/outfits/cape/hood_fin_far.png": {
+   "bytes": 9857,
+   "sha256": "6913d4190445a6dac5406f12896c94385219837a1cd2db0cdbae5e90c2a43104"
+  },
+  "originals/outfits/cape/hood_fin_near.png": {
+   "bytes": 16283,
+   "sha256": "cb531ebb05f10fce62e917876343e82fb2d3829c0be218f9fc44e00b022d221b"
+  },
+  "originals/outfits/cape/hood_front.png": {
+   "bytes": 115280,
+   "sha256": "9c6a69a8f3737c9de7fd11217140022f425b8fbcd87ee0059ea377f8b09ecf2b"
+  },
+  "originals/outfits/cape/hood_lining.png": {
+   "bytes": 30150,
+   "sha256": "eae9375875313f310daee0a81f1bff06a44a0752f05fb7fae7be9fed44c7e0cf"
+  },
+  "originals/outfits/cape/hood_tie_far.png": {
+   "bytes": 13648,
+   "sha256": "cad3c54c4cf059a85ade9bbe5f7d640bf50a97e3cc31522b68a9e942ae3c0a99"
+  },
+  "originals/outfits/cape/hood_tie_near.png": {
+   "bytes": 14762,
+   "sha256": "9d43b1496481c7660488dfe8a1b9bfafe859f26ddc38359ea3fc352748ee72b7"
+  },
+  "originals/outfits/cape/leg_back.png": {
+   "bytes": 33730,
+   "sha256": "bec14be25f7eda3c3dd7df5f1ac81933532a9e236e6a073936f64045f3bc720d"
+  },
+  "originals/outfits/cape/leg_front.png": {
+   "bytes": 33166,
+   "sha256": "57d1cd9b7712cc1aa9c7a75569b8683b55f2d61802b0835bf9dd801bea2d808e"
+  },
+  "originals/outfits/cape/scarf_neck.png": {
+   "bytes": 27291,
+   "sha256": "8f74d39c605c5120e2c7ed37a58e3799b4c054a98fcd15b7546fb0315d7a8d5b"
+  },
+  "originals/outfits/cape/scarf_tail_back.png": {
+   "bytes": 10678,
+   "sha256": "8b4d8f1b56430cfffb1e87b49a732b7eb005b0c37520cd223488f4d27d6bd0aa"
+  },
+  "originals/outfits/cape/scarf_tail_front.png": {
+   "bytes": 22489,
+   "sha256": "65ac355564daa1c453160d974e3f9f31b044d27e95c9c6e74a62e953940527f6"
+  },
+  "originals/outfits/cape/skirt.png": {
+   "bytes": 64333,
+   "sha256": "c382d4c34f879df8b61bfa5d73f67121cdeddc98417b76f4a8a7fa30d6e7d861"
+  },
+  "originals/outfits/cape/skirt_sit.png": {
+   "bytes": 88527,
+   "sha256": "e3507d62887933bfbfbc125e8492e9fa461fc62a00a4539f2a08935eb43a854f"
+  },
+  "originals/outfits/cape/spout.png": {
+   "bytes": 15427,
+   "sha256": "f2cb69cbde07058e58604897db0ac127af94469c02a9bd5fd56ccd362c41191a"
+  },
+  "originals/outfits/crew/arm_far.png": {
+   "bytes": 11661,
+   "sha256": "a0e2de756149ed40f681119e33b3272adb23d0cd8b71034231e1cf0abc6c3b5b"
+  },
+  "originals/outfits/crew/arm_near.png": {
+   "bytes": 22728,
+   "sha256": "e84fcf6776b9b6ce8b40c1fffb953c30398c85ecc9ed971bc809f4bb26464445"
+  },
+  "originals/outfits/crew/bow_near.png": {
+   "bytes": 12624,
+   "sha256": "ee30becedb0fc34a4db8ffb9dacf9415c5c0e01683cbe1212cd7f9544695007d"
+  },
+  "originals/outfits/crew/headset.png": {
+   "bytes": 13152,
+   "sha256": "a373e77283864e2d021abb84def0a57ac0b24b6170dd35d63bc00a821886552c"
+  },
+  "originals/outfits/crew/leg_back.png": {
+   "bytes": 34438,
+   "sha256": "afeafc36d12f460c6d02e9b09d41622235a7586862091ad45698a346449185a2"
+  },
+  "originals/outfits/crew/leg_front.png": {
+   "bytes": 32352,
+   "sha256": "fdb9dc50c873c2a9a90fef94db7e8f5bad6367ff9414a0f6b0011ab4d4f1ffb6"
+  },
+  "originals/outfits/crew/pony_bow.png": {
+   "bytes": 22171,
+   "sha256": "63700d8e76ccac05d0d72f29bae6df985f1b2c4ba57cf9907117c510746600ff"
+  },
+  "originals/outfits/crew/skirt_shadow.png": {
+   "bytes": 6254,
+   "sha256": "10b8d25263d886ae66c880dea147f52f2eaf8f6e262c673a2fd7541aafc85d17"
+  },
+  "originals/outfits/crew/torso_up.png": {
+   "bytes": 29595,
+   "sha256": "1813306ad9a6c5a73e95eab348b897d5eed2ada3f5efb85077fa3144fdfa4f21"
+  },
+  "originals/outfits/crew/visor.png": {
+   "bytes": 41512,
+   "sha256": "71381e401bbd89db9d9a4b034c685647783488e2ede726199733c2e567d15124"
+  },
+  "originals/outfits/jk-sailor/arm_far.png": {
+   "bytes": 10282,
+   "sha256": "59bff568948bacc81c50eb4f282758e448b2547ea5259b14cf5d2316352c3384"
+  },
+  "originals/outfits/jk-sailor/arm_far_end_front.png": {
+   "bytes": 6037,
+   "sha256": "a6c617567220b7e8ca19be43fa0124e8a4c3425744f84c000a036882d4da4389"
+  },
+  "originals/outfits/jk-sailor/arm_near.png": {
+   "bytes": 16385,
+   "sha256": "de135a89b67d05aeddcf6f977c2768a650340660f19ae82b97b8c1597e87b500"
+  },
+  "originals/outfits/jk-sailor/leg_back.png": {
+   "bytes": 37268,
+   "sha256": "a93ecec6518b457437fea2af6fedec0390d3d23c898fad5b2fb214652b6a46cc"
+  },
+  "originals/outfits/jk-sailor/leg_front.png": {
+   "bytes": 40965,
+   "sha256": "4464a66b3973cc1c2a8d72cef65f3fbd33ab3fffa834ecd3c2dc3258d4139f6e"
+  },
+  "originals/outfits/jk-sailor/skirt.png": {
+   "bytes": 50495,
+   "sha256": "671844b25d9ecbc815b93b659ae85b1cf1f1f2c1a4a8ac177818f3248726d391"
+  },
+  "originals/outfits/jk-sailor/skirt_shadow.png": {
+   "bytes": 5656,
+   "sha256": "79b53dded24684279bbcf551f1bad14edc9b5e38db7a373649ab1bee7992af43"
+  },
+  "originals/outfits/jk-sailor/skirt_sit.png": {
+   "bytes": 109966,
+   "sha256": "82273c1e1975f73803a558d6055073e3c9e0278f2ab08c96273a62c907103330"
+  },
+  "originals/outfits/jk-sailor/torso_up.png": {
+   "bytes": 37888,
+   "sha256": "b52240dd12f3eb737373b5b3369c4077198802bc8ec455433dd96874cab29b8e"
+  },
+  "originals/props/toy-ball.png": {
+   "bytes": 60073,
+   "sha256": "01fc784dc6847634562cc746217937cefc9e90fa2e2cd071c249bdc00e9a8798"
+  },
+  "originals/schemes/chatgpt/feat/dizzy_eyeL.png": {
+   "bytes": 20014,
+   "sha256": "b6f30bc169ae15d7dfd9dc444aecca7f7f6b3f3f5941bdee87e87e86b31b7880"
+  },
+  "originals/schemes/chatgpt/feat/dizzy_eyeR.png": {
+   "bytes": 15391,
+   "sha256": "c1c783a0244968adec7e691a91d69e3594a11c60b87a92b7ab6282c07a66b397"
+  },
+  "originals/schemes/chatgpt/feat/dizzy_mouth.png": {
+   "bytes": 2247,
+   "sha256": "e6e7ac5b3107b9f9bde6366a2320da50eb2617dab99436ed936833c53db152ba"
+  },
+  "originals/schemes/chatgpt/feat/drag_eyeL.png": {
+   "bytes": 10016,
+   "sha256": "5d922ef3874dac2b9eb388b3a73893f83df1cf75481211c7987a206dfd3448fb"
+  },
+  "originals/schemes/chatgpt/feat/drag_eyeR.png": {
+   "bytes": 7103,
+   "sha256": "32a8cef506f39dc084b20c9a81adf3f59885752d710e80f3a22cfa819a37880e"
+  },
+  "originals/schemes/chatgpt/feat/drag_mouth.png": {
+   "bytes": 1649,
+   "sha256": "da167d7aaf6bb61c24f714eec259947a34a37db77e3c459800e659e7ef685c8f"
+  },
+  "originals/schemes/chatgpt/feat/eyeL_ball.png": {
+   "bytes": 13202,
+   "sha256": "faf5a1e4913a7617be90531ece34321c6bcfcafc97a7518ff639a8e473b3c17e"
+  },
+  "originals/schemes/chatgpt/feat/eyeL_iris.png": {
+   "bytes": 15116,
+   "sha256": "0d1e843a5574fcda04dfae71e4b539ad7e196b75dff187113850827152d75cce"
+  },
+  "originals/schemes/chatgpt/feat/eyeL_lash.png": {
+   "bytes": 10567,
+   "sha256": "7e0bf0fc9dfe980f7e306ef84d3eadb5f34e8890ce53a5bab2e83f56a5cb6ac6"
+  },
+  "originals/schemes/chatgpt/feat/eyeR_ball.png": {
+   "bytes": 7506,
+   "sha256": "c3b9c713fc0586827e01f4a1b443e5b4c78f3edb937022ec7a957b74e6560128"
+  },
+  "originals/schemes/chatgpt/feat/eyeR_iris.png": {
+   "bytes": 8086,
+   "sha256": "bbccfe95d0e5a239e7145259f88e44fd30a16e1c8223416239e3fd82406a0b03"
+  },
+  "originals/schemes/chatgpt/feat/eyeR_lash.png": {
+   "bytes": 5334,
+   "sha256": "d69536fbd96954e365afeefbc0f243d557b9f1a8c18c07475c701537edad4b82"
+  },
+  "originals/schemes/chatgpt/feat/happy_eyeL.png": {
+   "bytes": 10816,
+   "sha256": "7b57393386f0edb2da075e690d8150b2e02f9cb8ebecae6de73480bc544d3ebb"
+  },
+  "originals/schemes/chatgpt/feat/happy_eyeR.png": {
+   "bytes": 6640,
+   "sha256": "c31934656d462a8895a190e5d7fa05274a76dce17e88d8d4ee266cde34b801db"
+  },
+  "originals/schemes/chatgpt/feat/happy_mouth.png": {
+   "bytes": 3584,
+   "sha256": "5794107a9c96c1668e786f2ed05fda9aa77c38530652265d7ca26bcd393eba4c"
+  },
+  "originals/schemes/chatgpt/feat/love_eyeL.png": {
+   "bytes": 34929,
+   "sha256": "cb8ac3664dc1edd5d283c4257ed023c32539089e5fe21b287f6d0d175d6347ef"
+  },
+  "originals/schemes/chatgpt/feat/love_eyeR.png": {
+   "bytes": 20732,
+   "sha256": "921412a88087a3d1049f4790b3969e8f41de4e2dcc0037aefedb25644402676e"
+  },
+  "originals/schemes/chatgpt/feat/love_mouth.png": {
+   "bytes": 4398,
+   "sha256": "bedc05ed2997f46d48a12281b292df6a8b7045b977af8aadd5de447efd42ea4a"
+  },
+  "originals/schemes/chatgpt/feat/neutral_mouth.png": {
+   "bytes": 525,
+   "sha256": "066190ff74075b655193b575c50c53b43579e398735f7c79949af0ac54162cef"
+  },
+  "originals/schemes/chatgpt/feat/sleep_eyeL.png": {
+   "bytes": 8386,
+   "sha256": "a21067ac2de2dfab29ddb4a55f4d6398875c7db7ae2591f50e7292ebeff69020"
+  },
+  "originals/schemes/chatgpt/feat/sleep_eyeR.png": {
+   "bytes": 5419,
+   "sha256": "88aa44aa3f3f4b3862a527865c6a9350b2ce0ccd96e78a0bae504ded32fbcfbf"
+  },
+  "originals/schemes/chatgpt/feat/sleep_mouth.png": {
+   "bytes": 733,
+   "sha256": "c5aba762902758c4eaf36f24a01f0d8b7111c0146848525305a01f7451f9eac2"
+  },
+  "originals/schemes/chatgpt/feat/surprised_eyeL.png": {
+   "bytes": 37427,
+   "sha256": "32161e99f3a43da027e29e319c21e5653a82416080b7f3368f1790db71e00436"
+  },
+  "originals/schemes/chatgpt/feat/surprised_eyeR.png": {
+   "bytes": 19314,
+   "sha256": "e23d656089e1105a7d2231953ad77446680d6f3614d962b0f03b12ae71a5e23d"
+  },
+  "originals/schemes/chatgpt/feat/surprised_mouth.png": {
+   "bytes": 2960,
+   "sha256": "fa5b1c954f2e9e8830236b4950f62dced77ac1f50a152bed6f3c4ee2dce8cc85"
+  },
+  "originals/schemes/chatgpt/tex/ahoge.png": {
+   "bytes": 16048,
+   "sha256": "a65f8b6ff0e9e489653fcf532f7b691f315101590a5c04aaf984f75fbfcf66d3"
+  },
+  "originals/schemes/chatgpt/tex/arm_far.png": {
+   "bytes": 10511,
+   "sha256": "e9f68f8fa4a85cb387b6ccafc882ddc98cfe007ce46ba2742ddb9c32fddb4d4b"
+  },
+  "originals/schemes/chatgpt/tex/arm_far_end_front.png": {
+   "bytes": 5178,
+   "sha256": "17d84f9acf435e976921158587e9f5a907bc08ce34b2931dac0e7ab9ab171a3e"
+  },
+  "originals/schemes/chatgpt/tex/arm_near.png": {
+   "bytes": 16850,
+   "sha256": "507341f07c8cc997dc62d20cedff970f8befd6d6976b1367ee36c2c530f51f8f"
+  },
+  "originals/schemes/chatgpt/tex/bangs.png": {
+   "bytes": 109959,
+   "sha256": "0384aa9a95c9168c33e1fa0e64dd797278bc192569b263bb961b04785f78a68b"
+  },
+  "originals/schemes/chatgpt/tex/bow.png": {
+   "bytes": 9641,
+   "sha256": "f115d42d16cc01ede3b97c9dbb7a55fa8a955b2e051b4ef41931b34f9250b8f6"
+  },
+  "originals/schemes/chatgpt/tex/brows.png": {
+   "bytes": 2114,
+   "sha256": "d4b42bb31a56a0ed8c87d66b5b1ee40afb70e36b9c3ec0f5028477c200cb65a1"
+  },
+  "originals/schemes/chatgpt/tex/crew_hair_back.png": {
+   "bytes": 134484,
+   "sha256": "f2b774d15c3607f77a59320f404cca017a7eaf24bf5448de8933a850d03a0fee"
+  },
+  "originals/schemes/chatgpt/tex/crew_ponytail.png": {
+   "bytes": 168583,
+   "sha256": "6f069b53051c07bb16b7dc3d6c629b2f3f63f711f5542471e6b4395b30fb327a"
+  },
+  "originals/schemes/chatgpt/tex/crew_sidelocks.png": {
+   "bytes": 34476,
+   "sha256": "f904f08c47ee0b156b986de10de0f5a9f333c81beb2c4e8c9375e53a7d5ba2c1"
+  },
+  "originals/schemes/chatgpt/tex/crew_skirt.png": {
+   "bytes": 65719,
+   "sha256": "9494aadea5385c7c3e7d72c90e79d06ce5e6baa2bce1925c0a281d491b8de33b"
+  },
+  "originals/schemes/chatgpt/tex/crew_skirt_sit.png": {
+   "bytes": 112076,
+   "sha256": "1e91035c6f4ff2bfefdc4641dfa5af5150042ce96245234e08799bfb614cd928"
+  },
+  "originals/schemes/chatgpt/tex/eye_creases.png": {
+   "bytes": 2465,
+   "sha256": "e2ce6feebbe3bf3b64af6aedecf22a5ca7ddabc6fed58555bf0da16937a5f46f"
+  },
+  "originals/schemes/chatgpt/tex/face.png": {
+   "bytes": 50747,
+   "sha256": "01384701efe386df0f7ac33070780dcc72f8bca8b47c7259b93c2e8fe83ba345"
+  },
+  "originals/schemes/chatgpt/tex/fin_far.png": {
+   "bytes": 15725,
+   "sha256": "21896716191c9444bd2ec37186170d36b73c0f6db1868d681844118b55e4e1d3"
+  },
+  "originals/schemes/chatgpt/tex/fin_near.png": {
+   "bytes": 21857,
+   "sha256": "5d0608c7d7ad2c0e8993625c3a5da576732fa107155dbad3fccff1efed030797"
+  },
+  "originals/schemes/chatgpt/tex/hair_back.png": {
+   "bytes": 295849,
+   "sha256": "883009c9201d3864a234ea33aefe32c0091f542968df6f4d18f24787cb59147d"
+  },
+  "originals/schemes/chatgpt/tex/hair_back_curl.png": {
+   "bytes": 13691,
+   "sha256": "4f7d8b6d4f5a75723ffd41a563b6799589853e74b338e5197743f35cc4a86d00"
+  },
+  "originals/schemes/chatgpt/tex/hair_front_left.png": {
+   "bytes": 31809,
+   "sha256": "58a4849a4c26a324adf3439477fcc75fb645546e7bfa5cff654e45720c0e2a48"
+  },
+  "originals/schemes/chatgpt/tex/hair_front_right.png": {
+   "bytes": 14312,
+   "sha256": "1682646b3ebde108f5daf9aaff59376ca6933752abfbe9ea7b88c447d7e4b391"
+  },
+  "originals/schemes/chatgpt/tex/headdress.png": {
+   "bytes": 48328,
+   "sha256": "d617291a51d9f758de3452b6e81e5600c8d9a6518fecb0771062ae2545c17e1f"
+  },
+  "originals/schemes/chatgpt/tex/leg_back.png": {
+   "bytes": 40600,
+   "sha256": "b373ff29994fe1284325b4550b8f1162e7190beffccd49b586cd861d8c368bb2"
+  },
+  "originals/schemes/chatgpt/tex/leg_front.png": {
+   "bytes": 43297,
+   "sha256": "5a6e001fcc74cedb9f402e76d64008beb9ba698eb4b776324d380731a1e7590b"
+  },
+  "originals/schemes/chatgpt/tex/sidelocks.png": {
+   "bytes": 35570,
+   "sha256": "beaf83168450703fdce184252fa191ee07e20fd6e264afb612464a805106b5b7"
+  },
+  "originals/schemes/chatgpt/tex/skirt.png": {
+   "bytes": 74880,
+   "sha256": "04b0aa3e06d95b4f63fec079189936b3faa4e5354afeba43c0e8ae7fa6a05cae"
+  },
+  "originals/schemes/chatgpt/tex/skirt_sit.png": {
+   "bytes": 110048,
+   "sha256": "7ad71701dfcb8383c9a810ffbed55e77debbdd6178d3288026899a153f4a5fb7"
+  },
+  "originals/schemes/chatgpt/tex/tail.png": {
+   "bytes": 28995,
+   "sha256": "5c62c880c730b1346a11fc2d6a32117df2bc8063793601256a1e4d4bd7addf62"
+  },
+  "originals/schemes/chatgpt/tex/torso_up.png": {
+   "bytes": 32524,
+   "sha256": "a6af95f85def6c65545a092026501cb8c967027982525ac773bde80b027177f6"
+  },
+  "originals/schemes/chatgpt/tex/waist_bow_front.png": {
+   "bytes": 12093,
+   "sha256": "c1cd1315a372fd72afe73c57f092a75c9ba6b4e8b5753ce049d89601e28989cf"
+  },
+  "originals/schemes/chatgpt/tex/waist_bow_sit_front.png": {
+   "bytes": 12357,
+   "sha256": "abef1a1a536726d5c7a38de1e218547238cd2d9dbcb2f6bc087380a9c5d9d9e7"
+  },
+  "originals/schemes/claude/feat/dizzy_eyeL.png": {
+   "bytes": 20574,
+   "sha256": "9c07bdd0389b7764660bd2d98744e67973cd1fd2493d793870b8d561282c42e1"
+  },
+  "originals/schemes/claude/feat/dizzy_eyeR.png": {
+   "bytes": 16037,
+   "sha256": "0b17abaf0aed90779fb6755fcc59a2f53427d2b9830e2195044c42da0753b521"
+  },
+  "originals/schemes/claude/feat/dizzy_mouth.png": {
+   "bytes": 2222,
+   "sha256": "5b9b23c7c75f5f57d561ae7f84e4d67fe89c20b17d486076dc6f9963f55727c3"
+  },
+  "originals/schemes/claude/feat/drag_eyeL.png": {
+   "bytes": 9323,
+   "sha256": "dd50b031a02e7e9885514f53cf923f85e856432dda2f884889e952ab229c4446"
+  },
+  "originals/schemes/claude/feat/drag_eyeR.png": {
+   "bytes": 6554,
+   "sha256": "ebaef092ab90cae6a5bf0170bf0f1ff288e97ea4aeb545b9aac1aab34c150ce9"
+  },
+  "originals/schemes/claude/feat/drag_mouth.png": {
+   "bytes": 1661,
+   "sha256": "843dc8d047a2d279d91ca4811580303974612ab280db9d7964c375b76a52708f"
+  },
+  "originals/schemes/claude/feat/eyeL_ball.png": {
+   "bytes": 13405,
+   "sha256": "d38a8acdffeb988ffbd6934afab2fd21047e8d459bbe1848ddb4d317f5a026ec"
+  },
+  "originals/schemes/claude/feat/eyeL_iris.png": {
+   "bytes": 17638,
+   "sha256": "f00c474647a6769d3e12146f4492804ddb222cc39d709e951cf03447a784b993"
+  },
+  "originals/schemes/claude/feat/eyeL_lash.png": {
+   "bytes": 10469,
+   "sha256": "cb0e9a9b595d5164890a75b0307b6efd07f05b9c918a85dc8ee9a378dca84f0a"
+  },
+  "originals/schemes/claude/feat/eyeR_ball.png": {
+   "bytes": 7641,
+   "sha256": "fc74a52eea894e4603d993bdc1aa35352dde490ae63241038dc64c7fed95728f"
+  },
+  "originals/schemes/claude/feat/eyeR_iris.png": {
+   "bytes": 8894,
+   "sha256": "5a4e7bfad77f107f711589a45471a8c63c9303f1920b15071117044ca93428cc"
+  },
+  "originals/schemes/claude/feat/eyeR_lash.png": {
+   "bytes": 5202,
+   "sha256": "4d7e9b0a1ee29b74c095e4d6b4a335af7d453f02cc3d74e2cf1a28807b3a2689"
+  },
+  "originals/schemes/claude/feat/happy_eyeL.png": {
+   "bytes": 10862,
+   "sha256": "60eb264903efdee0bca3b8a59171ebb0ce0e6bcf192efd08935509d9b2df1144"
+  },
+  "originals/schemes/claude/feat/happy_eyeR.png": {
+   "bytes": 6654,
+   "sha256": "cc67a1a5ec011ba17903178f112fa04949d8338a2fa3d4be6078a4aa8fe5e2d9"
+  },
+  "originals/schemes/claude/feat/happy_mouth.png": {
+   "bytes": 3515,
+   "sha256": "e050aeede1f6ea9cb7e4f348ebd3bf09a1c5386b8032fb5f588f9706cab3c915"
+  },
+  "originals/schemes/claude/feat/love_eyeL.png": {
+   "bytes": 36436,
+   "sha256": "dd8441f2824ea276e0e3f98eb554e589db12b215de6fa8bc9dab3866a3129ca9"
+  },
+  "originals/schemes/claude/feat/love_eyeR.png": {
+   "bytes": 21360,
+   "sha256": "f4c7803037e0fd649aa0ca0c7bc5c6770cd52f9bc77603079c709bc067a8237b"
+  },
+  "originals/schemes/claude/feat/love_mouth.png": {
+   "bytes": 4317,
+   "sha256": "407c4e9f0ea141f1b9c4c77db1401e3027cc43dbd9df1fd0e026b65f81ffcf5e"
+  },
+  "originals/schemes/claude/feat/neutral_mouth.png": {
+   "bytes": 526,
+   "sha256": "bcd7bf301fca8d2c3b06c96c2415db762750bb6de27ca11dba172a4ce0405253"
+  },
+  "originals/schemes/claude/feat/sleep_eyeL.png": {
+   "bytes": 8458,
+   "sha256": "02c518e6bab6405f832aa228c430940471c316f31df02cc6c5ce6436a67eb98c"
+  },
+  "originals/schemes/claude/feat/sleep_eyeR.png": {
+   "bytes": 5423,
+   "sha256": "b3204ee95d7ce3ca4bed6a4e387173040989cee367040bafbc2dee0dc2f1b352"
+  },
+  "originals/schemes/claude/feat/sleep_mouth.png": {
+   "bytes": 734,
+   "sha256": "adf8a653c982eeff90da7b1f4a938a3fecb5a01ffe24c9f2732a3344f74dcb06"
+  },
+  "originals/schemes/claude/feat/surprised_eyeL.png": {
+   "bytes": 40144,
+   "sha256": "577ce4496ccf1f1034a0edb252cf18cd091bc320b98f641db02d68e916cbc301"
+  },
+  "originals/schemes/claude/feat/surprised_eyeR.png": {
+   "bytes": 20193,
+   "sha256": "04c0972648b6a68e9ce5982d6705ac7ceb7dc996d9d6ba7c6b35ef3e0070128f"
+  },
+  "originals/schemes/claude/feat/surprised_mouth.png": {
+   "bytes": 2950,
+   "sha256": "a5aa1c799fb5806c73c563259861755edb9ae141b7045b43ccf7b9fc2cd0cd2c"
+  },
+  "originals/schemes/claude/tex/ahoge.png": {
+   "bytes": 14974,
+   "sha256": "a5b0d7971cd2dbdc24033cfc5f1dd0896df4ade62a31d65288cac04b435cc628"
+  },
+  "originals/schemes/claude/tex/arm_far.png": {
+   "bytes": 11057,
+   "sha256": "510faafc9710eb9b16ce9c23f414c54fc6b99d767b3766bd7b40e5ced1269c48"
+  },
+  "originals/schemes/claude/tex/arm_far_end_front.png": {
+   "bytes": 5196,
+   "sha256": "1f448bdd096ae63df135c737772b209b5f280201ce9b2ce9a3254f4d215e4e99"
+  },
+  "originals/schemes/claude/tex/arm_near.png": {
+   "bytes": 18081,
+   "sha256": "056668f9f8af34b39a8b5ba5a9e089800d035d92a8f870dc54e3a76f0ec9292a"
+  },
+  "originals/schemes/claude/tex/bangs.png": {
+   "bytes": 107504,
+   "sha256": "26e6f24ba30c9005017b0ea86952954e8a3ceda296324a7c6e24ea59c6bf8c23"
+  },
+  "originals/schemes/claude/tex/bow.png": {
+   "bytes": 11565,
+   "sha256": "6e0a17e2c7b8ae4cf4bc9a4861c743a4c177f38f85e623849ed2b761c0b411d8"
+  },
+  "originals/schemes/claude/tex/brows.png": {
+   "bytes": 2288,
+   "sha256": "05a31b36a840f9024cdbec173f2040706c66f23485ed831c20ad7d180024383d"
+  },
+  "originals/schemes/claude/tex/crew_hair_back.png": {
+   "bytes": 143035,
+   "sha256": "bae83c8191b98a8dc1e6bce18c171e2d919d534ac3e7401441bb6b7603476cfe"
+  },
+  "originals/schemes/claude/tex/crew_ponytail.png": {
+   "bytes": 169864,
+   "sha256": "4c48779e910b4b8c457a16536e656d98b704b8ddcb8392a73b0f7f1de95ce50a"
+  },
+  "originals/schemes/claude/tex/crew_sidelocks.png": {
+   "bytes": 36459,
+   "sha256": "5df787cea16edce9326c67a0deb1d9dd50b560fc354f98db821d5ee7c42325fc"
+  },
+  "originals/schemes/claude/tex/crew_skirt.png": {
+   "bytes": 64455,
+   "sha256": "1ac820b16f6e08d5bb83cadbe22de664ccdcc54571aa4ce3a216cf01c6d5f215"
+  },
+  "originals/schemes/claude/tex/crew_skirt_sit.png": {
+   "bytes": 111195,
+   "sha256": "d7ede96c74fc7e2b06adc4a0be9ddd5afe4d2c3139271dce5e7f4469e0e22737"
+  },
+  "originals/schemes/claude/tex/eye_creases.png": {
+   "bytes": 2497,
+   "sha256": "3dc0b55b9eff40ffcfdfa0b41b25b8eae4218c1ff30ee0aa7bfafabab338f132"
+  },
+  "originals/schemes/claude/tex/face.png": {
+   "bytes": 50391,
+   "sha256": "8b2bfe86e6e6b774538c20517ef8b0817168d6231b6d18e33306baba7f3e85c9"
+  },
+  "originals/schemes/claude/tex/fin_far.png": {
+   "bytes": 15408,
+   "sha256": "87609549f6c3200d09ec7e59ca798b5327dca6b7d6f972deed6cf18c2224e952"
+  },
+  "originals/schemes/claude/tex/fin_near.png": {
+   "bytes": 22347,
+   "sha256": "2ab7a62cba45147c2e7c629e2851656e40964894e5b31d40a82704e5c56b3ecc"
+  },
+  "originals/schemes/claude/tex/hair_back.png": {
+   "bytes": 289340,
+   "sha256": "073d522bf31e1bca90588291270de32f0b7cc66750283ac64845a68f77b62e83"
+  },
+  "originals/schemes/claude/tex/hair_back_curl.png": {
+   "bytes": 13580,
+   "sha256": "f05a958e65aa80d62b0d71ac21ec3d7bf74b5ed7c69f24f7205a7468ad1735be"
+  },
+  "originals/schemes/claude/tex/hair_front_left.png": {
+   "bytes": 33083,
+   "sha256": "cbb5742283d8973f7b3eafd5e5bf1b87f812885e0cb3b1cf988ae436da65e594"
+  },
+  "originals/schemes/claude/tex/hair_front_right.png": {
+   "bytes": 14519,
+   "sha256": "547bf495e2f9847ce87aeaee4f6721f77dde186838f9e34375b2030caffc4072"
+  },
+  "originals/schemes/claude/tex/headdress.png": {
+   "bytes": 48327,
+   "sha256": "9dea850234471a1f6f89df7f38c95dd7a7ce7cf7557c481987ed9322af5383d8"
+  },
+  "originals/schemes/claude/tex/leg_back.png": {
+   "bytes": 42557,
+   "sha256": "68f1e3b4a319c0a4c5e70fbc6b49e56bb7da563ab945f62644900d5a124f1282"
+  },
+  "originals/schemes/claude/tex/leg_front.png": {
+   "bytes": 43569,
+   "sha256": "617219c643f6aa4b526d86eafd40fd6519cba021c61869b0864a34ab8ce696c9"
+  },
+  "originals/schemes/claude/tex/sidelocks.png": {
+   "bytes": 38851,
+   "sha256": "dccca5f17f46017df0b2b41db5a9b882107f1d3e97199b3411ce03fd2bded718"
+  },
+  "originals/schemes/claude/tex/skirt.png": {
+   "bytes": 76775,
+   "sha256": "0a7ecaff3ea4edf04443720494fe23332f8acad3e131783033adbe362d1f127f"
+  },
+  "originals/schemes/claude/tex/skirt_sit.png": {
+   "bytes": 110402,
+   "sha256": "0b01e6f86f77819975bf905eac8362a0693f0217b45a3eff11b0bdca8a808671"
+  },
+  "originals/schemes/claude/tex/tail.png": {
+   "bytes": 28846,
+   "sha256": "078960d58aa09901f49d83a333daf0b4fc2360145260e55c43a908a6083804b2"
+  },
+  "originals/schemes/claude/tex/torso_up.png": {
+   "bytes": 35410,
+   "sha256": "709e1dce3362f202a56dd215de0f41577d8fdfa3b9048cc02d3a25680e18480e"
+  },
+  "originals/schemes/claude/tex/waist_bow_front.png": {
+   "bytes": 12308,
+   "sha256": "36ea54d455aef20073c82d190315702131208890e0b9eac3894e739341c47fc4"
+  },
+  "originals/schemes/claude/tex/waist_bow_sit_front.png": {
+   "bytes": 12448,
+   "sha256": "cf04cefa1bfb955103ed29ff141f41b6a8121286ea72a476298bdc0bcc083f71"
+  },
+  "originals/schemes/gemini/feat/dizzy_eyeL.png": {
+   "bytes": 20261,
+   "sha256": "d026e6be78e860483ca52f532496cdc6c46087d916592946b19e49febdfbe9ee"
+  },
+  "originals/schemes/gemini/feat/dizzy_eyeR.png": {
+   "bytes": 15694,
+   "sha256": "0641f5ad6d2e99506507c362ef50446159a169f7f4ff6dcbc22b8b585ac44d04"
+  },
+  "originals/schemes/gemini/feat/dizzy_mouth.png": {
+   "bytes": 2199,
+   "sha256": "c3bc4249671c9fcdba2941ea9aa3c56f15360471c21839165ca54eec304edc73"
+  },
+  "originals/schemes/gemini/feat/drag_eyeL.png": {
+   "bytes": 9383,
+   "sha256": "b2e17f6e4f98cd2bc92623918247adbbdd939a66480e4cc19eb84eed4b143b75"
+  },
+  "originals/schemes/gemini/feat/drag_eyeR.png": {
+   "bytes": 6660,
+   "sha256": "559fc602ac9d04fd65d0fe261705d3f9e86088dc97d71850c5636a2f0df36bb9"
+  },
+  "originals/schemes/gemini/feat/drag_mouth.png": {
+   "bytes": 1575,
+   "sha256": "2c35a9d8b982aadefd7948a2932ba59043fdf4d55fc4296e9f06e51c2883653a"
+  },
+  "originals/schemes/gemini/feat/eyeL_ball.png": {
+   "bytes": 13385,
+   "sha256": "edec61a0cd0603bd5917cf83ed589f8ff5ba84b591cea92f8f97faead732eaa2"
+  },
+  "originals/schemes/gemini/feat/eyeL_iris.png": {
+   "bytes": 17046,
+   "sha256": "0143c87a12b9ef60c87aa22fc1c0f3664ef24785d202c1d46d7785d33644cfd1"
+  },
+  "originals/schemes/gemini/feat/eyeL_lash.png": {
+   "bytes": 10706,
+   "sha256": "22ab98d4c975a9e2a9e28de716f35f02d2a0fbb0d15f06a81878e0b0a3435a33"
+  },
+  "originals/schemes/gemini/feat/eyeR_ball.png": {
+   "bytes": 7696,
+   "sha256": "bd69ee025e32fbdc63dbd4e1194c873b2e0c87ab56a5aa0a404b04547180095c"
+  },
+  "originals/schemes/gemini/feat/eyeR_iris.png": {
+   "bytes": 8522,
+   "sha256": "1196a99f4e843351c3e2af6060e5a129d7cc1bb1d1deca36cdf3469d8b7dccac"
+  },
+  "originals/schemes/gemini/feat/eyeR_lash.png": {
+   "bytes": 5340,
+   "sha256": "ff252be0485a8fe10a1bc6ad8a85e7d61d9f767d253b9a7e73ede199b75a4910"
+  },
+  "originals/schemes/gemini/feat/happy_eyeL.png": {
+   "bytes": 10791,
+   "sha256": "418f9effcbc64d822593ae6945788a003cfc42273af8e1e4beafed9cd58b8470"
+  },
+  "originals/schemes/gemini/feat/happy_eyeR.png": {
+   "bytes": 6579,
+   "sha256": "ccb9eb34436cd80ad78ce74d51ca1c13001baad05502d5ef805402ca261f5a57"
+  },
+  "originals/schemes/gemini/feat/happy_mouth.png": {
+   "bytes": 3491,
+   "sha256": "1e7c1e78e44b05d1ae920612d72dcc7e2408daae5cb89cbfc3c71f2b1eb213a5"
+  },
+  "originals/schemes/gemini/feat/love_eyeL.png": {
+   "bytes": 36030,
+   "sha256": "155e45d62c00ca0d9ee00bf5109c86f13da52d3ea04a87a04c7572edfd2b9295"
+  },
+  "originals/schemes/gemini/feat/love_eyeR.png": {
+   "bytes": 21237,
+   "sha256": "f25bea3a1d2df83e8cb7d824371be781e276a823cb0bcc2dec4189921e4b681d"
+  },
+  "originals/schemes/gemini/feat/love_mouth.png": {
+   "bytes": 4305,
+   "sha256": "faccd91f84e367b2e25d87c7e60f41a40e5b24280edb205fe422b49fb35b062a"
+  },
+  "originals/schemes/gemini/feat/neutral_mouth.png": {
+   "bytes": 534,
+   "sha256": "b539a11b33e43fe29e692b3331a797b543ed20e03328560146964d8ee602827a"
+  },
+  "originals/schemes/gemini/feat/sleep_eyeL.png": {
+   "bytes": 8567,
+   "sha256": "7b0fa05467b37da2605752e41865651a0081e1bc77f06f4ff5f5df66f47ed4f1"
+  },
+  "originals/schemes/gemini/feat/sleep_eyeR.png": {
+   "bytes": 5485,
+   "sha256": "1a35ea4d0a60f6ad5f3e34f8ef5e1444cb5d8ed08c86e301c9f47b78b38d84ea"
+  },
+  "originals/schemes/gemini/feat/sleep_mouth.png": {
+   "bytes": 747,
+   "sha256": "4fcef031033075fb8636386d9efeb5aa8677c78774a6fcd3aada6e8bd8945f7f"
+  },
+  "originals/schemes/gemini/feat/surprised_eyeL.png": {
+   "bytes": 39198,
+   "sha256": "25e94c2b777e64062724879e98ef7cf9bacd19ad955afd70de6cdd1f274eb9d2"
+  },
+  "originals/schemes/gemini/feat/surprised_eyeR.png": {
+   "bytes": 19956,
+   "sha256": "a0a6fb3c329f857a3c54e6801da90bf3fb08ca9da6a8e243d08b025366e503f5"
+  },
+  "originals/schemes/gemini/feat/surprised_mouth.png": {
+   "bytes": 2908,
+   "sha256": "38f08d9a9cb62982fcd9e30e9cd12b8f52a086ca36bbf8b8dbc0d56e8cb75bb9"
+  },
+  "originals/schemes/gemini/tex/ahoge.png": {
+   "bytes": 15444,
+   "sha256": "d981ce40e366b0f4f9b9f48cc6267c3cb39f9bc3317103ea84e63c3ebdc6b269"
+  },
+  "originals/schemes/gemini/tex/arm_far.png": {
+   "bytes": 11208,
+   "sha256": "5826093b2bd13b5b71f9a3cce809ceca5be8cd7c7c541a5cc4cdb9eca26d40bd"
+  },
+  "originals/schemes/gemini/tex/arm_far_end_front.png": {
+   "bytes": 5255,
+   "sha256": "bc7f1f79329b9edf5db9a8efdd194f60a86511fde1c1cf28d67e695ec0a7c178"
+  },
+  "originals/schemes/gemini/tex/arm_near.png": {
+   "bytes": 17925,
+   "sha256": "14304a9f59f8549e5c4fa41088d3ef5ea8844106bf384a05a90dc15be7e772ef"
+  },
+  "originals/schemes/gemini/tex/bangs.png": {
+   "bytes": 111490,
+   "sha256": "bf715a5d4f3bcb699e4041c02bea77dab7ff46b5d9377ad0da7b0473f4883a87"
+  },
+  "originals/schemes/gemini/tex/bow.png": {
+   "bytes": 11983,
+   "sha256": "99357c985cb5ee5f0da75817830204e43de0334b1aa752c717ebe47f946288e8"
+  },
+  "originals/schemes/gemini/tex/brows.png": {
+   "bytes": 2299,
+   "sha256": "40837ae8ae0c1bcca0c603acfda4ea571c2602d0644dfd16d9c34832d48972f1"
+  },
+  "originals/schemes/gemini/tex/crew_hair_back.png": {
+   "bytes": 141477,
+   "sha256": "78cd557b9973fa99ccf7a1ca80bb352a33d583e23e346b35e00d1266e73b8788"
+  },
+  "originals/schemes/gemini/tex/crew_ponytail.png": {
+   "bytes": 171654,
+   "sha256": "57f12d24252deda9454039f2ff13a2373f4a107590515c23244d0b896e80b34b"
+  },
+  "originals/schemes/gemini/tex/crew_sidelocks.png": {
+   "bytes": 36047,
+   "sha256": "44f2aff407d17e39d206bfb0e51fa49753c570d43ad5ed23e58fbdb0fb5e24bc"
+  },
+  "originals/schemes/gemini/tex/crew_skirt.png": {
+   "bytes": 63491,
+   "sha256": "9a1fb23af28ef2d12267c6043c6b4b5c67c3468a2ea695c8766a13267ef87303"
+  },
+  "originals/schemes/gemini/tex/crew_skirt_sit.png": {
+   "bytes": 110507,
+   "sha256": "bece9cd1fdfd57d3a9202dc2687f7ccc8c6db02b6702704431db751462f80f48"
+  },
+  "originals/schemes/gemini/tex/eye_creases.png": {
+   "bytes": 2503,
+   "sha256": "fa5db04fedb959b06802f0a2cb5226892362c352c638e81ce4b9934566dd8c27"
+  },
+  "originals/schemes/gemini/tex/face.png": {
+   "bytes": 50382,
+   "sha256": "071fc62bd3db086b83d30aba0e757cfd2371f61cadcd5b9e76f27f7c07d1749c"
+  },
+  "originals/schemes/gemini/tex/fin_far.png": {
+   "bytes": 15595,
+   "sha256": "3f572e3292002919bbb53ce049994e1d0fbb9748efc32872248455337cdb7ed8"
+  },
+  "originals/schemes/gemini/tex/fin_near.png": {
+   "bytes": 22000,
+   "sha256": "ac4d922ddf1df4f6c86ac3e9fd0029da69b9c4433abbedf89989fd35a6d9d267"
+  },
+  "originals/schemes/gemini/tex/hair_back.png": {
+   "bytes": 287068,
+   "sha256": "d9185b34793adfc1ecc8bfab940df81e10e4757a7031c44a44c95509e8a49a69"
+  },
+  "originals/schemes/gemini/tex/hair_back_curl.png": {
+   "bytes": 13575,
+   "sha256": "340bdf2fc3906a9d6230aab26bbd831e81c060a85536c9841c7b4b23c42cffba"
+  },
+  "originals/schemes/gemini/tex/hair_front_left.png": {
+   "bytes": 33685,
+   "sha256": "94d5686776011ed2d98aa6d5dac5d7b0c327e899f4b19ef16b6631f6ae467d87"
+  },
+  "originals/schemes/gemini/tex/hair_front_right.png": {
+   "bytes": 14637,
+   "sha256": "ea495085e2aa7f8326cbfcb759edcba56e04e673f78b9ea8d3723e36d48b30a5"
+  },
+  "originals/schemes/gemini/tex/headdress.png": {
+   "bytes": 48039,
+   "sha256": "65f587bc76c802dc612cc2ae9f261910a9c4fe0b7bac0c5922d56da0ff88fe82"
+  },
+  "originals/schemes/gemini/tex/leg_back.png": {
+   "bytes": 42499,
+   "sha256": "cb8bc10b6a5f643ff04f18e824b00fef55ac437d5dc134d8e90750fdb10ec876"
+  },
+  "originals/schemes/gemini/tex/leg_front.png": {
+   "bytes": 44653,
+   "sha256": "002c2b1ffd36cded813a05c1c0a0fa1dc64f6a475d840cb1682b21bec6fa53b9"
+  },
+  "originals/schemes/gemini/tex/sidelocks.png": {
+   "bytes": 36602,
+   "sha256": "45aba68a60e3013e3e6ef7b2a91d0ccbe4f936d6fc1e51a0e00179bc50d5ad5f"
+  },
+  "originals/schemes/gemini/tex/skirt.png": {
+   "bytes": 74270,
+   "sha256": "cf6391ab83bdc86b1ea71247db6f0377233a1faa608632d239dd7ff783e3bb9d"
+  },
+  "originals/schemes/gemini/tex/skirt_sit.png": {
+   "bytes": 110011,
+   "sha256": "7b15dec6383088192f338d78ea99849a3c7c6efbdcdcd5cddeec4cb95a41c58c"
+  },
+  "originals/schemes/gemini/tex/tail.png": {
+   "bytes": 28751,
+   "sha256": "248d097b434383091aa0da2f17baefd733456fe873e461410e0f88da17b18f07"
+  },
+  "originals/schemes/gemini/tex/torso_up.png": {
+   "bytes": 36948,
+   "sha256": "6dcb46785208307b96677bee203e59749457e06f376288d5a906ab2eb0b719cb"
+  },
+  "originals/schemes/gemini/tex/waist_bow_front.png": {
+   "bytes": 12208,
+   "sha256": "b8ff3ab17addba9904baad0b51f2a2a963f6c84ff037b1bd6be0e53ccb0b539e"
+  },
+  "originals/schemes/gemini/tex/waist_bow_sit_front.png": {
+   "bytes": 12498,
+   "sha256": "f805be0cba629f6d62b74af26ee454a04afba509fab689561e5f0cf46e519141"
+  },
+  "originals/schemes/harness/feat/dizzy_eyeL.png": {
+   "bytes": 19857,
+   "sha256": "a689c1621d85433a0eefd64a9cdcdd7e679b3c643413adefc484c158fa6ac393"
+  },
+  "originals/schemes/harness/feat/dizzy_eyeR.png": {
+   "bytes": 15408,
+   "sha256": "823b4d870c13e30dcd9b2eaeeee3fdd6dfe56176528a2bd63e62f78de80fff5d"
+  },
+  "originals/schemes/harness/feat/dizzy_mouth.png": {
+   "bytes": 2200,
+   "sha256": "96f652bc6cbb9ef8f8c36758ef85f77481001889b7e3c316737a0fe67d7f4a7a"
+  },
+  "originals/schemes/harness/feat/drag_eyeL.png": {
+   "bytes": 9885,
+   "sha256": "8ed0b6a4b657fa3dad8315b4eaeee439f65aa530a5a5276cd743265a534a2f95"
+  },
+  "originals/schemes/harness/feat/drag_eyeR.png": {
+   "bytes": 7236,
+   "sha256": "d1665451edb46e97c1cf88692d13762bd318555488bac167a8164cb7c7f9373f"
+  },
+  "originals/schemes/harness/feat/drag_mouth.png": {
+   "bytes": 1560,
+   "sha256": "e15de9f876692bd6926d869516d3ac93bbca12d31a8ae7772402f3ddb55b5db1"
+  },
+  "originals/schemes/harness/feat/eyeL_ball.png": {
+   "bytes": 13010,
+   "sha256": "66cd247356c537f71e2768c1559e712318a17c0e1be230763e9d453c7e686dc9"
+  },
+  "originals/schemes/harness/feat/eyeL_iris.png": {
+   "bytes": 15173,
+   "sha256": "d7256573bca359f947375076fa4acaeaa3df04b12e4ba929a2a7dea415aebedf"
+  },
+  "originals/schemes/harness/feat/eyeL_lash.png": {
+   "bytes": 10499,
+   "sha256": "4053b0bcbd0eae169dc18dcf63dd92f80d74e22a504b8b517d2f0ae2cfcd79b2"
+  },
+  "originals/schemes/harness/feat/eyeR_ball.png": {
+   "bytes": 7545,
+   "sha256": "6e1b825961ace12b928cf3f84e653f01b0640a0fdf1022f156e7add94a771284"
+  },
+  "originals/schemes/harness/feat/eyeR_iris.png": {
+   "bytes": 8314,
+   "sha256": "f49189879fd97fbb7089ffb010afd9585f4029d27deb7eb7972cef946b5ab522"
+  },
+  "originals/schemes/harness/feat/eyeR_lash.png": {
+   "bytes": 5342,
+   "sha256": "61eb31aa3b98647494d2fedb97ddb4f1ee3c15ca4f3793e87f88d7ccee82eb80"
+  },
+  "originals/schemes/harness/feat/happy_eyeL.png": {
+   "bytes": 10880,
+   "sha256": "eccf9ab4ebba865d83ce8e2dcb7b252b781f0283e5ba5825c0f626858793a558"
+  },
+  "originals/schemes/harness/feat/happy_eyeR.png": {
+   "bytes": 6616,
+   "sha256": "00458651c2f4101136dd9046cf841e2482e5f947bc7970698138a5777678f232"
+  },
+  "originals/schemes/harness/feat/happy_mouth.png": {
+   "bytes": 3496,
+   "sha256": "3c3441aadf81c39873255693ff04a9240db16d034d19748939f9af7c1a6e266d"
+  },
+  "originals/schemes/harness/feat/love_eyeL.png": {
+   "bytes": 36880,
+   "sha256": "52b30395f7d3d1282b691b4bbfabaaec1e7b6f3b69110b0f53f943c387689154"
+  },
+  "originals/schemes/harness/feat/love_eyeR.png": {
+   "bytes": 21864,
+   "sha256": "e6a4903dd2f60576795e8f278e04b0ba9800510c9a49cf6a42f05966b5e18c12"
+  },
+  "originals/schemes/harness/feat/love_mouth.png": {
+   "bytes": 4394,
+   "sha256": "14bc55fde0ecaed69e7700f4ce968ff04abc953bc777f1a094bec5ce54584712"
+  },
+  "originals/schemes/harness/feat/neutral_mouth.png": {
+   "bytes": 549,
+   "sha256": "aa8e60c92c6053e59d01f43e76f7d8502fa4c951f7e0d3c877ad4741dfb27c3b"
+  },
+  "originals/schemes/harness/feat/sleep_eyeL.png": {
+   "bytes": 8555,
+   "sha256": "7166fd242740f7e34207838b196dcb8d5e38becee2b433c9e184a9b7f658ff2f"
+  },
+  "originals/schemes/harness/feat/sleep_eyeR.png": {
+   "bytes": 5454,
+   "sha256": "7a8d2524b969721306a1b3f081397d583730adbfe0c3b0cc7a3daa2275eab68e"
+  },
+  "originals/schemes/harness/feat/sleep_mouth.png": {
+   "bytes": 761,
+   "sha256": "5c858144824116f71fef69d1708bda05a2c428c58262611f0dbe5acca081e116"
+  },
+  "originals/schemes/harness/feat/surprised_eyeL.png": {
+   "bytes": 39286,
+   "sha256": "ba274b9b9cfd29445ca5778e4b59582e4042e9d500ed2decd6063021d6ecf614"
+  },
+  "originals/schemes/harness/feat/surprised_eyeR.png": {
+   "bytes": 20107,
+   "sha256": "2dac100c319cba7985282b4240bea93638219df240f0674b4ea9cee4a2462399"
+  },
+  "originals/schemes/harness/feat/surprised_mouth.png": {
+   "bytes": 2959,
+   "sha256": "21adb8a0de543dbe9cf2d8b82a12d0b209eb5d473cd8d06e46a99ef13f5d9384"
+  },
+  "originals/schemes/harness/tex/ahoge.png": {
+   "bytes": 13855,
+   "sha256": "7308705abd3bfcde86a0fe1baa14e47e83ab5a6408ff36528e095cadb96418bd"
+  },
+  "originals/schemes/harness/tex/arm_far.png": {
+   "bytes": 10526,
+   "sha256": "52c0c243954c42d2b02b06ae6f8719ddae4466a7423ae2138c3b985ee61fec14"
+  },
+  "originals/schemes/harness/tex/arm_far_end_front.png": {
+   "bytes": 5243,
+   "sha256": "99ef91cf324dce00daff91ca117ed6d88ab4ea15b38291d808b3d44778e47435"
+  },
+  "originals/schemes/harness/tex/arm_near.png": {
+   "bytes": 17080,
+   "sha256": "687b5c21e982600afe2dae78ee65e1f74f99e7ab0c43ea414454cf3321ca8155"
+  },
+  "originals/schemes/harness/tex/bangs.png": {
+   "bytes": 96606,
+   "sha256": "9abb6cba44286c096d465c9307d0456131efbf7ffa3717a7506e6c6efa92afca"
+  },
+  "originals/schemes/harness/tex/bow.png": {
+   "bytes": 10283,
+   "sha256": "c88e1a50bdd351b8fce8e0eb103b1de233c2a9a399b8040fddca285bf44bb835"
+  },
+  "originals/schemes/harness/tex/brows.png": {
+   "bytes": 2042,
+   "sha256": "16eb67065ed9c1f27103a290bdd88bded09219341e52cbc43b6a9f2a7087d7d5"
+  },
+  "originals/schemes/harness/tex/crew_hair_back.png": {
+   "bytes": 103361,
+   "sha256": "c3034eb7dd41dd76d00e079233d04770ec2de3af13de8e6fe3228d984ab39390"
+  },
+  "originals/schemes/harness/tex/crew_ponytail.png": {
+   "bytes": 142637,
+   "sha256": "cec7a7f242007e97bb5d20385542b60bf8d0fb177756080fcf8be86db49483c3"
+  },
+  "originals/schemes/harness/tex/crew_sidelocks.png": {
+   "bytes": 29089,
+   "sha256": "cbc4f73cbf0c2eddce9886124d3edb3902910dd8155e13ac9e5bfa584c7b51d9"
+  },
+  "originals/schemes/harness/tex/crew_skirt.png": {
+   "bytes": 64229,
+   "sha256": "80b08c49d003b332e9e9956521d15715063df4c495736d2f4010d14028e22905"
+  },
+  "originals/schemes/harness/tex/crew_skirt_sit.png": {
+   "bytes": 110854,
+   "sha256": "d381f4dbbf550581e5a05fa414c2a6d6c7fb324dcebd008906a333f402e37e22"
+  },
+  "originals/schemes/harness/tex/eye_creases.png": {
+   "bytes": 2495,
+   "sha256": "23ca5c7bc9732a93dc21a48435c430b6b9a4b9cd8fea92816c4345a9f432e657"
+  },
+  "originals/schemes/harness/tex/face.png": {
+   "bytes": 50925,
+   "sha256": "f5c41eafcce5b3480574b35b22682df75522dfe285d447575372f32faf7cea41"
+  },
+  "originals/schemes/harness/tex/fin_far.png": {
+   "bytes": 14718,
+   "sha256": "f17087fda65e178a474388d0b0264accc6e1fda828853b1506277f71f529d4b9"
+  },
+  "originals/schemes/harness/tex/fin_near.png": {
+   "bytes": 20458,
+   "sha256": "edbe55a286ad4769d618c3ca24d1218d29185c4d07484d4a2c691ec7e288de7e"
+  },
+  "originals/schemes/harness/tex/hair_back.png": {
+   "bytes": 259541,
+   "sha256": "c4f174332489cd8d17a561fc7fed239e2da27ca50bee0f65f3759c1fce704cbb"
+  },
+  "originals/schemes/harness/tex/hair_back_curl.png": {
+   "bytes": 12808,
+   "sha256": "f773cd7701f12c2a65fa08ef1ccb644c2875f390af14657cc18396af249d0e28"
+  },
+  "originals/schemes/harness/tex/hair_front_left.png": {
+   "bytes": 30229,
+   "sha256": "f72ee1b63dfc435ba48c2843703516aacb4454c0b83effadf31f49171352d714"
+  },
+  "originals/schemes/harness/tex/hair_front_right.png": {
+   "bytes": 13298,
+   "sha256": "95cf91019d95c5ababfc5c189a8e3afb51c49654ffaa0ba4edcc47052ba59c52"
+  },
+  "originals/schemes/harness/tex/headdress.png": {
+   "bytes": 48822,
+   "sha256": "4bc82c8b21271f91cdf23f89fcaa90c6128e26691597c9a3c641316521427f78"
+  },
+  "originals/schemes/harness/tex/leg_back.png": {
+   "bytes": 41519,
+   "sha256": "2292d7ee52252afc637cdf4f5323b8f856a8a8eebd2b68a92fa6fb925819b1fa"
+  },
+  "originals/schemes/harness/tex/leg_front.png": {
+   "bytes": 43556,
+   "sha256": "78be5c268275239860dc0961a629adf799fd2ba8a8fa4fd84c7b7a795d2b3f28"
+  },
+  "originals/schemes/harness/tex/sidelocks.png": {
+   "bytes": 34290,
+   "sha256": "2fb2e8eaf8276c663e348085dae40e52d6d4c37be221cc81a4177badaed1e1f2"
+  },
+  "originals/schemes/harness/tex/skirt.png": {
+   "bytes": 72794,
+   "sha256": "f4c1ec374bdb83c10740e972b8d3b037398d2fc9cebd2588b6b29d614107565f"
+  },
+  "originals/schemes/harness/tex/skirt_sit.png": {
+   "bytes": 105909,
+   "sha256": "861bf3f675bde3d164042cac9dd21b227b69dd5d32a953891d7c9d625a3771bc"
+  },
+  "originals/schemes/harness/tex/tail.png": {
+   "bytes": 25661,
+   "sha256": "58d91f16f37b856d5a3a8ef90cb229310a4621382b8786b2ab832f861ac14fc1"
+  },
+  "originals/schemes/harness/tex/torso_up.png": {
+   "bytes": 33233,
+   "sha256": "faa4472d657cfd06af9e957c2bfbf0f38394100e45416cb7de70343b4bd48537"
+  },
+  "originals/schemes/harness/tex/waist_bow_front.png": {
+   "bytes": 12584,
+   "sha256": "667438851bf522633db1791a1b076739b2c44250c96a272c061b3b215f5478e7"
+  },
+  "originals/schemes/harness/tex/waist_bow_sit_front.png": {
+   "bytes": 12550,
+   "sha256": "271a3441083fefad46d8556236a5716ada0519c6f084ef84b338b8b5825a1c7c"
+  },
+  "originals/schemes/kimi/feat/dizzy_eyeL.png": {
+   "bytes": 19833,
+   "sha256": "3168611a279bee3b94504f40f2da983fbe3c9c82f0088e4e59fe2d21b2496d02"
+  },
+  "originals/schemes/kimi/feat/dizzy_eyeR.png": {
+   "bytes": 15485,
+   "sha256": "00a6761b0f78d3beae8cb8733dabac62d83e835a285e55e7c30a370bedc49403"
+  },
+  "originals/schemes/kimi/feat/dizzy_mouth.png": {
+   "bytes": 2180,
+   "sha256": "9bce4d5321f58a1b88f61cf728c01be66ed63bdd4d89c6d7692330c4713d5fda"
+  },
+  "originals/schemes/kimi/feat/drag_eyeL.png": {
+   "bytes": 9508,
+   "sha256": "ec28574bf15de2da94dbdf494bd9f1f7a0e31357a2b97cdbe02ad2514381039e"
+  },
+  "originals/schemes/kimi/feat/drag_eyeR.png": {
+   "bytes": 6676,
+   "sha256": "d55807562c26989fd9b22652e40bb534e1659313d267d7236469105d2a971656"
+  },
+  "originals/schemes/kimi/feat/drag_mouth.png": {
+   "bytes": 1617,
+   "sha256": "bfa1f1a0471311bc76e9be284f72f91def52c00574796e5745e6f0659a3458c9"
+  },
+  "originals/schemes/kimi/feat/eyeL_ball.png": {
+   "bytes": 13045,
+   "sha256": "114bd21b337d53484dee7d38714b3c145b0fe69c42c7694fa262377ab3ca18c4"
+  },
+  "originals/schemes/kimi/feat/eyeL_iris.png": {
+   "bytes": 16680,
+   "sha256": "e4cbf8ab69a477afd1a9af68f7a202494ed88f9dfd77fa09353266d796c93754"
+  },
+  "originals/schemes/kimi/feat/eyeL_lash.png": {
+   "bytes": 10407,
+   "sha256": "619c81e9b5d0d9570dcc7d919f414eed0d5397487fc5ec5ca0da0b7ad209855c"
+  },
+  "originals/schemes/kimi/feat/eyeR_ball.png": {
+   "bytes": 7513,
+   "sha256": "3b3815ff41af65732be77f984542b40274972e25b6e9ecb1ac6daf0e448773c8"
+  },
+  "originals/schemes/kimi/feat/eyeR_iris.png": {
+   "bytes": 8462,
+   "sha256": "369641a7b0944adb7fc530f4c194865f0d7c94e6d42fe9614c0ad52495421ad1"
+  },
+  "originals/schemes/kimi/feat/eyeR_lash.png": {
+   "bytes": 5153,
+   "sha256": "4a8679a1c14c8e9e46a9da46e074646c6e110692ebb2318ea730440d17481789"
+  },
+  "originals/schemes/kimi/feat/happy_eyeL.png": {
+   "bytes": 10413,
+   "sha256": "54d077c0c8a606bcbbe9c3a97bf941300e499f1976338463bc271b8f19e2513e"
+  },
+  "originals/schemes/kimi/feat/happy_eyeR.png": {
+   "bytes": 6433,
+   "sha256": "2ba34865821bda050f4598aeedb7fd0571a1a6f8aeb5404c0c50095a708f25cb"
+  },
+  "originals/schemes/kimi/feat/happy_mouth.png": {
+   "bytes": 3574,
+   "sha256": "63895250ff9e144f68e4c6b25ad5fb4374c33aabb4d0ceb147d8c17f76db6e36"
+  },
+  "originals/schemes/kimi/feat/love_eyeL.png": {
+   "bytes": 35698,
+   "sha256": "ad89130c2c1580bc421ae8c26d577a45f0b7a7e7177ca99aed325da0d144ce59"
+  },
+  "originals/schemes/kimi/feat/love_eyeR.png": {
+   "bytes": 21154,
+   "sha256": "0ea453cb683c64f1855a53f2067fb9f22633f06ff7769c99602a777da5ebc6e1"
+  },
+  "originals/schemes/kimi/feat/love_mouth.png": {
+   "bytes": 4314,
+   "sha256": "292126d0593ad81fd98ac40a3e9fb25475b94b7240e8e688f05b11863e56062a"
+  },
+  "originals/schemes/kimi/feat/neutral_mouth.png": {
+   "bytes": 538,
+   "sha256": "3413547ff8d3967ea6e3e88090f64156edd8a3e953509b9389c70853c466df98"
+  },
+  "originals/schemes/kimi/feat/sleep_eyeL.png": {
+   "bytes": 8409,
+   "sha256": "71cb14b5580df9fba3dc4b7ae47d2cd694f13865adbb3ed8e249ad8fad92068a"
+  },
+  "originals/schemes/kimi/feat/sleep_eyeR.png": {
+   "bytes": 5383,
+   "sha256": "60f6c3cc2006f4eb34a95bf0c64e1eaea5e70f74d4fd564cca728a111b476376"
+  },
+  "originals/schemes/kimi/feat/sleep_mouth.png": {
+   "bytes": 735,
+   "sha256": "0b0183dba79127604fd96a46a06008f823f14a6b12cd408b4ac3f402afccba65"
+  },
+  "originals/schemes/kimi/feat/surprised_eyeL.png": {
+   "bytes": 38573,
+   "sha256": "85472f256cbb983705c974d15fff03dbbea3d354b90989dd9410cc95f12917b1"
+  },
+  "originals/schemes/kimi/feat/surprised_eyeR.png": {
+   "bytes": 19642,
+   "sha256": "aa6610e5672a9b0b18bfa533f797ad09b8480f056babf5fcc5ee329e94968bdd"
+  },
+  "originals/schemes/kimi/feat/surprised_mouth.png": {
+   "bytes": 2927,
+   "sha256": "bcd14079acf51b83d6b1c982db090b07e9b822b187574ddfcabd8bb106212b1c"
+  },
+  "originals/schemes/kimi/tex/ahoge.png": {
+   "bytes": 13605,
+   "sha256": "c9ab4ed7dc5c7e4541778cd00a5843c5da288c4d475b2d16d996d1a93708667d"
+  },
+  "originals/schemes/kimi/tex/arm_far.png": {
+   "bytes": 10517,
+   "sha256": "9827e87c9dd92ec558fbc65ce23f8ef5f51f42e8722e8d24aab858cb91bc3c12"
+  },
+  "originals/schemes/kimi/tex/arm_far_end_front.png": {
+   "bytes": 5208,
+   "sha256": "c965328d680769a4d22db37910707d36d08c1b42cb776c3d8aece642b5923652"
+  },
+  "originals/schemes/kimi/tex/arm_near.png": {
+   "bytes": 16747,
+   "sha256": "fe5fa96aa84c931b442ee952c103e8d10dbb76ec54fb3ca1695eb69bbb739926"
+  },
+  "originals/schemes/kimi/tex/bangs.png": {
+   "bytes": 96931,
+   "sha256": "20045fb1701510c0676944366a73047962f52b5e9fd2a086848d84a61fa3b534"
+  },
+  "originals/schemes/kimi/tex/bow.png": {
+   "bytes": 11689,
+   "sha256": "c576a63c561298e47b512770c011eb6782ffc536e614fc80b76f0eb29238a3c2"
+  },
+  "originals/schemes/kimi/tex/brows.png": {
+   "bytes": 2113,
+   "sha256": "f0c2eb91bed3b55739f7be9b44c133731a89845bcffa89d7abe2585b7de00166"
+  },
+  "originals/schemes/kimi/tex/crew_hair_back.png": {
+   "bytes": 100613,
+   "sha256": "40a98014c42c81a1d469efe3cb954cb54cc1798e80ef2930b4585ae96c788884"
+  },
+  "originals/schemes/kimi/tex/crew_ponytail.png": {
+   "bytes": 146169,
+   "sha256": "33e66a7ae3a95617cdd41f383c071ba3377eb169409328f1f99cb59605c9ff15"
+  },
+  "originals/schemes/kimi/tex/crew_sidelocks.png": {
+   "bytes": 30668,
+   "sha256": "788f3cad6e1d646c5dc850a3f9cf3da32949f52be7a176ebde4fea11c0b6f337"
+  },
+  "originals/schemes/kimi/tex/crew_skirt.png": {
+   "bytes": 63684,
+   "sha256": "137006aec856bfa9102047520837683a427c19930276e3662d165394c7527e1c"
+  },
+  "originals/schemes/kimi/tex/crew_skirt_sit.png": {
+   "bytes": 110665,
+   "sha256": "203f0f999c6568ae063c46a429bcb521909b5da818ccc5d5681340ae16309c71"
+  },
+  "originals/schemes/kimi/tex/eye_creases.png": {
+   "bytes": 2478,
+   "sha256": "ade2d74b5634643eaf7f847591c2d64b389a6af8130fe288e609a29305df8486"
+  },
+  "originals/schemes/kimi/tex/face.png": {
+   "bytes": 50836,
+   "sha256": "6c659e0eae7a7af732a92d74cd2d1b6950fc736f5991fb78ca6e6a9f38d81762"
+  },
+  "originals/schemes/kimi/tex/fin_far.png": {
+   "bytes": 14590,
+   "sha256": "18b4f4fb8d6fb5e1b6fede9a66a74f639f6ca2e0fddc5d7d5b2f821e17c9c677"
+  },
+  "originals/schemes/kimi/tex/fin_near.png": {
+   "bytes": 19974,
+   "sha256": "8b4637c8026ced12ab75ba3daa1d5b6292b52e3a16f5d3304906ea22ca77c7e1"
+  },
+  "originals/schemes/kimi/tex/hair_back.png": {
+   "bytes": 265553,
+   "sha256": "a7feba3f283a04320cd833cc524726e5000916fbd842c477d9d7c5435d6e9bae"
+  },
+  "originals/schemes/kimi/tex/hair_back_curl.png": {
+   "bytes": 12685,
+   "sha256": "01a28fa3b1548a483b155d9ca91327ca90c1a2ceef4c369efc7c9ce73f011037"
+  },
+  "originals/schemes/kimi/tex/hair_front_left.png": {
+   "bytes": 30094,
+   "sha256": "5607e5b77f6413cd5af4675f641ef48ffae2bfbdffdcba283efedca843fee3d3"
+  },
+  "originals/schemes/kimi/tex/hair_front_right.png": {
+   "bytes": 12940,
+   "sha256": "1cb36229b96d9c3924c4245c9d37885034565f73f90d3bcea967f229c02f13fe"
+  },
+  "originals/schemes/kimi/tex/headdress.png": {
+   "bytes": 47619,
+   "sha256": "1f968be6f2f3409a6a6489d4220aac34e4aa1a7c456a001076bd40e065b85050"
+  },
+  "originals/schemes/kimi/tex/leg_back.png": {
+   "bytes": 41504,
+   "sha256": "de92475f4a01862dcfb4846c39b40ae3444557c03c3c7de70335705818910eb7"
+  },
+  "originals/schemes/kimi/tex/leg_front.png": {
+   "bytes": 43907,
+   "sha256": "627d6111b361d00d7f261dbe7269680d6d530b7090370e755b582acdf2bfdfe7"
+  },
+  "originals/schemes/kimi/tex/sidelocks.png": {
+   "bytes": 32893,
+   "sha256": "a4b8100f4f925ba4215f37c0951d844743ca2cc449ade4f9233c5b6b898bd4e0"
+  },
+  "originals/schemes/kimi/tex/skirt.png": {
+   "bytes": 71126,
+   "sha256": "0515e0d647b93261cbc0b33cc76f955eefd3f8b30d4bcea065f317ff3d599f06"
+  },
+  "originals/schemes/kimi/tex/skirt_sit.png": {
+   "bytes": 106892,
+   "sha256": "dd466f40cb208daff6c9d50d348784452e98c40715b0b07457ebcb9a2291f322"
+  },
+  "originals/schemes/kimi/tex/tail.png": {
+   "bytes": 26496,
+   "sha256": "cc512b9d294d1820021083752ff389616097b2a5eb2e083dddde8882311b5572"
+  },
+  "originals/schemes/kimi/tex/torso_up.png": {
+   "bytes": 33061,
+   "sha256": "812c2c83b7675b4c2d44e46fee7646e2af9bf85a882611c6f9888653d9db1857"
+  },
+  "originals/schemes/kimi/tex/waist_bow_front.png": {
+   "bytes": 12103,
+   "sha256": "e46c53a474938a905757ad72ba34f7bcb957e1ca72fd02e0af82ae1ba296af89"
+  },
+  "originals/schemes/kimi/tex/waist_bow_sit_front.png": {
+   "bytes": 12428,
+   "sha256": "3a5a89d9978dde89da37d3268c0d4f1c1c4634334a26451c45adc0b76d3bab1e"
+  },
+  "originals/schemes/minimax/feat/dizzy_eyeL.png": {
+   "bytes": 19869,
+   "sha256": "2ca8d44b2d3141b95af874b9c923d80e4bf5aafe1e9d5ebd1dcb6b93ce1fd016"
+  },
+  "originals/schemes/minimax/feat/dizzy_eyeR.png": {
+   "bytes": 15335,
+   "sha256": "01c7b1bf7c45b60c722264719dfe896c8fbb961f6e5bcfb2a040c250d347a0b4"
+  },
+  "originals/schemes/minimax/feat/dizzy_mouth.png": {
+   "bytes": 2236,
+   "sha256": "154f51f2c89494abd298546a25d891a29190e94b87128a2649fec6c8ddeb59d5"
+  },
+  "originals/schemes/minimax/feat/drag_eyeL.png": {
+   "bytes": 10177,
+   "sha256": "ef3db66056253c733577d2d030aef2b2ea842613ebd59c7049ee92a8f4f1bccf"
+  },
+  "originals/schemes/minimax/feat/drag_eyeR.png": {
+   "bytes": 7391,
+   "sha256": "2cefd284e67f60d07c9a73ee447cbc14e2af33b4722dfc8913201b175330b96e"
+  },
+  "originals/schemes/minimax/feat/drag_mouth.png": {
+   "bytes": 1606,
+   "sha256": "550388e45797a3478b0b7421219c4dc715200374deb0fa2f967d5230bed323f6"
+  },
+  "originals/schemes/minimax/feat/eyeL_ball.png": {
+   "bytes": 14293,
+   "sha256": "44a5998f200c847ebd447f0013c4f373f3bdf099b4575fe512dac6903f439dd4"
+  },
+  "originals/schemes/minimax/feat/eyeL_iris.png": {
+   "bytes": 16760,
+   "sha256": "0a7c7f01f717d3473f174bd04539b73863a488c6137034453c4dcfdf038f5adb"
+  },
+  "originals/schemes/minimax/feat/eyeL_lash.png": {
+   "bytes": 10534,
+   "sha256": "8dac35f8274556b070d2852278b2dd67b2a9e023613c52e694b1dc0e873389ae"
+  },
+  "originals/schemes/minimax/feat/eyeR_ball.png": {
+   "bytes": 8174,
+   "sha256": "aaaf67396d2464c01d50e1c6096e8301be2bb94a0d6619a858e0ba9944583ad7"
+  },
+  "originals/schemes/minimax/feat/eyeR_iris.png": {
+   "bytes": 8672,
+   "sha256": "7f0c15dd8ff166204a223273d9c06962eedea4becd181481f534bdc405f94545"
+  },
+  "originals/schemes/minimax/feat/eyeR_lash.png": {
+   "bytes": 5363,
+   "sha256": "55cf74ff63f3aafc443efd8075dc4ac6bca308ef288e98fa770a500ede81602b"
+  },
+  "originals/schemes/minimax/feat/happy_eyeL.png": {
+   "bytes": 11239,
+   "sha256": "927a6b1f99ab869c27bc31bea716d6027966c091a7317b43228aee2c50ee173c"
+  },
+  "originals/schemes/minimax/feat/happy_eyeR.png": {
+   "bytes": 6868,
+   "sha256": "c43d56a0367b95992a673d580280173cbbb3bea0d5b2453fd618dd2d21c6c86e"
+  },
+  "originals/schemes/minimax/feat/happy_mouth.png": {
+   "bytes": 3533,
+   "sha256": "1be0ef40e36a363bdfa9e50718473cf44f130937da5e41ed2bd6010bc3f63322"
+  },
+  "originals/schemes/minimax/feat/love_eyeL.png": {
+   "bytes": 36735,
+   "sha256": "7f474e8571e48c9ea90f78e9c514a128d372bfbaedbbbff2b0400f7ce9413c82"
+  },
+  "originals/schemes/minimax/feat/love_eyeR.png": {
+   "bytes": 21628,
+   "sha256": "d396d03e017ba2746c06694897437572d5fde4e52b07044461244b38f6eb9e53"
+  },
+  "originals/schemes/minimax/feat/love_mouth.png": {
+   "bytes": 4319,
+   "sha256": "1c025af0439d6d70a21cae205cd7b850a17b18115267eee82bae07bd11745a9a"
+  },
+  "originals/schemes/minimax/feat/neutral_mouth.png": {
+   "bytes": 537,
+   "sha256": "0e0068790479960edd9089d43cfc8f7b84a19b6e59dd05771da91f8aaba6dde7"
+  },
+  "originals/schemes/minimax/feat/sleep_eyeL.png": {
+   "bytes": 8514,
+   "sha256": "b8ef4a269125f59313ab1271e7c982e1a0dfcfa663943570b1b5c4ee5c51ea0a"
+  },
+  "originals/schemes/minimax/feat/sleep_eyeR.png": {
+   "bytes": 5480,
+   "sha256": "5487e3ccbfc244a9b478e09d35dfafd18a18cf5d7ba30f398fd408a54fded9af"
+  },
+  "originals/schemes/minimax/feat/sleep_mouth.png": {
+   "bytes": 741,
+   "sha256": "995a5d6406db8b7407c1789f9d4845a909bb2dbe4f99819874173e83e7476cb7"
+  },
+  "originals/schemes/minimax/feat/surprised_eyeL.png": {
+   "bytes": 40567,
+   "sha256": "c60295aecfebb3a6237adb3cb5e0231bcba62a154f2ea9859a2013f82b3cc80f"
+  },
+  "originals/schemes/minimax/feat/surprised_eyeR.png": {
+   "bytes": 20469,
+   "sha256": "dc8c6484db12df3d4c15f37a1013153a0e0b5d02b307c54de384fe1cf9ea69c0"
+  },
+  "originals/schemes/minimax/feat/surprised_mouth.png": {
+   "bytes": 2976,
+   "sha256": "09796da126de312ec44f40a40083638aecb1d08a7baa57a89db537419f1839c5"
+  },
+  "originals/schemes/minimax/tex/ahoge.png": {
+   "bytes": 15185,
+   "sha256": "bdedf92142ea64ed971a204e6f53d198a672d296ea97140eefbb6274a83547e3"
+  },
+  "originals/schemes/minimax/tex/arm_far.png": {
+   "bytes": 10974,
+   "sha256": "2fb4acb4e416d9aca5d465b2871ef595d88261b9cc95336726dd5fc45c1b2885"
+  },
+  "originals/schemes/minimax/tex/arm_far_end_front.png": {
+   "bytes": 5281,
+   "sha256": "62d543c22a4411153bc8412e5cf2266a4840885aed8f3ad1e941612ba0cbc29b"
+  },
+  "originals/schemes/minimax/tex/arm_near.png": {
+   "bytes": 17733,
+   "sha256": "38b6e2a80f560ad846ea110bea0165adfcb864c48ed49099a406554c27ac355d"
+  },
+  "originals/schemes/minimax/tex/bangs.png": {
+   "bytes": 109860,
+   "sha256": "fa04dbf1f06b87a22c388694756fa7b28af109aea72fa2555a7e57fe18bd2e50"
+  },
+  "originals/schemes/minimax/tex/bow.png": {
+   "bytes": 11482,
+   "sha256": "b7d92802c20d50a85369c5e7e6a081eacb5af64c6ef68d0a5283ab02896bc1b8"
+  },
+  "originals/schemes/minimax/tex/brows.png": {
+   "bytes": 2307,
+   "sha256": "7cc26cef0dcb06d45c1b822ab46e02695a0ddb1bfbf4f1b984ff5494c13cce05"
+  },
+  "originals/schemes/minimax/tex/crew_hair_back.png": {
+   "bytes": 129862,
+   "sha256": "475ba307ba9f06fcab89b83b2cfe7728216bf5528ce88f2f06e66b7cf379e695"
+  },
+  "originals/schemes/minimax/tex/crew_ponytail.png": {
+   "bytes": 162481,
+   "sha256": "5ce93a65dc034e5245d2fd564daae9ffc7ea5d92190a92b5735485869ad60e83"
+  },
+  "originals/schemes/minimax/tex/crew_sidelocks.png": {
+   "bytes": 32949,
+   "sha256": "d5bcece1626c0ced7b9fc4ff840ff09b60a57b53ad9fef547b9869b5d59fa14d"
+  },
+  "originals/schemes/minimax/tex/crew_skirt.png": {
+   "bytes": 63719,
+   "sha256": "f3e5690a05c723c8995dba408a006a07c17f65f8cae642c749785529022e0f52"
+  },
+  "originals/schemes/minimax/tex/crew_skirt_sit.png": {
+   "bytes": 111143,
+   "sha256": "90a9e5f6df7ce7245ebaa219c2396cd5473fa8d0e9b407b4e855799b042b9d4b"
+  },
+  "originals/schemes/minimax/tex/eye_creases.png": {
+   "bytes": 2505,
+   "sha256": "5b036b5021dcf68b026f88223fcb233d0a3412f748c116e9c4310088a7a9f581"
+  },
+  "originals/schemes/minimax/tex/face.png": {
+   "bytes": 51230,
+   "sha256": "b5a84ec9a9a17e9d627ca16b9cd5c6d8f573cce164a2edfa870e8e823892ccb4"
+  },
+  "originals/schemes/minimax/tex/fin_far.png": {
+   "bytes": 15644,
+   "sha256": "74a11a9adb7cee62c7a96baf5f8173bf67a3fbbb2321d77db158b1518247d5a7"
+  },
+  "originals/schemes/minimax/tex/fin_near.png": {
+   "bytes": 22834,
+   "sha256": "e13ae368f85982b8b6ecd6b28f22095a027d0d0d8965efa4099113768361c237"
+  },
+  "originals/schemes/minimax/tex/hair_back.png": {
+   "bytes": 295345,
+   "sha256": "c6709be7846383e0460976db50e0e8ee25b8f923240ec31c4b4d44abf6e22e1a"
+  },
+  "originals/schemes/minimax/tex/hair_back_curl.png": {
+   "bytes": 13433,
+   "sha256": "cd6fecc34b0cc85577377fed53d557c81200e14982919cd504e3bc808eb1dae4"
+  },
+  "originals/schemes/minimax/tex/hair_front_left.png": {
+   "bytes": 32996,
+   "sha256": "02b56714655aea0e05f259846b6921da21998231217414f9958c32c7cd19947c"
+  },
+  "originals/schemes/minimax/tex/hair_front_right.png": {
+   "bytes": 14271,
+   "sha256": "23fb4ff8c100b516c339b7eb6ab93058e4e7b4408d9b546d273cd77c489476be"
+  },
+  "originals/schemes/minimax/tex/headdress.png": {
+   "bytes": 48690,
+   "sha256": "be328d9d1c11c7fe3575e91e631e52f41b20da9c78857f3d2b8043da0a0f9bc2"
+  },
+  "originals/schemes/minimax/tex/leg_back.png": {
+   "bytes": 42312,
+   "sha256": "30e2bc670e41d8a6558332375172af67f78bcc5b6037e65571cc7ce445e996be"
+  },
+  "originals/schemes/minimax/tex/leg_front.png": {
+   "bytes": 44252,
+   "sha256": "fce979c223ea9ccefae381d63a1758b889a1cbd4d78166ab47ec6a4b2a69004d"
+  },
+  "originals/schemes/minimax/tex/sidelocks.png": {
+   "bytes": 36840,
+   "sha256": "83a38e9742f2c5f372b3ab34b0cdc2d5d5ebcbe3a448166143b7ab45243fd341"
+  },
+  "originals/schemes/minimax/tex/skirt.png": {
+   "bytes": 74359,
+   "sha256": "bca9c25b48cbb5c9f1a2ed9127cb95d341ddf27c572993e483ccb254fc58efd8"
+  },
+  "originals/schemes/minimax/tex/skirt_sit.png": {
+   "bytes": 110477,
+   "sha256": "2613f888ec2d8f135dc4fabbf6bc6fd92229cc63c73fe022febff1d7000100d9"
+  },
+  "originals/schemes/minimax/tex/tail.png": {
+   "bytes": 29384,
+   "sha256": "2a3444df80528442a03698a1e8d088768139eb376445e8522a4440c2dd2a9404"
+  },
+  "originals/schemes/minimax/tex/torso_up.png": {
+   "bytes": 35487,
+   "sha256": "fb3e551f516cbb920c2f44747acf0cc675f6eab5809f58caf626683a69333cd2"
+  },
+  "originals/schemes/minimax/tex/waist_bow_front.png": {
+   "bytes": 12123,
+   "sha256": "3552dd5d58687919496cfa76c1d2d15b50336a9202eed9d995936d6839770edd"
+  },
+  "originals/schemes/minimax/tex/waist_bow_sit_front.png": {
+   "bytes": 12544,
+   "sha256": "58f16a08a867387101d997001a3daf59c2d5a79d6bafc424c6cf1e682d731480"
+  },
+  "originals/schemes/qwen/feat/dizzy_eyeL.png": {
+   "bytes": 20607,
+   "sha256": "5a6d4bc4314ec2c0df0aedd003c0c4ba0774abbb8fedee1b5ef7165a07afa588"
+  },
+  "originals/schemes/qwen/feat/dizzy_eyeR.png": {
+   "bytes": 15897,
+   "sha256": "83d703c5b1168989e5dc34b18aac4b0edfb4f24081ce659a4f60321a9ff2d141"
+  },
+  "originals/schemes/qwen/feat/dizzy_mouth.png": {
+   "bytes": 2303,
+   "sha256": "41b703c11064807f2269b338d6f9e9882d9b6c74d85a0dbd8477a91423e26ada"
+  },
+  "originals/schemes/qwen/feat/drag_eyeL.png": {
+   "bytes": 9977,
+   "sha256": "cbfb93942099d670a4493fa722d9bfb351b6624665ec1f177f18282c12eeecf1"
+  },
+  "originals/schemes/qwen/feat/drag_eyeR.png": {
+   "bytes": 7175,
+   "sha256": "6dd53045c929a4fd66ad7f5fd87c5ed4a48a9815427c4478f92dd2ca41f4941c"
+  },
+  "originals/schemes/qwen/feat/drag_mouth.png": {
+   "bytes": 1653,
+   "sha256": "c33161a712817e809040b810f576ceeb36fc3e29546f205a12d163bd8adf414c"
+  },
+  "originals/schemes/qwen/feat/eyeL_ball.png": {
+   "bytes": 13349,
+   "sha256": "f14428d3cb319e13492366d256eb02fc4dca907e26105bfe564f954f5fe55e01"
+  },
+  "originals/schemes/qwen/feat/eyeL_iris.png": {
+   "bytes": 16416,
+   "sha256": "5e2bc861410361564516d95b1528ef57bc667aaea6977b5eb28ce799871b213a"
+  },
+  "originals/schemes/qwen/feat/eyeL_lash.png": {
+   "bytes": 10735,
+   "sha256": "ad180bce23384c70386b7e2752131070b3a192cfee06d250c0d1bbebb63eb1c4"
+  },
+  "originals/schemes/qwen/feat/eyeR_ball.png": {
+   "bytes": 7689,
+   "sha256": "faf3d29147d1a0764150c8efd8de074941633acb27856cf7fb5fc1ab9164391f"
+  },
+  "originals/schemes/qwen/feat/eyeR_iris.png": {
+   "bytes": 8414,
+   "sha256": "d78d4a24b249128074912f43f2d3e27606c6ea930d3adf090d799aa1361e2541"
+  },
+  "originals/schemes/qwen/feat/eyeR_lash.png": {
+   "bytes": 5398,
+   "sha256": "9947ed673e0be2ce7064997eda1ce81d537a73998c3d8af0c1f9600dede61e9a"
+  },
+  "originals/schemes/qwen/feat/happy_eyeL.png": {
+   "bytes": 11062,
+   "sha256": "40885c8dbaeddae7e81d1ad0acf382e7944fbc386ac552aa4a20a619808cda85"
+  },
+  "originals/schemes/qwen/feat/happy_eyeR.png": {
+   "bytes": 6789,
+   "sha256": "4d099e0dbc1d5389b98c0817c4601ea996e4b29558c1786e2b7f2857118a6ef3"
+  },
+  "originals/schemes/qwen/feat/happy_mouth.png": {
+   "bytes": 3508,
+   "sha256": "accb58d107ad34423f60dcad6dc5e1d43b5ad1151d513e3a3c2bcbc8e80de02d"
+  },
+  "originals/schemes/qwen/feat/love_eyeL.png": {
+   "bytes": 35815,
+   "sha256": "8f82d0d0a332520c4b07e96dbfb4abcc19be86d67c0ddab73559bc62a181a1c4"
+  },
+  "originals/schemes/qwen/feat/love_eyeR.png": {
+   "bytes": 21059,
+   "sha256": "3fb2f1b0805fe1e3fb0f0fbb83276a3eb9c111c290f9bd0fc0315bda9816a770"
+  },
+  "originals/schemes/qwen/feat/love_mouth.png": {
+   "bytes": 4391,
+   "sha256": "f9bcc6d175dee43658c2ce8d9c2097a190c003535b82ff3aa3e986cf207dd036"
+  },
+  "originals/schemes/qwen/feat/neutral_mouth.png": {
+   "bytes": 537,
+   "sha256": "ffd924077244f4fee3a80b86bf5bb246251c1bf48ce4243943a67a69e62a5c69"
+  },
+  "originals/schemes/qwen/feat/sleep_eyeL.png": {
+   "bytes": 8734,
+   "sha256": "dacdd07ff339869cc0e7e0d253f859f2340dab73189bd0a806bb9d37d44b1b5c"
+  },
+  "originals/schemes/qwen/feat/sleep_eyeR.png": {
+   "bytes": 5556,
+   "sha256": "dc0381a00481b89da203de2eff89f2f797ec3993a6ab52e914096ba4eb673125"
+  },
+  "originals/schemes/qwen/feat/sleep_mouth.png": {
+   "bytes": 737,
+   "sha256": "eb556034c12f2c0d389e53a2f37298215de88cab9b6363f5b27a8f10ebd7f08b"
+  },
+  "originals/schemes/qwen/feat/surprised_eyeL.png": {
+   "bytes": 38993,
+   "sha256": "7fb35aa3cf4570a4883e87d7bada1cbd6e7e86547b9be781773eec47bd3bf204"
+  },
+  "originals/schemes/qwen/feat/surprised_eyeR.png": {
+   "bytes": 19854,
+   "sha256": "76108e62dd48f037e0d5f7e74e8351c3c3018ba2b31c3ab18d3cc733c370573a"
+  },
+  "originals/schemes/qwen/feat/surprised_mouth.png": {
+   "bytes": 2949,
+   "sha256": "a4d51bd2992bf3b5364ccdc6cf3e6dc109401697491be5443d354d0e4af2d7f1"
+  },
+  "originals/schemes/qwen/tex/ahoge.png": {
+   "bytes": 15361,
+   "sha256": "ec3e27e924add82d54805b713bf0e81d504fbf11dfb32f52da7d843a0dc7ea4c"
+  },
+  "originals/schemes/qwen/tex/arm_far.png": {
+   "bytes": 10909,
+   "sha256": "e8b97896bba8667507a2a570582fc01553d77d8cd10e4c611c8476ade8e08e10"
+  },
+  "originals/schemes/qwen/tex/arm_far_end_front.png": {
+   "bytes": 5225,
+   "sha256": "949ed2cf9611442e7499745197cfe88450870eb76de766db2d1a4855fd01b3c2"
+  },
+  "originals/schemes/qwen/tex/arm_near.png": {
+   "bytes": 17403,
+   "sha256": "24fcc049a36e26772776f18a6947307697fbc6eedcf5b6b5f50814d3a17e5c6f"
+  },
+  "originals/schemes/qwen/tex/bangs.png": {
+   "bytes": 113344,
+   "sha256": "1c234c21b125239d38d5df4f6188c857aad90163571f7c4fb848b01caa98330f"
+  },
+  "originals/schemes/qwen/tex/bow.png": {
+   "bytes": 11348,
+   "sha256": "157b3a1911f04de3da4becaaa5bbb3f3ae6e47d8a641b5894eba167dcb5172dc"
+  },
+  "originals/schemes/qwen/tex/brows.png": {
+   "bytes": 2343,
+   "sha256": "78f09cb8d3d1963ec607e4753e486fd2d6996fafd65e75f31252b54b5b5b9ea7"
+  },
+  "originals/schemes/qwen/tex/crew_hair_back.png": {
+   "bytes": 141459,
+   "sha256": "2a60f5a630f1eab6dc72a3dd4f3f4ca9d759c7369be6c8a370dc3ac8f212c31b"
+  },
+  "originals/schemes/qwen/tex/crew_ponytail.png": {
+   "bytes": 175863,
+   "sha256": "14cb85d7e86c03d7c9d379fb32867c4c732c30c80f3161cd25810bfa6d894793"
+  },
+  "originals/schemes/qwen/tex/crew_sidelocks.png": {
+   "bytes": 36627,
+   "sha256": "a3366dc05393d63ccb2376ac97c3b3f29e7a3dba0ae2fb1ea94c1374aa8e6f5a"
+  },
+  "originals/schemes/qwen/tex/crew_skirt.png": {
+   "bytes": 64555,
+   "sha256": "9ac3ebabf252893ae55fb725ff4dff35decb096dc231a0fef1e01942d9a0d56c"
+  },
+  "originals/schemes/qwen/tex/crew_skirt_sit.png": {
+   "bytes": 110969,
+   "sha256": "57bb20e8697295cafa24affa6bde7b57f4b5363b152e196a073cf428a0c06d37"
+  },
+  "originals/schemes/qwen/tex/eye_creases.png": {
+   "bytes": 2468,
+   "sha256": "652d56f303b38ec6ed70392c0c67cdd176749bce7a20db4fa41a8d7120b38afe"
+  },
+  "originals/schemes/qwen/tex/face.png": {
+   "bytes": 50385,
+   "sha256": "ea737503841b9256141c2d7b873097682a2c0caaf2966740e146bc7415983c80"
+  },
+  "originals/schemes/qwen/tex/fin_far.png": {
+   "bytes": 15493,
+   "sha256": "b52375a24da47c083e6384680290871b9cc47c4fdc0f795e0d43690af58cbb99"
+  },
+  "originals/schemes/qwen/tex/fin_near.png": {
+   "bytes": 21643,
+   "sha256": "8f7581cc30592ce2606a0c98bf40251f26dd2ef9b8118060c6b785a1b2b2701a"
+  },
+  "originals/schemes/qwen/tex/hair_back.png": {
+   "bytes": 286448,
+   "sha256": "7bcf857a44e7d4bd4be606f8ed96b68563393873bdad148d88a8c851c3518ac5"
+  },
+  "originals/schemes/qwen/tex/hair_back_curl.png": {
+   "bytes": 13664,
+   "sha256": "d0198e4fc8f4c9b3c752bb722c3123e46dbd114f793b64a9f3116a8e439e7d30"
+  },
+  "originals/schemes/qwen/tex/hair_front_left.png": {
+   "bytes": 33202,
+   "sha256": "6c04fdcaadb0a17a3e7ea5f51bbbb9ded956c55173bbe43d91ba318e0063b4ca"
+  },
+  "originals/schemes/qwen/tex/hair_front_right.png": {
+   "bytes": 14978,
+   "sha256": "a4838b9ee193918fe470c0dae49fc99fd5798698a52de6454738cf738c3767bc"
+  },
+  "originals/schemes/qwen/tex/headdress.png": {
+   "bytes": 47588,
+   "sha256": "33df97dccd92a3d26b9b8e65f026e53bc3d405d0c637ee56406376f4e264188c"
+  },
+  "originals/schemes/qwen/tex/leg_back.png": {
+   "bytes": 41947,
+   "sha256": "ed1ab12844e77c449cbc65e0fa6d1191f60ad0a72cb8575223617e9730b16260"
+  },
+  "originals/schemes/qwen/tex/leg_front.png": {
+   "bytes": 44513,
+   "sha256": "3b35f672d18daa94fe1925c88b62ece8d5dc7afead27c28b5c1e8732c3f92361"
+  },
+  "originals/schemes/qwen/tex/sidelocks.png": {
+   "bytes": 36118,
+   "sha256": "bf07dd9d679ee822279c2874cf158e7fbb3e0208accb08c8159d6928aa7f0be0"
+  },
+  "originals/schemes/qwen/tex/skirt.png": {
+   "bytes": 74287,
+   "sha256": "a38b727abb04d985e25832e75c9003d274eacafda8bbbb929ee5e4b6c1d093bf"
+  },
+  "originals/schemes/qwen/tex/skirt_sit.png": {
+   "bytes": 111394,
+   "sha256": "b3dfaeab4b4b5887b6c065e2786a8d9f2979e49f91e91968502dd888f1657633"
+  },
+  "originals/schemes/qwen/tex/tail.png": {
+   "bytes": 29170,
+   "sha256": "387c93da3ec3ba8e2f8c0c82fcc85c590dd42a5996f929b5114542c4b35b8de1"
+  },
+  "originals/schemes/qwen/tex/torso_up.png": {
+   "bytes": 35264,
+   "sha256": "7442156a8c3034c18ec3059c3db14b6fe2736f31b6a3f778d8930cc8279b25f4"
+  },
+  "originals/schemes/qwen/tex/waist_bow_front.png": {
+   "bytes": 12099,
+   "sha256": "fcb53d27e3762b5011ad3e739ca8b6f5ee4f4d8bdd258ca3af879c47e335e58e"
+  },
+  "originals/schemes/qwen/tex/waist_bow_sit_front.png": {
+   "bytes": 12312,
+   "sha256": "c2426e81ce5eb538ead0d0a5d8eb387294598fdf3102e3462e47589ecd153a05"
+  },
+  "originals/tex/ahoge.png": {
+   "bytes": 14666,
+   "sha256": "f8db95998cbae5ca04caf492262372d233a4392278a2fcdaea944038f259b5d9"
+  },
+  "originals/tex/arm_far.png": {
+   "bytes": 11014,
+   "sha256": "bb191999f4457fcf356f908902a2b00fba513b8862dd78ea549867496dfe3393"
+  },
+  "originals/tex/arm_far_end_front.png": {
+   "bytes": 5258,
+   "sha256": "05ed4e4c0e842b5e6f913663473f9d1275b83c4c62ecd170c787170f208f44f6"
+  },
+  "originals/tex/arm_near.png": {
+   "bytes": 18321,
+   "sha256": "b1b4e73c81c46058cd69dc3d288d4593989c0bf460924ca619f225d4333f0a6f"
+  },
+  "originals/tex/bangs.png": {
+   "bytes": 108990,
+   "sha256": "d4689197d12c80568146c9e0d66b6a09284cdbe98b7c9aa0f34137972266888a"
+  },
+  "originals/tex/bow.png": {
+   "bytes": 11229,
+   "sha256": "bacfe5d99df4766d8708dc0f41098eb2fa6ef9b7ade6224c22a8cf9a76c1740c"
+  },
+  "originals/tex/brows.png": {
+   "bytes": 2303,
+   "sha256": "fb75a81ee60fcb6cdb0af9ce437533f76912c2c98d599ad79d79ecd309645f4b"
+  },
+  "originals/tex/crew_hair_back.png": {
+   "bytes": 136042,
+   "sha256": "4d0762f989933cc301a48898209c3035f0a50cbd6794b18b15f36e67b4bfa42b"
+  },
+  "originals/tex/crew_ponytail.png": {
+   "bytes": 167819,
+   "sha256": "d0fa08aa0e4d4cc78fc9e55dc6ef0ea23e7d06d3c73f2044929701794824c208"
+  },
+  "originals/tex/crew_sidelocks.png": {
+   "bytes": 34291,
+   "sha256": "ec71ec12fffd87bc91446ef1517745e37d49e8863af81b64d9fc613f202ab99f"
+  },
+  "originals/tex/crew_skirt.png": {
+   "bytes": 63892,
+   "sha256": "2a3cf2632b89a665d8a8bd283e4e9838d953849d50fb92de66ec83a47dbfcc43"
+  },
+  "originals/tex/crew_skirt_sit.png": {
+   "bytes": 110673,
+   "sha256": "ac2ff138ea22587b84c3b932699360160a86b8fae3a4bac989a0890316c2d6e0"
+  },
+  "originals/tex/eye_creases.png": {
+   "bytes": 2475,
+   "sha256": "6d0070912b461129c8c29cef1e12a79aebce04421066d8ccc597913ba464e4bb"
+  },
+  "originals/tex/face.png": {
+   "bytes": 47804,
+   "sha256": "cbe64591328d46059fd35b1fddb086be90c9d6964f4d5ce77eed1c9a69169167"
+  },
+  "originals/tex/fin_far.png": {
+   "bytes": 15010,
+   "sha256": "e90626ef8946e55c8460d3625db199d25be656df5c0d285f89b4b12f9f3c3a91"
+  },
+  "originals/tex/fin_near.png": {
+   "bytes": 21488,
+   "sha256": "fd49dc1309a0f4e8f884a853c9c392e2eeb7e31e987d79f81d8c5c706d2e67e4"
+  },
+  "originals/tex/hair_back.png": {
+   "bytes": 270792,
+   "sha256": "c7bba3ef7988dd6b75053551803e33fab4c51ee4a470209c0b956192a334c783"
+  },
+  "originals/tex/hair_back_curl.png": {
+   "bytes": 13021,
+   "sha256": "ab23c2236760dc7c26f951a9e428e92f5ff06420e3c9e420e44e1bb7483d46a4"
+  },
+  "originals/tex/hair_front_left.png": {
+   "bytes": 31357,
+   "sha256": "862d21008dfe58fc34278a61a1557e19af09207f8e0fd044fe47413a29e26399"
+  },
+  "originals/tex/hair_front_right.png": {
+   "bytes": 13950,
+   "sha256": "e2cf29230b15d465db0b96691caece779cd8c7961616a65a396aa63547524141"
+  },
+  "originals/tex/headdress.png": {
+   "bytes": 49738,
+   "sha256": "c8831c5ae6c6385fd0cddc2ed3d6e827933a332e15c59c7e8749b1fddfb4c259"
+  },
+  "originals/tex/leg_back.png": {
+   "bytes": 41537,
+   "sha256": "3b00d5ab4377883b9583e704232e1acdf32620d43ad7b44dc40dae10f30be6f1"
+  },
+  "originals/tex/leg_front.png": {
+   "bytes": 42723,
+   "sha256": "0cf1e01dcf96d4df0aba11172e2f0ecbd6715aac3abd468cfdb8b02002b0cd61"
+  },
+  "originals/tex/sidelocks.png": {
+   "bytes": 31322,
+   "sha256": "d645fff70dc582a2338a695c35dbe15168f2ad52cfa55706993d55547f3d97f9"
+  },
+  "originals/tex/skirt.png": {
+   "bytes": 77117,
+   "sha256": "b7e8fdd8f9315698d2a20660c977badc3b663199a2328ff6eedc8ef5e833803e"
+  },
+  "originals/tex/skirt_shadow.png": {
+   "bytes": 6827,
+   "sha256": "fbaac442b9c6c58e14690e87108aab3cea4dc06a87c66356807bfae0fb086cb5"
+  },
+  "originals/tex/skirt_sit.png": {
+   "bytes": 104452,
+   "sha256": "1106dc9ac6c9792869936c1a67f56f388e73949efbc593f9a4f68f43210b442b"
+  },
+  "originals/tex/tail.png": {
+   "bytes": 27769,
+   "sha256": "6afb085507fe2e793438de1b9434fd19dc5d8bea26e77cf0362a7ef6dee71e22"
+  },
+  "originals/tex/torso_up.png": {
+   "bytes": 34491,
+   "sha256": "2064e48edc4b2dc1bbe7c24b3c8d05f3638d040e87c530d164ae8b0987af8886"
+  },
+  "originals/tex/waist_bow_front.png": {
+   "bytes": 12219,
+   "sha256": "b652256abd6217b7982e344804df2d8125de7b64aef4d07340628d08a067c976"
+  },
+  "originals/tex/waist_bow_sit_front.png": {
+   "bytes": 11971,
+   "sha256": "904ff638fa2054782386ffdcb08aacc123d98152ddefb0c82c6675cb1c735823"
+  },
+  "originals/thumbs/cape.png": {
+   "bytes": 26465,
+   "sha256": "97500a3fca1c079c67153113a5ec4f57dd3f7ac794ebffaf0e9443e5ef98c834"
+  },
+  "originals/thumbs/chatgpt.png": {
+   "bytes": 34702,
+   "sha256": "776cc733ab5cceb14c746db90233afbcf21df5b8ddf90774778ed6fa13686583"
+  },
+  "originals/thumbs/claude.png": {
+   "bytes": 35500,
+   "sha256": "c8bcc63c305e360fad7717beae3682551d514e25783f837fd3688cf82fe5eb1d"
+  },
+  "originals/thumbs/crew.png": {
+   "bytes": 33100,
+   "sha256": "b407eca3b43b9f1575374adf7d01dda10ccf5de9ae1bbfc22e34381c92a87049"
+  },
+  "originals/thumbs/deepseek.png": {
+   "bytes": 35694,
+   "sha256": "6e541687af6166272fdce1566fdf4bece91e9ccbc029ad7aea8385da9f805a8d"
+  },
+  "originals/thumbs/gemini.png": {
+   "bytes": 36340,
+   "sha256": "54951e522050ff45b16511358798cc592f986eab38102c5ddc2b6420640f56e4"
+  },
+  "originals/thumbs/harness.png": {
+   "bytes": 32719,
+   "sha256": "7857d6cc8fb6b71e6070a5366fe804b2c0f67102f74513c4d93d138972b3b58f"
+  },
+  "originals/thumbs/kimi.png": {
+   "bytes": 33565,
+   "sha256": "2c2dfad493a8d1926fa96fd220a0105ff06a956ace9ccd73a49fd00cc34cba56"
+  },
+  "originals/thumbs/maid.png": {
+   "bytes": 25068,
+   "sha256": "0ef173eb921761f68cd987fb59f71136cf152d9f3969783b4b10408092b37655"
+  },
+  "originals/thumbs/minimax.png": {
+   "bytes": 36362,
+   "sha256": "a3b8f1f19ad2add853d07eee11c9a778fad414cc8938a3e36311d32a8b3bc073"
+  },
+  "originals/thumbs/qwen.png": {
+   "bytes": 36208,
+   "sha256": "9e00535a81fd359c995b1e32e83989cc87ae34af6ce89b6e5f2a18363b2ed2f5"
+  }
+ },
+ "png_count": 494,
+ "schema": 1,
+ "upstream_commit": "repo.susubaby.cn"
+}
