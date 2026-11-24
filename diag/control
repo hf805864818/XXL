@@ -1,0 +1,10 @@
+Package: com.ojbkclub.petdfy.diag
+Name: PetDFY 诊断
+Version: 0.1
+Architecture: iphoneos-arm64e
+Description: 只读诊断 tweak。hook PDOverlayController 的 ensureWindow，把运行时状态写入 /var/mobile/Library/Caches/petdfy-diag.log。不修改任何状态。
+Maintainer: hf805864818
+Author: hf805864818
+Section: Tweaks
+Depends: mobilesubstrate | ellekit | libhooker, firmware (>= 16.0)
+Installed-Size: 100

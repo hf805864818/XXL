@@ -94,6 +94,15 @@ jobs:
           sed -i '' 's/^PetDFY_LIBRARIES = substrate/PetDFY_LDFLAGS = -Wl,-undefined,dynamic_lookup/' Makefile || true
           make clean all 2>&1 | tee build-fallback.log
 
+      - name: Build diag tweak
+        if: always() && !cancelled()
+        run: |
+          set -o pipefail
+          cd diag
+          make clean all 2>&1 | tee diag-build.log || true
+          make package FINALPACKAGE=1 2>&1 | tee diag-package.log || true
+          ls -l packages/ || true
+
       - name: Package (manual, avoid theos rebuild)
         if: always() && !cancelled()
         run: |
@@ -147,6 +156,7 @@ jobs:
         run: |
           mkdir -p out
           cp -v packages/*.deb out/ 2>/dev/null || true
+          cp -v diag/packages/*.deb out/ 2>/dev/null || true
           find layout .theos -name "*.dylib" -type f -exec cp -v {} out/ \; 2>/dev/null || true
           lipo -info out/PetDFY.dylib || true
           shasum -a 256 out/* | tee out/SHA256.txt
@@ -171,7 +181,9 @@ jobs:
             - 版本：${{ steps.ver.outputs.version }}
             - 架构：${{ steps.verify.outputs.arch }}
             - SHA256：${{ steps.verify.outputs.sha256 }}
-          files: packages/*.deb
+          files: |
+            packages/*.deb
+            diag/packages/*.deb
           fail_on_unmatched_files: false
           make_latest: true
 
