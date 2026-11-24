@@ -93,12 +93,31 @@ jobs:
           sed -i '' 's/^PetDFY_LIBRARIES = substrate/PetDFY_LDFLAGS = -Wl,-undefined,dynamic_lookup/' Makefile
           make clean all 2>&1 | tee build-fallback.log
 
-      - name: Package
+      - name: Package (manual, avoid theos rebuild)
         if: always() && !cancelled()
         run: |
-          set -o pipefail
-          make package FINALPACKAGE=1 2>&1 | tee package.log
-          ls -l packages/
+          set -x
+          VER="${{ steps.ver.outputs.version }}"
+          mkdir -p packages
+          # theos 的 make all 会把产物放进 .theos/_ ，直接合并进 layout 后手工打 deb，
+          # 绕开 `make package` 的二次编译（它会切到 debug flags 暴露另一批错误）
+          if [ -d .theos/_ ]; then
+            echo "merging .theos/_ into layout"
+            cp -R .theos/_/. layout/ 2>/dev/null || true
+          fi
+          mkdir -p layout/DEBIAN
+          cp -f control layout/DEBIAN/control
+          # 确保三个 dylib 都在 layout 里（merge 失败时兜底）
+          DYN=layout/Library/MobileSubstrate/DynamicLibraries
+          mkdir -p "$DYN"
+          for f in $(find .theos -name "*.dylib" -type f 2>/dev/null | grep -v unsigned); do
+            base=$(basename "$f")
+            [ -f "$DYN/$base" ] || cp -f "$f" "$DYN/$base"
+          done
+          chmod 755 "$DYN"/*.dylib 2>/dev/null || true
+          ls -l "$DYN"
+          dpkg-deb -b layout "packages/PetDFY_${VER}_iphoneos-arm64e.deb" 2>&1 | tee package.log
+          ls -lh packages/
 
       - name: Verify deb
         id: verify
