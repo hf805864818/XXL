@@ -21,4 +21,5 @@
 @property (nonatomic, strong) id<MTLBuffer> positionBuffer;
 @property (nonatomic, strong) id<MTLBuffer> backgroundPositions;
 
+- (id)quad;
 @end
