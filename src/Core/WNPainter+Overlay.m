@@ -181,6 +181,8 @@
         CGPathRelease(glyph);
     }
 
+    CGPoint neck = [self.rig point:CGPointMake(128.0, 40.0) deformer:@"neck"];  // 0x54118 ["neck"]
+
     // ── heart / sleep：共用 glow 层 ──────────────────────────────────────
     // 0x57b50 段落之后查 "heart"(0x103a90) / "sleep"(0x1038f0)
     // sleepGlowRed:green:blue: 在此处被调用，返回值是发光用 CGImageRef
@@ -217,7 +219,6 @@
     }
 
     CGContextSetAlpha(context, 1.0);                                   // 0x? SetAlpha
-    CGPoint neck = [self.rig point:CGPointMake(128.0, 40.0) deformer:@"neck"];  // 0x54118 ["neck"]
 
     // listen(0x544a8)：颈部左下的一段圆弧（呼吸感）
     if ([cfg[@"listen"] boolValue]) {                                   // 0x544a8

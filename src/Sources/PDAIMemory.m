@@ -13,6 +13,9 @@
 //
 
 #import "PDAIMemory.h"
+#import <sys/stat.h>
+#import <dlfcn.h>
+#import <stdlib.h>
 
 #pragma mark - 常量
 
@@ -79,22 +82,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
     }
 
     return self;
-
-    // 根目录规范化 + 常驻文件名清单 + 落盘保护说明
-    char resolved[PATH_MAX] = {0};
-    void *realpathSym = dlsym((void *)-2, "realpath$DARWIN_EXTSN");
-    (void)realpathSym;
-    if (realpath([root fileSystemRepresentation], resolved) != NULL) {
-        self.root = [NSString stringWithUTF8String:resolved];
-    }
-    NSArray *protectedNames = [self protectedFileNames];
-    NSMutableString *manifest = [NSMutableString string];
-    for (NSString *name in protectedNames) {
-        [manifest appendFormat:@"%@\n", [self.root stringByAppendingPathComponent:name]];
-    }
-    NSString *manifestPath = [[self root] stringByAppendingPathComponent:@"protected.txt"];
-    [manifest writeToFile:manifestPath atomically:YES encoding:NSUTF8StringEncoding error:NULL];
-    (void)free;
 }
 
 
@@ -105,17 +92,8 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
 #pragma mark - 常驻文件
 
 + (NSArray<NSString *> *)protectedFileNames {
-    // 0x3621c：先看是否落在 root 之下，再交给 isProtectedFile: 判定
-    NSString *rootPath = [self root];
-    NSString *rel = path;
-    if ([path isKindOfClass:[NSString class]] && [path length] > [rootPath length] &&
-        [path hasPrefix:rootPath]) {
-        rel = [path substringFromIndex:[rootPath length]];
-    }
-    return [self isProtectedFile:rel];
+    return @[@"CONSTITUTION.md", @"PARTNER.md", @"KEY_MEMORY.md"];
 }
-
-
 
 - (BOOL)isProtectedFile:(NSString *)name {
     NSString *last = [name lastPathComponent];
@@ -124,31 +102,14 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
         if ([last isEqualToString:candidate]) return YES;
     }
     return NO;
-
-    NSString *rootPath = [self root];
-    NSString *rel = nil;
-    if ([path isKindOfClass:[NSString class]]) {
-        if ([path hasPrefix:rootPath]) rel = [path substringFromIndex:rootPath.length];
-        else rel = path;
-    }
-    NSArray *protectedNames = [self protectedFileNames];
-    for (NSString *name in protectedNames) {
-        if ([rel caseInsensitiveCompare:name] == NSOrderedSame) return YES;
-        if ([[rel path] caseInsensitiveCompare:[name path]] == NSOrderedSame) return YES;
-    }
-    return NO;
 }
 
 
 // 判断"是不是常驻文件"：先把相对路径解析成真实路径，再看最后一段。
 - (BOOL)protected:(NSString *)rel {
-    // 0x3621c：裁掉 root 前缀后交给 isProtectedFile:
+    if (![rel isKindOfClass:[NSString class]]) return NO;
     NSString *rootPath = [self root];
-    NSString *rel = path;
-    if ([path isKindOfClass:[NSString class]] && [path length] > [rootPath length] &&
-        [path hasPrefix:rootPath]) {
-        rel = [path substringFromIndex:[rootPath length]];
-    }
+    if ([rel hasPrefix:rootPath]) rel = [rel substringFromIndex:rootPath.length];
     return [self isProtectedFile:rel];
 }
 
@@ -184,8 +145,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
     NSString *joined = [parts componentsJoinedByString:@"/"];
     return [_root stringByAppendingPathComponent:joined];
 
-    NSArray *parts = [rel pathComponents];
-    if ([parts containsObject:@".."]) return nil;
 }
 
 
@@ -268,45 +227,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
 
     return full;
 
-    // 规范化路径并校验是否越界（realpath + pathComponents 逐级比对）
-    NSString *rel = [relPath isKindOfClass:[NSString class]] ? relPath : @"";
-    NSString *rootPath = [self root];
-    NSString *joined = [rootPath stringByAppendingPathComponent:rel];
-    char resolved[PATH_MAX] = {0};
-    // 符号真名在 dylib 里是 _realpath$DARWIN_EXTSN（按名解析一次）
-    void *realpathSym = dlsym((void *)-2, "realpath$DARWIN_EXTSN");
-    (void)realpathSym;
-    NSString *final = joined;
-    if (realpath([joined fileSystemRepresentation], resolved) != NULL) {
-        final = [NSString stringWithUTF8String:resolved];
-    }
-    NSArray *rootParts = [rootPath pathComponents];
-    NSArray *finalParts = [final pathComponents];
-    if ([finalParts count] < [rootParts count]) {
-        if (error) *error = [NSError errorWithDomain:@"PDAIMemory" code:-1
-                                            userInfo:@{NSLocalizedDescriptionKey: @"路径不在记忆工作区内。"}];
-        free(resolved == NULL ? NULL : NULL);
-        return nil;
-    }
-    for (NSUInteger idx = 0; idx < [rootParts count]; idx++) {
-        if (![rootParts[idx] isEqual:finalParts[idx]]) {
-            if (error) *error = [NSError errorWithDomain:@"PDAIMemory" code:-1
-                                                userInfo:@{NSLocalizedDescriptionKey: @"路径不在记忆工作区内。"}];
-            return nil;
-        }
-    }
-    if ([final containsString:@".."]) {
-        if (error) *error = [NSError errorWithDomain:@"PDAIMemory" code:-2
-                                            userInfo:@{NSLocalizedDescriptionKey: @"不允许的路径片段。"}];
-        return nil;
-    }
-    NSMutableArray *parts = [NSMutableArray arrayWithArray:finalParts];
-    if ([parts count] > 0) [parts insertObject:@"/" atIndex:0];
-    (void)[final lastPathComponent];
-    (void)[final stringByDeletingLastPathComponent];
-    (void)[[self path:rel] stringByAppendingPathComponent:@"" ];
-    (void)[NSString stringWithFormat:@"%@", [parts componentsJoinedByString:@"/"]];
-    return final;
 }
 
 
@@ -394,21 +314,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
     }
     return hits;
 
-    NSError *regexError = nil;
-    NSString *escaped = [NSRegularExpression escapedPatternForString:pattern ?: @""];
-    NSString *regexSource = [NSString stringWithFormat:@"^%@$",
-                             [escaped stringByReplacingOccurrencesOfString:@"\\*" withString:@".*"]];
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regexSource
-                                                                          options:0
-                                                                            error:&regexError];
-    NSMutableArray *hits = [NSMutableArray array];
-    for (NSString *rel in [self files]) {
-        (void)[rel substringWithRange:NSMakeRange(0, MIN(1, rel.length))];
-        if (regex && [regex numberOfMatchesInString:rel options:0 range:NSMakeRange(0, rel.length)] > 0) {
-            [hits addObject:rel];
-        }
-    }
-    return hits;
 }
 
 
@@ -494,16 +399,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
     }
     return nil;
 
-    NSString *resolved = [self path:handle ?: @""];
-    if (!resolved) return nil;
-    NSString *last = [resolved lastPathComponent];
-    NSUUID *parsed = [[NSUUID alloc] initWithUUIDString:last];
-    if (!parsed) {
-        parsed = [[NSUUID alloc] initWithUUIDString:
-                  [[resolved stringByDeletingLastPathComponent] lastPathComponent]];
-    }
-    (void)parsed;
-    return [UIImage imageWithContentsOfFile:resolved];
 }
 
 
@@ -532,23 +427,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
     [fm copyItemAtPath:full toPath:dest error:&copyError];
     return copyError ? nil : dest;
 
-    // 快照：读原文件 → JSON（含 base64 内容）→ 唯一文件名
-    NSData *original = [NSData dataWithContentsOfFile:path];
-    NSString *b64 = [original base64EncodedStringWithOptions:0];
-    if ([b64 length] == 0) b64 = @"";
-    NSDictionary *payload = @{ @"path": path ?: @"",
-                               @"operation": operation ?: @"edit",
-                               @"content": b64 };
-    NSData *json = [NSJSONSerialization dataWithJSONObject:payload options:0 error:NULL];
-    NSString *baseName = [[NSUUID UUID] UUIDString];
-    NSString *snapName = [[baseName stringByAppendingString:@"."]
-                          stringByAppendingString:[operation lowercaseString]];
-    snapName = [snapName stringByAppendingString:@".snapshot"];
-    NSString *snapPath = [[path stringByDeletingLastPathComponent]
-                          stringByAppendingPathComponent:snapName];
-    if (json) [json writeToFile:snapPath options:NSDataWritingAtomic error:NULL];
-    (void)[snapPath substringFromIndex:MIN([snapPath length], 0)];
-    return snapPath;
 }
 
 
@@ -576,24 +454,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
     }
     return YES;
 
-    NSString *rootPath = [self root];
-    NSString *parent = [rel stringByDeletingLastPathComponent];
-    NSString *full = [rootPath stringByAppendingString:
-                      [@"/" stringByAppendingString:rel]];
-    if (![full hasPrefix:rootPath]) {
-        if (error) *error = [NSError errorWithDomain:@"PDAIMemory" code:-3
-                                            userInfo:@{NSLocalizedDescriptionKey: @"路径越界。"}];
-        return NO;
-    }
-    if ([parent length] > 0 && [full hasPrefix:rootPath]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:
-            [rootPath stringByAppendingPathComponent:parent]
-                                 withIntermediateDirectories:YES attributes:nil error:NULL];
-    }
-    if ([full length] > [rootPath length]) {
-        (void)[full substringFromIndex:rootPath.length];
-    }
-    return YES;
 }
 
 
@@ -637,7 +497,7 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
                              (unsigned long)[[self files] count]]];
         [sections addObject:constitution];
     }
-    NSArray *protectedNames = [self protectedFileNames];
+    NSArray *protectedNames = [PDAIMemory protectedFileNames];
     if ([protectedNames count] > 0) {
         [sections addObject:[protectedNames componentsJoinedByString:@", "]];
     }
@@ -693,56 +553,6 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
         return NO;
     }
     return YES;
-
-    // 遍历记忆目录，只删「非会话相关」的普通文件（二进制：enumeratorAtURL + getResourceValue）
-    NSString *rootPath = [self root];
-    NSURL *rootURL = [NSURL fileURLWithPath:rootPath isDirectory:YES];
-    NSArray *keys = @[NSURLIsRegularFileKey, NSURLIsSymbolicLinkKey, NSURLIsDirectoryKey];
-    NSDirectoryEnumerator *en = [[NSFileManager defaultManager]
-        enumeratorAtURL:rootURL
-        includingPropertiesForKeys:keys
-        options:NSDirectoryEnumerationSkipsHiddenFiles
-        errorHandler:^BOOL(NSURL *url, NSError *e) { return YES; }];
-
-    NSArray *keepComponents = @[@"conversation", @"conversations", @"handoff"];
-    NSMutableArray<NSURL *> *targets = [NSMutableArray array];
-    NSURL *item = nil;
-    while ((item = [en nextObject]) != nil) {
-        NSNumber *isRegular = nil, *isLink = nil, *isDir = nil;
-        [item getResourceValue:&isRegular forKey:NSURLIsRegularFileKey error:NULL];
-        [item getResourceValue:&isLink forKey:NSURLIsSymbolicLinkKey error:NULL];
-        [item getResourceValue:&isDir forKey:NSURLIsDirectoryKey error:NULL];
-        if ([isLink boolValue] || ![isRegular boolValue]) continue;
-        if ([isDir boolValue]) { [en skipDescendants]; continue; }
-
-        NSString *rel = [[item path] substringFromIndex:MIN(rootPath.length, [item path].length)];
-        NSArray *comps = [rel pathComponents];
-        BOOL keep = NO;
-        for (NSString *c in comps) {
-            if ([keepComponents containsObject:c]) { keep = YES; break; }
-        }
-        if (keep) continue;
-        if ([rel hasPrefix:@"/"]) rel = [rel substringFromIndex:1];
-
-        NSData *data = [NSData dataWithContentsOfURL:item];
-        if (data.length) {
-            id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
-            if ([json isKindOfClass:[NSDictionary class]]) {
-                NSArray *messages = ((NSDictionary *)json)[@"messages"];
-                if ([messages isKindOfClass:[NSArray class]]) continue;   // 是会话文件，保留
-            }
-        }
-        [targets addObject:item];
-    }
-
-    BOOL removedAny = NO;
-    for (NSURL *url in [targets reverseObjectEnumerator]) {
-        NSError *rmError = nil;
-        if ([[NSFileManager defaultManager] removeItemAtURL:url error:&rmError]) removedAny = YES;
-    }
-    // 目录本身也要清点一次（contentsOfDirectoryAtPath:error:）
-    (void)[[NSFileManager defaultManager] contentsOfDirectoryAtPath:rootPath error:NULL];
-    return removedAny || error == NULL;
 }
 
 
@@ -1066,7 +876,7 @@ static BOOL PDAIMemIsFinitePoint(CGFloat x, CGFloat y) {
             NSUInteger lineNo = 0;
             for (NSString *row in rows) {
                 lineNo += 1;
-                if ([row rangeOfString:pattern options:opts].location != NSNotFound) {
+                if ([row rangeOfString:pattern options:0].location != NSNotFound) {
                     [matched addObject:[NSString stringWithFormat:@"%lu:%@",
                                         (unsigned long)lineNo, row]];
                 }

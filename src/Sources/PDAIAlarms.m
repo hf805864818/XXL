@@ -50,17 +50,18 @@
 - (BOOL)save {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *path = [self file];
-    if (![path isKindOfClass:[NSString class]]) return;
+    if (![path isKindOfClass:[NSString class]]) return NO;
 
     [fm createDirectoryAtPath:[path stringByDeletingLastPathComponent]
   withIntermediateDirectories:YES
                    attributes:nil
                         error:NULL];
 
-    NSDictionary *payload = @{ @"next": [self next] ?: [NSNull null],
+    NSDictionary *payload = @{ @"next": @([self next]),
                                @"items": [self alarms] ?: @[] };
     NSData *json = [NSJSONSerialization dataWithJSONObject:payload options:0 error:NULL];
     if (json) [json writeToFile:path options:NSDataWritingAtomic error:NULL];
+    return YES;
 }
 
 
@@ -88,9 +89,6 @@
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
     fmt.dateFormat = @"MM-dd HH:mm";
     return [NSString stringWithFormat:@"%@ · %@", [fmt stringFromDate:date], text];
-
-    NSLocale *posix = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-    [formatter setLocale:posix];
 }
 
 
@@ -143,26 +141,6 @@
     if (due.count) {
         [_alarms setArray:keep];
         [self save];
-    }
-    return due;
-
-    NSDate *nowDate = [NSDate date];
-    NSMutableArray *due = [NSMutableArray array];
-    for (id item in [[self list] copy]) {
-        if (![item isKindOfClass:[NSDictionary class]]) continue;
-        double at = [item[@"at"] doubleValue];
-        NSDate *fire = [NSDate dateWithTimeIntervalSince1970:at];
-        if ([fire compare:nowDate] != NSOrderedDescending) {
-            [due addObject:item];
-            [[self list] removeObject:item];
-        }
-    }
-    if ([due count] > 0) {
-        NSDictionary *first = [due firstObject];
-        NSString *label = [self label:first];
-        [self nextClock:nowDate after:first];
-        (void)[[label description] boolValue];
-        (void)[NSString stringWithFormat:@"due=%lu", (unsigned long)[due count]];
     }
     return due;
 }
@@ -253,18 +231,12 @@
         NSArray *parts = [cleaned componentsSeparatedByString:@":"];
         if ([parts count] >= 2) {
             NSString *hh = parts[0], *mm = parts[1];
-            [self setLenient:[args[@"lenient"] boolValue]];
+
             NSDate *next = [[NSDate date] dateByAddingTimeInterval:
                             (double)([hh integerValue] * 3600 + [mm integerValue] * 60)];
-            [self setNext:next];
+            [self setNext:(unsigned long long)[next timeIntervalSince1970]];
         }
         if ([cleaned length] > 1) (void)[cleaned substringFromIndex:1];
-    }
-    if ([[self items] count] > 0) {
-        NSMutableArray *names = [NSMutableArray array];
-        for (id item in [self items]) [names addObject:[NSString stringWithFormat:@"%@", item]];
-        [[self items] removeObject:[names lastObject]];
-        (void)[[names componentsJoinedByString:@", "] length];
     }
 }
 

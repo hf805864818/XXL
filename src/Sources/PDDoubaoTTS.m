@@ -4,19 +4,28 @@
 //  还原依据：PetDFY.dylib arm64e，20 个方法共 516 条指令
 //    initWithConfiguration:                              28
 //    synthesizeText:key:speaker:instruction:options:completion:  143 (+ block invoke 6)
-;
+
+#import "PDDoubaoTTS.h"
+
+static NSURLRequest *_PDDoubaoRequest(NSString *text, NSString *key, NSString *speaker,
+                                      NSString *instruction, PDDoubaoOptions *options,
+                                      NSError **error) {
+    (void)text; (void)key; (void)speaker; (void)instruction; (void)options;
+    if (error) *error = [NSError errorWithDomain:@"PDDoubaoTTS" code:-1
+                                          userInfo:@{NSLocalizedDescriptionKey: @"PDDoubaoRequest 尚未还原"}];
+    return nil;
+}
 
 @implementation PDDoubaoTTS
 
 /// 28 条指令。
 - (instancetype)initWithConfiguration:(NSURLSessionConfiguration *)config {
-    // 0x15208：取消则丢弃，否则把分片交给解码器
-    if ([self cancelled]) return;
-    PDDoubaoSSEDecoder *decoder = [self decoder];
-    [decoder appendData:data];
-    if (![decoder isKindOfClass:[PDDoubaoSSEDecoder class]]) {
-        [self performSelector:@selector(setFailure:) withObject:nil];
-    }
+    self = [super init];
+    if (!self) return nil;
+    _configuration = [config copy] ?: [NSURLSessionConfiguration defaultSessionConfiguration];
+    _session = [NSURLSession sessionWithConfiguration:_configuration];
+    _cancelled = NO;
+    return self;
 }
 
 
@@ -111,7 +120,7 @@
     queue.maxConcurrentOperationCount = 1;
     // Observed 0x15fe0: w2=0x11 ; 0x15fe4 bl 0xb38c0 = setQualityOfService:
     //   0x11 = 17。Inferred：枚举名 NSQualityOfServiceUtility；数值本身是 Observed。
-    queue.qualityOfService = PDQualityOfServiceUtility;
+    queue.qualityOfService = NSQualityOfServiceUtility;
 
     // Observed 0x15fe8: adrp x8,0x121000 + ldr [x8,0xe98] → 0x121e98 → classref 'NSURLSession'
     // Observed 0x15ffc: bl 0xb0ea0 = sessionWithConfiguration:delegate:delegateQueue:

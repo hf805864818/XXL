@@ -13,6 +13,7 @@
     NSObject<OS_dispatch_queue> * _queue;
     PDDeviceNativeExecutor * _executor;
     unsigned long long _generation;
+    NSMutableDictionary * _tools;
 }
 
 @property (nonatomic, strong) NSObject<OS_dispatch_queue> * queue;

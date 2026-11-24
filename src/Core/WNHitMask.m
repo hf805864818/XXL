@@ -161,19 +161,6 @@
         }
     }
     return path;    // 调用方负责 CGPathRelease
-
-    NSMutableData *scratch = [NSMutableData dataWithLength:256];
-    float *pts = (float *)[scratch mutableBytes];
-    NSUInteger count = MIN((NSUInteger)16, [scratch length] / (sizeof(float) * 2));
-    CGMutablePathRef path = CGPathCreateMutable();
-    for (NSUInteger i = 0; i < count; i++) {
-        CGFloat x = (CGFloat)pts[i * 2];
-        CGFloat y = (CGFloat)pts[i * 2 + 1];
-        if (i == 0) CGPathMoveToPoint(path, NULL, x, y);
-        else CGPathAddLineToPoint(path, NULL, x, y);
-    }
-    CGPathCloseSubpath(path);
-    return path;
 }
 
 

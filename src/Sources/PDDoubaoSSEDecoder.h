@@ -12,12 +12,12 @@
     BOOL _afterCR;
     NSError * _error;
     NSMutableData * _line;
-    NSMutableData * _event;
+    NSMutableString * _event;
     NSMutableData * _audio;
 }
 
 @property (nonatomic, strong) NSMutableData * line;
-@property (nonatomic, strong) NSMutableData * event;
+@property (nonatomic, strong) NSMutableString * event;
 @property (nonatomic, strong) NSMutableData * audio;
 @property (nonatomic) BOOL complete;
 @property (nonatomic) BOOL afterCR;

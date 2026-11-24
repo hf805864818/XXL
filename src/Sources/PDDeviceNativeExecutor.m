@@ -110,6 +110,13 @@ static BOOL PDToolNeedsExclusiveAX(NSString *tool) {
 
 @implementation PDDeviceNativeExecutor
 
++ (instancetype)sharedInstance {
+    static PDDeviceNativeExecutor *shared = nil;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ shared = [[self alloc] init]; });
+    return shared;
+}
+
 #pragma mark - 总入口
 
 /// 192 指令。顺序：权限 → AX 作用域 → 锁屏 → 分发 → 释放作用域。
@@ -383,11 +390,12 @@ static BOOL PDToolNeedsExclusiveAX(NSString *tool) {
     (void)clickable;
     dispatch_semaphore_t gate = dispatch_semaphore_create(0);
     __block NSArray *elements = nil;
-    [[self sharedInstance] getCompactUIElementsWithMaxElements:64
+    [[PDNative_AccessibilityManager sharedInstance] getCompactUIElementsWithMaxElements:64
                                                     visibleOnly:YES
                                                    clickableOnly:clickableOnly
-                                                      completion:^(NSArray *result) {
-        elements = result;
+                                                      completion:^(NSDictionary *result, NSError *queryError) {
+        (void)queryError;
+        elements = result[@"elements"];
         dispatch_semaphore_signal(gate);
     }];
     dispatch_semaphore_wait(gate, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)));
@@ -431,7 +439,7 @@ static BOOL PDToolNeedsExclusiveAX(NSString *tool) {
     NSDictionary *payload = [self takeDeviceScreenshotPayload];
     NSData *data = payload[@"data"];
     NSString *mimeType = payload[@"mimeType"];
-    if ([type length] == 0) { type = @"png"; }
+    if (mimeType.length == 0) { mimeType = @"png"; }
     if (![data isKindOfClass:[NSData class]]) {
         return [self mcpError:nil code:(NSInteger)-32603 message:@"截屏失败"];
     }
@@ -815,7 +823,7 @@ static BOOL PDToolNeedsExclusiveAX(NSString *tool) {
     (void)start;
 
     dispatch_semaphore_t gate = dispatch_semaphore_create(0);
-    [[self sharedInstance] dragAlongPoints:ordered holdDuration:0.3 moveDuration:0.6 steps:12
+    [[PDNative_IOSMCPHIDManager sharedInstance] dragAlongPoints:ordered holdDuration:0.3 moveDuration:0.6 steps:12
                                 completion:^(BOOL ok, NSError *err) {
         dispatch_semaphore_signal(gate);
     }];
@@ -1200,7 +1208,7 @@ static BOOL PDToolNeedsExclusiveAX(NSString *tool) {
     NSString *type = [args isKindOfClass:[NSDictionary class]] ? args[@"type"] : nil;
     BOOL userOnly = ([type isKindOfClass:[NSString class]] && [type length] > 0 &&
                      [type isEqualToString:@"user"]);
-    NSArray *apps = [[self sharedInstance] listInstalledApps:userOnly];
+    NSArray *apps = [[PDNative_AppManager sharedInstance] listInstalledApps:@(userOnly)];
     NSString *json = [self jsonTextForObject:apps ?: @[]];
     if (![json isKindOfClass:[NSString class]]) {
         return [self mcpError:nil code:(NSInteger)-32603 message:@"序列化失败"];
@@ -1211,7 +1219,7 @@ static BOOL PDToolNeedsExclusiveAX(NSString *tool) {
 
 /// 74 指令。
 - (id)executeListRunningApps:(NSString *)tool {
-    NSArray *apps = [[self sharedInstance] listRunningApps];
+    NSArray *apps = [[PDNative_AppManager sharedInstance] listRunningApps];
     NSString *json = [self jsonTextForObject:apps ?: @[]];
     return [self mcpSuccess:nil structuredContent:@{ @"apps": json ?: @"[]" } isError:NO];
 }

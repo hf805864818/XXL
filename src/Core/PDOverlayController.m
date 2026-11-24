@@ -46,9 +46,6 @@ extern id _PDPerformScreenCaptureWithExcludedLayer(CALayer *layer, id (^block)(v
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations;
 + (void)animateWithDuration:(NSTimeInterval)duration animations:(void (^)(void))animations completion:(void (^)(BOOL))completion;
 @end
-@interface UIWindowScene (PDOverlaySpace)
-@property (nonatomic, readonly) id coordinateSpace;
-@end
 @interface UIViewController (PDOverlayContainment)
 - (void)removeFromParentViewController;
 @end
@@ -74,10 +71,6 @@ extern void dispatch_block_cancel(dispatch_block_t block);
 + (UIImage *)systemImageNamed:(NSString *)name;
 @end
 
-@interface UIImageSymbolConfiguration : NSObject
-+ (instancetype)configurationWithPointSize:(double)pointSize weight:(long)weight;
-@end
-
 @interface UIButton (PDOverlaySymbolConfig)
 - (void)setPreferredSymbolConfiguration:(UIImageSymbolConfiguration *)configuration
                        forImageInState:(unsigned long)state;
@@ -94,6 +87,7 @@ extern void dispatch_block_cancel(dispatch_block_t block);
 #import "PDActiveInterfaceOrientationMonitor.h"
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 #import <math.h>
 
 // 前置声明（定义在文件后段）
@@ -157,7 +151,8 @@ static void PDOverlayPrefsChanged(CFNotificationCenterRef center,
     }
 
     UIWindowScene *scene = [self mainScene];
-    if (!scene || !scene.window || !scene.window.windowScene) {   // 0x7154/0x7174 windowScene
+    UIWindow *sceneWindow = scene.windows.firstObject;
+    if (!scene || !sceneWindow || !sceneWindow.windowScene) {   // 0x7154/0x7174 windowScene
         _lastError = @"no active scene";
         return NO;
     }
@@ -171,7 +166,7 @@ static void PDOverlayPrefsChanged(CFNotificationCenterRef center,
     }
 
     PDWindow *w = [[PDWindow alloc] initWithWindowScene:scene];
-    w.frame = ((id<PDBoundsSpace>)scene.coordinateSpace).bounds;
+    w.frame = scene.coordinateSpace.bounds;
     w.windowLevel = UIWindowLevelStatusBar + 1;   // 盖在状态栏之上
     w.backgroundColor = [UIColor clearColor];
     if (_root) w.rootViewController = _root;
@@ -356,7 +351,8 @@ static NSString *PDResourceBundlePath(void) {
         PDOverlayController *strong = weakSelf;
         if (strong) [strong applyAppearance];
     }];
-    [ai setTurnHandler:^(BOOL busy, NSError *err) {
+    [ai setTurnHandler:^(NSString *state) {
+        (void)state;
         PDOverlayController *strong = weakSelf;
         if (strong) [strong setLastSize:CGSizeZero];
     }];
@@ -367,13 +363,10 @@ static NSString *PDResourceBundlePath(void) {
 
     PDKeyboardMonitor *monitor = [self keyboardMonitor];
     if (monitor) {
-        [monitor setChangeHandler:^(CGRect frame, double duration) {
+        [monitor setChangeHandler:^{
             PDOverlayController *strong = weakSelf;
-            if (strong) [strong rotateHostWindowWithDuration:duration];
+            if (strong) [strong rotateHostWindowWithDuration:0.25];
         }];
-    }
-    if ([self respondsToSelector:@selector(setWillChangeHandler:)]) {
-        [self setWillChangeHandler:^(id change) { (void)change; }];
     }
     id monitorShared = nil;
     Class backlightCls = NSClassFromString(@"PDBacklightController");
@@ -480,7 +473,8 @@ static NSString *PDResourceBundlePath(void) {
     } else {
         [[PDSoundPlayer sharedPlayer] setVisible:YES];
     }
-    [[self motion] setRoamMode:[[self ai] roamMode] ?: @"idle"];
+    WNMotion *roamMotion = [[[self pet] renderer] liveRig].motion;
+    [roamMotion setRoamMode:[[self ai] effectiveRoam] ?: @"idle"];
 }
 
 
@@ -692,7 +686,7 @@ static BOOL PDIsDeviceLocked(void) {
     UIWindowScene *scene = _window.windowScene;
     if (!scene) return;
 
-    CGRect b = ((id<PDBoundsSpace>)scene.coordinateSpace).bounds;
+    CGRect b = scene.coordinateSpace.bounds;
     if (CGRectEqualToRect(_window.bounds, b)) return;
 
     if (duration <= 0) {
@@ -711,7 +705,7 @@ static BOOL PDIsDeviceLocked(void) {
     UIWindow *host = [self window];
     if (!host) return;
     UIScreen *screen = [host screen] ?: [UIScreen mainScreen];
-    UIInterfaceOrientation orientation = [self activeInterfaceOrientation];
+    UIInterfaceOrientation orientation = (UIInterfaceOrientation)[[self orientationMonitor] activeInterfaceOrientation];
     if ([self respondsToSelector:@selector(orientationMonitor)] && [self orientationMonitor]) {
         (void)[self orientationMonitor];
     }
@@ -744,12 +738,19 @@ static BOOL PDIsDeviceLocked(void) {
         [self layoutPet];
     }];
 
+    BOOL visible = [shown respondsToSelector:@selector(boolValue)] ? [shown boolValue] : NO;
+    double target = visible ? 1.0 : 0.0;
     double now = CACurrentMediaTime();
-    double anim = [self keyboardAnimation];
-    double next = anim + (1.0 - exp(-now)) * 0.02;
-    [self setKeyboardAnimation:next];
-    [[self pet] render];
-    [self setLayoutAnimating:(next < 0.999)];
+    PDKeyboardAnimation anim = self.keyboardAnimation;
+    double dt = anim.sampledAt > 0.0 ? MAX(0.0, now - anim.sampledAt) : (1.0 / 60.0);
+    anim.sampledAt = now;
+    if (anim.duration <= 0.0) anim.duration = 10.0;
+    double k = 1.0 - exp(-dt * (10.0 / anim.duration));
+    anim.from.scale += (target - anim.from.scale) * k;
+    anim.active = fabs(target - anim.from.scale) > 0.001;
+    self.keyboardAnimation = anim;
+    [[self pet] setNeedsDisplay];
+    [[self pet] setLayoutAnimating:anim.active];
 }
 
 
@@ -849,7 +850,7 @@ static BOOL PDIsDeviceLocked(void) {
     if (!self.pet) {
         return;
     }
-    id theme = _PDAIPreference(@"Theme", @"auto");
+    id theme = PDAIPreference(@"Theme", @"auto");
     NSInteger style = 0;
     if ([theme isEqualToString:@"dark"]) {
         style = 2;
@@ -936,7 +937,7 @@ static BOOL PDIsDeviceLocked(void) {
         [s setChatKeyboardFocus:focused];               // 0x8d20
     }];
 
-    [chat setConfirmationShownHandler:(void (^)(BOOL))^(NSString *confirmation) {   // 0x8648 块 0x8d2c
+    [chat setConfirmationShownHandler:^(NSString *confirmation) {   // 0x8648 块 0x8d2c
         PDOverlayController *s = weakSelf;
         if (s == nil) {
             return;
@@ -1228,18 +1229,18 @@ static BOOL PDIsDeviceLocked(void) {
         // 0x9a58 @10ef48 NSConstantArray = @[@"free", @"calm", @"off"]（3 元，非 4 元）
         NSArray *roams = @[@"free", @"calm", @"off"];                    // 0x9a58-0x9a64
         NSUInteger next = ([roams indexOfObject:self.preferences.roam] + 1) % 3;  // 0x9a68-0x9ac0：+1 后 umulh 0xaaab…/lsr → %3
-        _PDAIWritePreferences(@{@"Roam": roams[next]});                  // 0x9ac4 @fb110 'Roam' → 0x9ae0 objectAtIndexedSubscript: → 0x9b7c
+        PDAIWritePreferences(@{@"Roam": roams[next]});                  // 0x9ac4 @fb110 'Roam' → 0x9ae0 objectAtIndexedSubscript: → 0x9b7c
         [self hideHoverButtons];                                         // 0x9b8c-0x9b90
         return;
     }
     if ([action isEqual:@"sound"]) {                                     // 0x9b00 @fb130 'sound'
-        _PDAIWritePreferences(@{@"Sound": @(!self.preferences.soundEnabled)});   // 0x9b0c-0x9b38：w2 = soundEnabled ^ 1（numberWithInt:）；@fb150 'Sound'
+        PDAIWritePreferences(@{@"Sound": @(!self.preferences.soundEnabled)});   // 0x9b0c-0x9b38：w2 = soundEnabled ^ 1（numberWithInt:）；@fb150 'Sound'
         [self hideHoverButtons];                                         // 0x9b8c-0x9b90
         return;
     }
     if ([action isEqual:@"theme"]) {                                     // 0x9b40 @fb170 'theme'
         // 0x9b60-0x9bc8：x8 = @fb1d0 'dark'、x9 = @fb1b0 'light'，csel x8,x9,x8,ne → isDarkAppearance 为真取 'light'（写入即反转）
-        _PDAIWritePreferences(@{@"Theme": self.pet.renderer.isDarkAppearance ? @"light" : @"dark"});   // 0x9b78 @fb190 'Theme' → 0x9bd8
+        PDAIWritePreferences(@{@"Theme": self.pet.renderer.isDarkAppearance ? @"light" : @"dark"});   // 0x9b78 @fb190 'Theme' → 0x9bd8
         [self hideHoverButtons];                                         // 0x9b8c-0x9b90
         return;
     }
@@ -1257,8 +1258,8 @@ static BOOL PDIsDeviceLocked(void) {
             NSUInteger idx = [fallback indexOfObject:self.preferences.outfit];
             next = fallback[(idx == NSNotFound ? 0 : (idx + 1) % fallback.count)];
         }
-        _PDAIWritePreferences(@{@"Outfit": next});                       // 0x9c2c @fb290 'Outfit'
-        _PDAIWritePreferences(@{@"HairTint": @([[PDHairTint shared] enabled])}); // 换装后发色继续生效
+        PDAIWritePreferences(@{@"Outfit": next});                       // 0x9c2c @fb290 'Outfit'
+        PDAIWritePreferences(@{@"HairTint": @([[PDHairTint shared] enabled])}); // 换装后发色继续生效
         [self hideHoverButtons];                                         // 0x9b8c-0x9b90
         return;
     }
@@ -1271,7 +1272,7 @@ static BOOL PDIsDeviceLocked(void) {
         // 0x9c58 @110208 静态单键字典 {@"Enabled": @NO}
         //   值槽 @0x10cba8 为 8 字节立即数 0x4008000000000170；同批静态字典里 get-task-allow=…171（真）、
         //   UseLegacyElementType=…170（假）→ …170 即 @NO。Inferred。
-        _PDAIWritePreferences(@{@"Enabled": @NO});                       // 0x9c58-0x9c60 @fb2d0 'Enabled'
+        PDAIWritePreferences(@{@"Enabled": @NO});                       // 0x9c58-0x9c60 @fb2d0 'Enabled'
         [self hideHoverButtons];                                         // 0x9b8c-0x9b90
         return;
     }
@@ -1316,7 +1317,7 @@ static BOOL PDIsDeviceLocked(void) {
         @"hide":  PDLocalizedString(@"隐藏角色"),                          // key @0xfb2b0 → 值 @0xfb490
         @"hair":  PDLocalizedString(@"发色"),                              // 【新增】长发色面板
     };
-    id order = _PDAIPreference(@"HoverButtons", @[@"chat", @"voice"]);    // 0x9f68-0x9f78 key @0xfb4b0，默认 @0x10ef78
+    id order = PDAIPreference(@"HoverButtons", @[@"chat", @"voice"]);    // 0x9f68-0x9f78 key @0xfb4b0，默认 @0x10ef78
     if (![order isKindOfClass:[NSArray class]]) {                        // 0x9f84-0x9fac tst w0,#1
         order = @[@"chat", @"voice"];                                    // 兜底 @0x10ef90
     }
@@ -1415,7 +1416,7 @@ static BOOL PDIsDeviceLocked(void) {
                 if ([e[@"id"] isEqualToString:target]) { known = YES; break; }
             }
             if (known) {
-                _PDAIWritePreferences(@{@"Outfit": target});
+                PDAIWritePreferences(@{@"Outfit": target});
                 _loadedAppearance = nil;
                 [self applyAppearance];
             } else {

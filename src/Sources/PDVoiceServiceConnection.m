@@ -23,6 +23,8 @@
 //
 
 #import "PDVoiceServiceConnection.h"
+#import <dlfcn.h>
+extern char **environ;
 
 #import <Foundation/Foundation.h>
 #import <dispatch/dispatch.h>
@@ -207,8 +209,7 @@ static void PDVoiceEmit(PDVoiceServiceConnection *self, NSDictionary *event) {
 //   12. 组帧：[BE32 1+jsonLen][0x01][json] → writeFrame:
 - (BOOL)startCommand:(unsigned char)command payload:(NSDictionary *)payload {
     // 0x237a4 段：socketpair 拉起 helper 进程，用 dispatch_io 收发帧
-    NSString *channelName = [self channel];
-    if (channelName == nil && [self stopped]) {
+    if ([self channel] == nil && [self stopped]) {
         return NO;
     }
 
@@ -240,8 +241,9 @@ static void PDVoiceEmit(PDVoiceServiceConnection *self, NSDictionary *event) {
     setsockopt(sockets[0], SOL_SOCKET, SO_NOSIGPIPE, &one, sizeof(one));
 
     dispatch_queue_t ioQueue = [self queue] ?: dispatch_get_global_queue(QOS_CLASS_UTILITY, 0);
-    dispatch_io_t channel = dispatch_io_create(DISPATCH_IO_STREAM, sockets[0], ioQueue, ^(int err) {
-        close(sockets[0]);
+    int sock0 = sockets[0];
+    dispatch_io_t channel = dispatch_io_create(DISPATCH_IO_STREAM, sock0, ioQueue, ^(int err) {
+        close(sock0);
     });
     if (!channel) {
         close(sockets[0]); close(sockets[1]);

@@ -32,7 +32,7 @@
     self = [super init];
     if (!self) return nil;
     _line = [NSMutableData data];
-    _event = [NSMutableDictionary dictionary];
+    _event = [NSMutableString string];
     _audio = [NSMutableData data];
     _afterCR = NO;
     return self;
@@ -103,12 +103,12 @@
     if ([eventName length] == 0) {
         NSError *error = [self error];
         if (error) {
-            [self setLength:0];
+            self.line.length = 0;
             return;
         }
     }
     // 事件名已完整：把当前缓冲长度归零（二进制 setLength:）
-    [self setLength:0];
+    self.line.length = 0;
 }
 
 

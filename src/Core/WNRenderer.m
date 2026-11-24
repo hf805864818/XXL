@@ -34,6 +34,7 @@
 #import "WNClip.h"
 #import "WNMesh.h"
 #import <MetalKit/MetalKit.h>
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import <objc/message.h>
@@ -301,33 +302,6 @@
                            @"pixels": pixels};
     _uploadSurfaces[cacheKey] = surf;
     return surf;
-
-    // 纹理 + 位图上下文（sRGB 色彩空间、插值质量、Y 轴翻转）
-    CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
-    MTLTextureDescriptor *desc =
-        [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm
-                                                           width:(NSUInteger)MAX(1.0, size.width)
-                                                          height:(NSUInteger)MAX(1.0, size.height)
-                                                       mipmapped:NO];
-    [desc setUsage:(MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead)];
-    [desc setStorageMode:MTLStorageModeShared];
-    id<MTLTexture> tex = [[self device] newTextureWithDescriptor:desc];
-    [surface setTexture:tex];
-
-    size_t w = (size_t)MAX(1.0, size.width), h = (size_t)MAX(1.0, size.height);
-    NSMutableData *bitmap = [NSMutableData dataWithLength:w * h * 4];
-    CGContextRef ctx = CGBitmapContextCreate([bitmap mutableBytes], w, h, 8, w * 4, cs,
-                                             kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
-    if (ctx) {
-        CGContextSetInterpolationQuality(ctx, kCGInterpolationHigh);
-        CGContextTranslateCTM(ctx, 0.0, (CGFloat)h);
-        CGContextScaleCTM(ctx, 1.0, -1.0);
-    }
-    if (cs) CGColorSpaceRelease(cs);
-
-    id<MTLBuffer> quad = [[self device] newBufferWithLength:32
-                                                   options:MTLResourceStorageModeShared];
-    [surface setQuadPositions:quad];
 }
 
 
@@ -669,7 +643,7 @@
 - (void)setPresentationFPS:(long long)v { _presentationFPS = v; }
 - (BOOL)darkAppearance { return _darkAppearance; }
 - (void)setDarkAppearance:(BOOL)v { _darkAppearance = v; 
-    [self updateGlowColorForAppearance:dark];
+    [self updateGlowColorForAppearance:v];
     (void)[self painter];
 }
 
@@ -937,7 +911,7 @@ static NSDictionary *WNLoadClipJSON(NSURL *url) {
                         [fm createDirectoryAtURL:demoURL withIntermediateDirectories:YES attributes:nil error:NULL];
 
                         // 0x60448：[[clip info][@"count"] unsignedIntegerValue]（0xac980 info / 0xffed0 count / 0xb6480）
-                        NSUInteger frameCount = (NSUInteger)[[clip info][@"count"] unsignedIntegerValue];
+                        NSUInteger frameCount = (NSUInteger)[clip[@"info"][@"count"] unsignedIntegerValue];
                         for (NSUInteger i = 0; i < frameCount; i++) {
                             NSString *name = [NSString stringWithFormat:@"%04lu.png", (unsigned long)i];  // 0x103c70
                             NSURL *out = [demoURL URLByAppendingPathComponent:name];

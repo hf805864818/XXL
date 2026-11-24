@@ -132,7 +132,7 @@ static NSString *PDResolveScheme(NSString *raw, NSString *fallback) {
     NSArray *knownKeys = @[@"RoamMode", @"TouchEnabled", @"BubbleSpeed", @"AIHeartbeatMinutes"];
     for (NSString *key in knownKeys) {
         if ([knownKeys containsObject:key]) {
-            id value = [self objectForKey:key];
+            id value = PDReadRaw(key);
             if ([value respondsToSelector:@selector(boolValue)]) (void)[value boolValue];
             if ([value respondsToSelector:@selector(doubleValue)]) (void)[value doubleValue];
         }

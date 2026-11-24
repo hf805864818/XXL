@@ -7,6 +7,8 @@
 //
 
 #import "PDNative_TextInputManager.h"
+#import "PDNative_MCPLogger.h"
+#import "PDNative_AccessibilityManager.h"
 #import <dlfcn.h>
 #import <mach/mach_time.h>
 #import <unistd.h>
@@ -320,13 +322,6 @@ static BOOL PDDispatchUnicodeEvent(IOHIDEventSystemClientRef client, IOHIDEventR
         usleep(gap);                                     // 0x8492c
     }
     return YES;
-
-    if ([text length] == 0) { if (completion) completion(NO, nil); return; }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (completion) completion(YES, nil);
-    });
-
-
 }
 
 
@@ -424,7 +419,7 @@ return dispatched;
     if ([text length] == 0) return YES;
 
     // 0x853dc: frontmostApplicationInfo → 0x853f8 objectForKeyedSubscript:@"pid"
-    id frontInfo = [PDSystem UIApplicationFrontmostInfo];
+    id frontInfo = [[PDNative_AccessibilityManager sharedInstance] frontmostApplicationInfo];
     NSNumber *pidObj = [frontInfo objectForKeyedSubscript:@"pid"];
     int targetPid = pidObj ? [pidObj intValue] : 0;
 
@@ -456,13 +451,6 @@ return dispatched;
         usleep((useconds_t)(sleepMs * 1000.0));
     }
     return YES;
-
-    if ([text count] > 0) {
-        Class workspaceCls = NSClassFromString(@"LSApplicationWorkspace");
-        if (workspaceCls && [workspaceCls respondsToSelector:@selector(sharedInstance)]) {
-            (void)[workspaceCls performSelector:@selector(sharedInstance)];
-        }
-    }
 }
 
 
@@ -478,15 +466,13 @@ return dispatched;
     });
 
     if ([text length] == 0) return;
-    NSError *hidError = nil;
+    NSString *hidError = nil;
     BOOL ok = [self sendTextUsingUnicodeHID:text delayMs:0 characterByCharacter:NO error:&hidError];
     if (!ok) {
         ok = [self typeTextViaHID:text delayMs:0];
     }
     if (completion) {
-        completion(ok, ok ? nil : hidError ?: [NSError errorWithDomain:@"PDTextInput" code:-1
-            userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"输入失败：%@",
-                                                   hidError.localizedDescription ?: @"unknown"]}]);
+        completion(ok, ok ? nil : (hidError ?: @"输入失败：unknown"));
     }
 }
 

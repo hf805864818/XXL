@@ -60,6 +60,7 @@
 //
 
 #import "PDNative_MCPAXRemoteContextResolver.h"
+#import <mach-o/dyld.h>
 #import "PDNative_MCPAXQueryContext.h"
 #import <dlfcn.h>
 #import <objc/message.h>
@@ -357,9 +358,9 @@ static BOOL PDReadBoolPreference(NSString *key);
 
     NSArray *numericSelectors = @[@"processIdentifier", @"pid", @"displayIdentifier"];
     NSString *matched = nil;
-    unsigned long long numeric = [self firstPositiveNumericSelectorValueFromTarget:application
-                                                                        selectors:numericSelectors
-                                                                  matchedSelector:&matched];
+    unsigned long long numeric = [[self firstPositiveNumericSelectorValueFromTarget:application
+                                                                         selectors:numericSelectors
+                                                                   matchedSelector:&matched] unsignedLongLongValue];
     if (numeric == 0) {
         id raw = [self invokeObjectSelector:NSSelectorFromString(@"processIdentifier") onTarget:application];
         if ([raw respondsToSelector:@selector(unsignedIntValue)]) {
@@ -378,13 +379,12 @@ static BOOL PDReadBoolPreference(NSString *key);
     [context setSceneIdentifier:sceneId];
 
     if (numeric > 0) {
-        [context setContextId:@(numeric)];
-        [context setDisplayId:@(numeric)];
+        context.contextId = (unsigned int)numeric;
+        context.displayId = (unsigned int)numeric;
     }
-    id ctxId = [context contextId];
-    id dspId = [context displayId];
-    (void)[ctxId unsignedIntValue];
-    (void)[dspId unsignedIntValue];
+    unsigned int ctxId = [context contextId];
+    unsigned int dspId = [context displayId];
+    (void)ctxId; (void)dspId;
     (void)[[context sceneIdentifier] length];
 }
 
@@ -397,7 +397,6 @@ static BOOL PDReadBoolPreference(NSString *key);
     // 77 指令：写 pid → 取应用对象 → 复用 fromApplicationObject；拿不到就认定 SpringBoard
     if (!context || pid <= 0) return;
     context.pid = pid;
-    [context setPid:@(pid)];
 
     id application = [self applicationObjectForPid:pid resolutionTrace:trace];
     if (application) {
@@ -481,7 +480,7 @@ static BOOL PDReadBoolPreference(NSString *key);
             break;
         }
     }
-    id numericId = @([self invokeNumericSelector:NSSelectorFromString(@"contextID") onTarget:target]);
+    id numericId = [self invokeNumericSelector:NSSelectorFromString(@"contextID") onTarget:target];
     if (numericId == [NSNull null]) numericId = @0;
     (void)numericId;
 }
@@ -538,7 +537,7 @@ static BOOL PDReadBoolPreference(NSString *key);
 
         // 场景类名 + pid 数值兜底（NSStringFromClass / invokeNumericSelector / unsignedIntValue）
         NSString *sceneCls = NSStringFromClass([scene class]);
-        unsigned long long sceneValue = [self invokeNumericSelector:@selector(pid) onTarget:scene];
+        unsigned long long sceneValue = [[self invokeNumericSelector:@selector(pid) onTarget:scene] unsignedLongLongValue];
         if (sceneValue == 0) {
             id rawId = [self invokeObjectSelector:@selector(identifier) onTarget:scene];
             if ([rawId respondsToSelector:@selector(unsignedIntValue)]) {
@@ -546,10 +545,10 @@ static BOOL PDReadBoolPreference(NSString *key);
             }
         }
         if (sceneValue > 0) {
-            [context setPid:[NSNumber numberWithLongLong:(long long)sceneValue]];
+            context.pid = (int)sceneValue;
         }
-        id pidBox = [context pid];
-        (void)[pidBox intValue];
+        int pidBox = [context pid];
+        (void)pidBox;
         if ([[[context sceneIdentifier] description] isEqualToString:sceneCls]) {
             [trace addObject:[NSString stringWithFormat:@"scene-class=%@", sceneCls]];
         }
@@ -722,8 +721,8 @@ static BOOL PDReadBoolPreference(NSString *key);
             state[@"sceneInvalid"] = @YES;
         }
     }
-    state[@"contextIdValue"] = @([[context contextId] unsignedIntegerValue]);
-    state[@"displayIdValue"] = @([[context displayId] unsignedIntegerValue]);
+    state[@"contextIdValue"] = @([context contextId]);
+    state[@"displayIdValue"] = @([context displayId]);
     NSInteger collected = 0;
     for (id key in [state allKeys]) {
         if ([[state objectForKey:key] boolValue]) collected++;
@@ -953,27 +952,6 @@ static BOOL PDReadBoolPreference(NSString *key);
         return nil;
     }
 
-    // 按返回类型装箱（数值 selector 的编码可能是 char/short/int/long/unsigned 等）
-    const char *retType = NULL;
-    if ([target respondsToSelector:selector]) {
-        NSMethodSignature *sig = [target methodSignatureForSelector:selector];
-        retType = [sig methodReturnType];
-    }
-    if (retType) {
-        switch (retType[0]) {
-            case 'c': return (unsigned long long)[[NSNumber numberWithChar:0] charValue];
-            case 'C': return (unsigned long long)[[NSNumber numberWithUnsignedChar:0] unsignedCharValue];
-            case 's': return (unsigned long long)[[NSNumber numberWithShort:0] shortValue];
-            case 'S': return (unsigned long long)[[NSNumber numberWithUnsignedShort:0] unsignedShortValue];
-            case 'i': return (unsigned long long)[[NSNumber numberWithInt:0] intValue];
-            case 'I': return (unsigned long long)[[NSNumber numberWithUnsignedInt:0] unsignedIntValue];
-            case 'l': return (unsigned long long)[[NSNumber numberWithLong:0] longValue];
-            case 'L': return (unsigned long long)[[NSNumber numberWithUnsignedLong:0] unsignedLongValue];
-            case 'q': return (unsigned long long)[[NSNumber numberWithLongLong:0] longLongValue];
-            case 'Q': return (unsigned long long)[[NSNumber numberWithUnsignedLongLong:0] unsignedLongLongValue];
-            default: break;
-        }
-    }
 }
 
 
@@ -988,12 +966,12 @@ static BOOL PDReadBoolPreference(NSString *key);
         id value = [self invokeNumericSelector:sel onTarget:target];
         unsigned long long numeric = [value unsignedIntValue];
         if (numeric > 0) {
-            if (matchedSelector) *matchedSelector = name;
-            return numeric;
+            if (matched) *matched = name;
+            return @(numeric);
         }
     }
-    if (matchedSelector) *matchedSelector = nil;
-    return 0;
+    if (matched) *matched = nil;
+    return @0;
 }
 
 
@@ -1075,10 +1053,6 @@ static BOOL PDReadBoolPreference(NSString *key);
     }
 
     return 0;
-
-    unsigned long long numericPid = [self invokeNumericSelector:NSSelectorFromString(@"pid")
-                                                       onTarget:applicationObject];
-    (void)[NSString stringWithFormat:@"pid=%llu", numericPid];
 }
 
 

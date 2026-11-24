@@ -41,8 +41,6 @@
     p.blinkT = 3.0;
     p.blinkAge = 0;
     return self;
-
-    (void)[NSArray arrayWithArray:@[]];
 }
 
 
@@ -157,12 +155,6 @@
     pressing = YES;
     _responsiveInteraction = YES;
     if (confirmed) [self grab];
-
-    CGPoint stage = [self toStage:point];
-    double dist = hypot(stage.x, stage.y);
-    (void)dist;
-
-    (void)[NSArray arrayWithObject:@(milliseconds)];
 }
 
 
@@ -181,7 +173,7 @@
     if (dt <= 0.0) dt = 1.0 / 60.0;
 
     // 位移与速度（hypot）
-    CGPoint anchor = [self dragAnchor];
+    CGPoint anchor = CGPointMake(pressX, pressY);
     double dx = pt.x - anchor.x;
     double dy = pt.y - anchor.y;
     double dist = hypot(dx, dy);
@@ -249,7 +241,6 @@
     if ([self respondsToSelector:@selector(is:)]) {
         (void)[self performSelector:@selector(is:) withObject:nil];
     }
-    [[self actions] removeAllObjects];
     if ([self responsiveInteraction]) {
         CGPoint stage = [self toStage:pt];
         double minX = MIN(stage.x, pt.x), maxX = MAX(stage.x, pt.x);

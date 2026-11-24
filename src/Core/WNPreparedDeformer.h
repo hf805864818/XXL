@@ -23,7 +23,7 @@
     double y0;
     double width;
     double height;
-    void (^warp)(void);
+    id warp;
 }
 
 - (CGPoint)transformPoint:(CGPoint)p;
@@ -45,5 +45,6 @@
 @property (nonatomic) double cosine;
 @property (nonatomic) double sine;
 @property (nonatomic, strong) id parent;
+@property (nonatomic, strong) id warp;
 
 @end

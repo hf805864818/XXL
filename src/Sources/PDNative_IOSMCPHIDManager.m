@@ -292,17 +292,6 @@ static void PDAppendFingerEvent(IOHIDEventRef parent,
     BOOL ok = [self postHIDEvent:parent error:error];
     CFRelease(parent);
     return ok;
-
-    // 手指事件链：Create → SetFloatValue → Append → Dispatch
-    IOHIDEventRef finger = IOHIDEventCreateDigitizerFingerEvent(
-        kCFAllocatorDefault, mach_absolute_time(), 0, 2,
-        (IOHIDEventField)phase, point.x, point.y, 0.0, 1.0, 0.0, 0.0, 0.0);
-    if (finger) {
-        IOHIDEventSetFloatValue(finger, kIOHIDEventFieldDigitizerX, (double)point.x);
-        IOHIDEventSetFloatValue(finger, kIOHIDEventFieldDigitizerY, (double)point.y);
-        IOHIDEventAppendEvent(NULL, finger, 0);
-        CFRelease(finger);
-    }
 }
 
 
@@ -409,7 +398,7 @@ static void PDAppendFingerEvent(IOHIDEventRef parent,
         BOOL ok = YES;
         unsigned long long n = (steps > 0) ? steps : 1;
 
-        if (![self sendTouchAtPoint:from phase:0 error:&err]) {
+        if (![self performTouchAtPoint:from phase:0 error:&err]) {
             ok = NO;
         } else {
             double perStep = (duration > 0.0) ? (duration * 1000000.0 / (double)n) : 0.0;
@@ -417,10 +406,10 @@ static void PDAppendFingerEvent(IOHIDEventRef parent,
                 double t = (double)i / (double)n;
                 CGPoint p = CGPointMake(from.x + (to.x - from.x) * t,
                                         from.y + (to.y - from.y) * t);
-                if (![self sendTouchAtPoint:p phase:1 error:&err]) { ok = NO; break; }
+                if (![self performTouchAtPoint:p phase:1 error:&err]) { ok = NO; break; }
                 if (perStep > 0.0) usleep((useconds_t)perStep);
             }
-            if (ok && ![self sendTouchAtPoint:to phase:2 error:&err]) ok = NO;
+            if (ok && ![self performTouchAtPoint:to phase:2 error:&err]) ok = NO;
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -428,20 +417,6 @@ static void PDAppendFingerEvent(IOHIDEventRef parent,
         });
     });
 
-    NSUInteger totalSteps = steps > 0 ? (NSUInteger)steps : 10;
-    [self performTouchAtPoint:fromPoint phase:0 error:NULL];
-    for (NSUInteger i = 1; i <= totalSteps; i++) {
-        double t = (double)i / (double)totalSteps;
-        CGPoint mid = CGPointMake(fromPoint.x + (toPoint.x - fromPoint.x) * t,
-                                  fromPoint.y + (toPoint.y - fromPoint.y) * t);
-        [self performTouchAtPoint:mid phase:1 error:NULL];
-    }
-    [self performTouchAtPoint:toPoint phase:2 error:NULL];
-    if ([PDNative_MCPLogger isDebugLoggingEnabled]) {
-        [PDNative_MCPLogger logMessage:[NSString stringWithFormat:@"[HID] swipe steps=%lu name=%@",
-                                        (unsigned long)totalSteps, [self name] ?: @"swipe"]];
-        (void)[[self reason] length];
-    }
 }
 
 
@@ -464,7 +439,7 @@ static void PDAppendFingerEvent(IOHIDEventRef parent,
         }
 
         CGPoint start = [points[0] CGPointValue];
-        if (![self sendTouchAtPoint:start phase:0 error:&err]) {
+        if (![self performTouchAtPoint:start phase:0 error:&err]) {
             ok = NO;
         } else {
             if (holdDuration > 0.0) usleep((useconds_t)(holdDuration * 1000000.0));
@@ -481,13 +456,13 @@ static void PDAppendFingerEvent(IOHIDEventRef parent,
                     double t = (double)i / (double)n;
                     CGPoint p = CGPointMake(a.x + (b.x - a.x) * t,
                                             a.y + (b.y - a.y) * t);
-                    if (![self sendTouchAtPoint:p phase:1 error:&err]) { ok = NO; break; }
+                    if (![self performTouchAtPoint:p phase:1 error:&err]) { ok = NO; break; }
                     if (perStep > 0.0) usleep((useconds_t)perStep);
                 }
             }
 
             CGPoint end = [points.lastObject CGPointValue];
-            if (ok && ![self sendTouchAtPoint:end phase:2 error:&err]) ok = NO;
+            if (ok && ![self performTouchAtPoint:end phase:2 error:&err]) ok = NO;
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -579,5 +554,8 @@ static void PDAppendFingerEvent(IOHIDEventRef parent,
         (void)[[self reason] length];
     }
 }
+
+- (NSString *)name { return @"HID"; }
+- (NSString *)reason { return @""; }
 
 @end

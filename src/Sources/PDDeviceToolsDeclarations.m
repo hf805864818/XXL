@@ -186,7 +186,7 @@ NSDictionary *PDDeviceToolResult(id result) {
     // 已经是错误信封：直接返回其 message
     id error = envelope[@"error"];
     if ([error isKindOfClass:[NSDictionary class]]) {
-        return error[@"message"];
+        return @{ @"error": error[@"message"] ?: @"error" };
     }
 
     NSMutableDictionary *structured = nil;
@@ -254,6 +254,5 @@ NSDictionary *PDDeviceToolResult(id result) {
         out[@"isError"] = isError;
     }
 
-    NSData *data = [NSJSONSerialization dataWithJSONObject:@{ @"result" : out } options:0 error:NULL];
-    return data ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : nil;
+    return out;
 }

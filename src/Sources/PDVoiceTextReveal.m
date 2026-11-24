@@ -195,8 +195,6 @@ static NSArray<NSNumber *> *PDVoiceTextBoundaries(NSString *text) {
         }
     }
 
-    NSUInteger added = [[NSNumber numberWithUnsignedInteger:(NSUInteger)MAX(0.0, addedCount)] unsignedIntegerValue];
-    [self setCumulativeAddedCount:[[self cumulativeAddedCount] unsignedIntegerValue] + added];
 }
 
 

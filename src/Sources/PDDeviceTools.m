@@ -69,10 +69,9 @@ static NSDictionary *PDDeviceToolsEnvelope(NSString *receipt) {
 - (instancetype)init {
     self = [super init];
     if (!self) return nil;
-    [self recoverInterruptedScope];
     _queue = dispatch_queue_create("petdfy.deviceTools", DISPATCH_QUEUE_SERIAL);
     _tools = [NSMutableDictionary new];
-    [self setGeneration:[[self generation] unsignedLongLongValue] + 1];
+    [self setGeneration:[self generation] + 1];
     return self;
 }
 

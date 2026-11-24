@@ -502,12 +502,12 @@ static BOOL PDBoolValue(NSDictionary *dict, NSString *key) {
         [node addEntriesFromDictionary:rawNode];
     }
     if (inheritedContextId) {
-        node[@"contextId"] = @([inheritedContextId integerValue]);
+        node[@"contextId"] = @(inheritedContextId);
     } else {
         node[@"contextId"] = @([node[@"contextId"] integerValue]);
     }
     if (inheritedDisplayId) {
-        node[@"displayId"] = @([inheritedDisplayId integerValue]);
+        node[@"displayId"] = @(inheritedDisplayId);
     }
     node[@"resolverStrategy"] = [context resolverStrategy] ?: @"unspecified";
     if ([node[@"visible"] respondsToSelector:@selector(boolValue)]) {

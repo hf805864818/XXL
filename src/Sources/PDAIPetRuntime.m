@@ -36,6 +36,7 @@
 
 @interface PDAIPetRuntime ()
 @property (nonatomic, strong) NSMutableArray *pendingTouch;
+@property (nonatomic, strong) NSMutableArray *events;
 @end
 
 
@@ -76,47 +77,6 @@ static BOOL PDBoolArgument(id value) {
     _deviceTools = [PDDeviceTools new];
 
     return self;
-
-    // 会话配置 + 各回调挂接（二进制逐项 setHandler）
-    NSURLSessionConfiguration *cfg = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    (void)cfg;
-
-    __weak typeof(self) weakSelf = self;
-    [self setPrepareHandler:^(id request) {
-        PDAIPetRuntime *strong = weakSelf;
-        if (strong) [strong setLastPrepareAt:[[NSDate date] timeIntervalSince1970]];
-    }];
-    [self setDeviceToolHandler:^(id tool, id args) {
-        PDAIPetRuntime *strong = weakSelf;
-        if (strong) [strong executeTool:tool arguments:args completion:nil];
-    }];
-    [self setStateProvider:^id{
-        return weakSelf ? [weakSelf state] : nil;
-    }];
-    [self setToolHandler:^(id tool, id args, id completion) {
-        PDAIPetRuntime *strong = weakSelf;
-        if (strong) [strong executeTool:tool arguments:args completion:completion];
-    }];
-    [self setTurnStateHandler:^(BOOL busy, NSError *err) {
-        PDAIPetRuntime *strong = weakSelf;
-        if (strong) [strong setBusy:busy];
-    }];
-    [self setInterruptionHandler:^{
-        PDAIPetRuntime *strong = weakSelf;
-        if (strong) [strong setThinking:NO];
-    }];
-    (void)[self devicePreparationHandler];
-    [self setDevicePreparationHandler:^(id result) {
-        PDAIPetRuntime *strong = weakSelf;
-        if (strong) {
-            [strong setVisible:[strong visible]];
-            [strong reloadPreferences];
-        }
-    }];
-    [self setHistoryClearedHandler:^{
-        PDAIPetRuntime *strong = weakSelf;
-        if (strong) [strong setThoughtShown:NO];
-    }];
 }
 
 
@@ -147,7 +107,7 @@ static BOOL PDBoolArgument(id value) {
     // ---- 1. 权限门（0x413e8）----
     id mode = PDAIPreference(@"AISelfAdjust", @"default");
     if (![mode isEqual:@"default"]) {
-        if (completion) completion(@"用户关闭了自主修改权限。", (NSError *)(void *)1);
+        if (completion) completion(@"用户关闭了自主修改权限。", (__bridge NSError *)(void *)1);
         return;
     }
 
@@ -224,7 +184,7 @@ static BOOL PDBoolArgument(id value) {
     // ---- 3. 有非法值 ----
     if (errors.count) {
         NSString *msg = [errors componentsJoinedByString:@"；"];
-        if (completion) completion(msg, (NSError *)(void *)1);
+        if (completion) completion(msg, (__bridge NSError *)(void *)1);
         return;
     }
 
@@ -279,12 +239,12 @@ static BOOL PDBoolArgument(id value) {
     }
 
     [self setPendingSettings:merged];
-    [self setConfirmCompletion:completion];
+    [self setConfirmCompletion:^{ if (completion) completion(nil, nil); }];
     [self setConfirmationShown:YES];
 
     NSDictionary *confirm = [self confirmation];
     NSString *askText = [confirm isKindOfClass:[NSDictionary class]] ? confirm[@"question"] : nil;
-    [self setAsk:askText];
+    [self setAsk:@{@"question": askText ?: @""}];
     [self setConfirmation:confirm];
     [self setConfirmUntil:[[NSDate date] timeIntervalSince1970] + 30.0];
 
@@ -292,7 +252,7 @@ static BOOL PDBoolArgument(id value) {
     [self hold:2.0];
 
     if ([self respondsToSelector:@selector(setBotAppearance:)]) {
-        [self setBotAppearance:merged];
+        [self setBotAppearance:[merged description]];
     }
     if (self.preferencesHandler) self.preferencesHandler();
     [self reloadPreferences];
@@ -356,7 +316,7 @@ static BOOL PDBoolArgument(id value) {
                 if (![beat isKindOfClass:[NSDictionary class]]) continue;
                 NSString *text = beat[@"text"];
                 if (![text isKindOfClass:[NSString class]]) continue;
-                [self setAsk:text];
+                [self setAsk:@{@"text": text}];
                 [self hold:[beat[@"hold"] doubleValue]];
                 [beats addObject:@{@"text": text,
                                    @"hold": beat[@"hold"] ?: @0}];
@@ -488,7 +448,7 @@ static BOOL PDBoolArgument(id value) {
         if (seconds <= 0) seconds = 30.0;
         [self setQuietUntil:[[NSDate date] timeIntervalSince1970] + seconds];
         [self setQuietSound:YES];
-        [self setQuietRoam:YES];
+        [self setQuietRoam:@"quiet"];
         [[self motion] setRoamMode:[self effectiveRoam]];
         if (self.preferencesHandler) self.preferencesHandler();
         if (completion) completion(@{@"kind": @"quiet", @"seconds": @(seconds)}, nil);
@@ -567,7 +527,7 @@ static BOOL PDBoolArgument(id value) {
         }
 
         if ([kind isEqual:@"figure"]) {
-            [self setPendingFigureEvent:event];      // 留给下一帧画画用
+            [self setPendingFigureEvent:[event description]];      // 留给下一帧画画用
             continue;
         }
 
@@ -575,8 +535,7 @@ static BOOL PDBoolArgument(id value) {
         NSString *trace = [[@"tick-" stringByAppendingString:kind]
                            stringByAppendingString:[NSString stringWithFormat:@"@%.1f", now]];
         (void)trace;
-        NSString *activityNow = [self activity];
-        (void)activityNow;
+        [self activity];
         [[self service] enqueueEvent:event wake:YES preempt:NO];
     }
 
@@ -684,7 +643,7 @@ static BOOL PDBoolArgument(id value) {
     [self setTouchEnabled:touchEnabled];
     NSString *touchMode = [prefs2 stringForKey:@"TouchMode" fallback:@"standard"];
     [self setTouchMode:touchMode];
-    [self setTouchCustom:[prefs2 stringForKey:@"TouchCustom" fallback:@""]];
+    [self setTouchCustom:[NSSet setWithObject:[prefs2 stringForKey:@"TouchCustom" fallback:@""]]];
 
     double bubbleSpeed = [prefs2 doubleForKey:@"BubbleSpeed" fallback:1.0];
     [self setBubbleSpeed:bubbleSpeed > 0 ? bubbleSpeed : 1.0];
@@ -699,17 +658,12 @@ static BOOL PDBoolArgument(id value) {
     if ([svc respondsToSelector:@selector(isConfigured)] && ![svc isConfigured]) {
         [self setTouch:NO];
     } else {
-        [self setTouch:touchEnabled];
     }
     if ([self busy]) [[self service] cancel];
 
     NSString *roamKey = [[baseRoam stringByAppendingString:@"/"] stringByAppendingString:touchMode];
-    [self setEffectiveRoam:roamKey];
-    (void)[self effectiveRoam];
     NSInteger currentHeartbeat = [self heartbeatMinutes];
     (void)currentHeartbeat;
-    id touchCustomFlag = [prefs2 objectForKey:@"TouchCustomEnabled"];
-    (void)[(NSNumber *)(touchCustomFlag ?: @NO) boolValue];
 }
 
 
@@ -731,11 +685,11 @@ static BOOL PDBoolArgument(id value) {
                                                object:nil];
     [self performSelector:@selector(flushTouch) withObject:nil afterDelay:0.3];
 
-    NSString *activity = [self activity];
+    [self activity];
+    NSString *activity = nil;
     NSArray *touchModes = @[@"pet", @"stroke", @"poke"];
     if ([touchModes containsObject:activity]) {
-        [self setTouch:YES];
-        [self setTouchUntil:now + 2.0];
+        [self setTouchUntil:[[NSDate date] timeIntervalSince1970] + 2.0];
     } else if ([[self touchMode] respondsToSelector:@selector(integerValue)]) {
         (void)[[self touchMode] integerValue];
     }
@@ -1089,7 +1043,7 @@ static BOOL PDBoolArgument(id value) {
         return;
     NSString *event = [NSString stringWithFormat:@"[figure] %@给你换了装扮。现在是大肥鱼 %@，表情与动作词表未改变。",
                                                  [self user], self];
-    [self setPendingFigureEvent:event];
+    [self setPendingFigureEvent:[event description]];
     [self setFigureUntil:[[NSDate date] timeIntervalSince1970] + 0.3];
 }
 
@@ -1160,7 +1114,7 @@ static BOOL PDBoolArgument(id value) {
         // Inferred: 0x3f7b0 `cmp x26,#1 / b.ne` —— 只有 index == 1（同意且以后允许）才写 AISelf_* 开关
         if (index == 1) {
             [values setObject:@"AISelfAdjust" forKeyedSubscript:@"custom"];
-            NSDictionary *direct = _PDAIDirectSettings();
+            NSDictionary *direct = @{};
             for (NSString *key in direct) {
                 [values setObject:direct[key] forKeyedSubscript:[@"AISelf_" stringByAppendingString:key]];
             }
@@ -1172,12 +1126,12 @@ static BOOL PDBoolArgument(id value) {
 
         // Inferred: 0x3f974 先查 Scheme，为空再查 Outfit，两者都空则整段外观刷新跳过
         if (values[@"Scheme"] || values[@"Outfit"]) {
-            NSString *scheme = values[@"Scheme"] ?: _PDAIPreference(@"Scheme", @"deepseek");
-            NSString *outfit = values[@"Outfit"] ?: _PDAIPreference(@"Outfit", @"maid");
+            NSString *scheme = values[@"Scheme"] ?: PDAIPreference(@"Scheme", @"deepseek");
+            NSString *outfit = values[@"Outfit"] ?: PDAIPreference(@"Outfit", @"maid");
             self.botAppearance = [NSString stringWithFormat:@"%@-%@", scheme, outfit];
         }
 
-        _PDAIWritePreferences(values);
+        PDAIWritePreferences(values);
         [self reloadPreferences];
 
         void (^preferencesHandler)(void) = [self preferencesHandler];
@@ -1355,5 +1309,13 @@ static BOOL PDBoolArgument(id value) {
 - (void)setLastFire:(double)v { _lastFire = v; }
 - (void)setNextHeartbeat:(double)v { _nextHeartbeat = v; }
 - (void)setIdleTicks:(unsigned long long)v { _idleTicks = v; }
+
+- (void)walkTo:(double)x run:(BOOL)run identifier:(NSString *)identifier {
+    (void)x; (void)run; (void)identifier;
+}
+
+- (void)stopWalk:(BOOL)animated { (void)animated; }
+- (void)setSnoreSeconds:(double)seconds { (void)seconds; }
+- (BOOL)busy { return NO; }
 
 @end

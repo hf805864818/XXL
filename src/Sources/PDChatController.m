@@ -53,7 +53,11 @@
 //          / enqueuePresentation: / rushQueuedLines(1333)
 @property (nonatomic, strong) UIView *card;
 @property (nonatomic, strong) UITableView *table;
-@property (nonatomic, strong) id composer;
+@property (nonatomic, strong) PDComposerTextView *composer;
+@property (nonatomic, strong) UILabel *placeholder;
+@property (nonatomic, copy) NSString *lastError;
+- (NSString *)lastText;
+- (void)enqueueUserText:(NSString *)text images:(NSArray *)images;
 @end
 
 @implementation PDChatController
@@ -73,51 +77,6 @@
 ///   0x1ac54  composer.setFrame:
 ///   之后：setScrollEnabled: / inputOutline 的 bezierPathWithRoundedRect:cornerRadius: →
 ///         CGPath → setPath: / setLineWidth: / isFirstResponder → setLineDashPattern: / setNeedsLayout
-- (double)layoutComposer:(double)width unit:(double)unit {
-    [self.composer setUnit:@(unit)];
-
-    CGRect bounds = [self.view bounds];
-    double maxWidth = width > 0 ? width : bounds.size.width;
-
-    double base = [self fontSize] > 0 ? [self fontSize] : 15.0;
-    double fs = fmax(11.0, fmin(base, maxWidth / 20.0));
-    UIFont *font = [UIFont systemFontOfSize:fs];
-    [self.composer setFont:font];
-    [[[self sendButton] titleLabel] setFont:[UIFont systemFontOfSize:fs * 0.9]];
-    [[[self closeButton] titleLabel] setFont:[UIFont systemFontOfSize:fs * 0.9]];
-
-    double lineHeight = [font lineHeight];
-    NSString *text = [self.composer text] ?: @"";
-    NSDictionary *attributes = @{ NSFontAttributeName: font };
-    CGRect textRect = [text boundingRectWithSize:CGSizeMake(MAX(1.0, maxWidth - 24.0), CGFLOAT_MAX)
-                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:attributes
-                                         context:nil];
-
-    BOOL multiline = textRect.size.height > lineHeight * 1.4;
-    [self.composer setMultiline:multiline];
-
-    double height = MAX(lineHeight + 24.0, textRect.size.height + 24.0);
-    [self.inputFrame setBounds:CGRectMake(0.0, 0.0, maxWidth, height)];
-    [self.inputFrame.layer setCornerRadius:unit * 12.0];
-    CGRect composerFrame = CGRectInset(CGRectMake(0.0, 0.0, maxWidth, height), 12.0, 12.0);
-    [self.composer setFrame:composerFrame];
-    [self.composer setScrollEnabled:multiline];
-
-    // 输入框描边：圆角矩形路径
-    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:composerFrame cornerRadius:unit * 10.0];
-    [self.inputOutline setPath:path.CGPath];
-    [self.inputOutline setLineWidth:1.0];
-    if ([self.composer isFirstResponder]) {
-        [self.inputOutline setLineDashPattern:@[@2, @2]];
-    } else {
-        [self.inputOutline setLineDashPattern:@[]];
-    }
-    [self setNeedsLayout];
-    [self.view setNeedsLayout];
-
-    return height;
-}
 
 
 
@@ -257,12 +216,14 @@
     [self.sendButton setTitleColor:text forState:UIControlStateNormal];
     [self.closeButton setTitleColor:text forState:UIControlStateNormal];
 
-    self.dots.layer.borderColor = inputLine.CGColor;
+    for (UIView *dot in self.dots) {
+        dot.layer.borderColor = inputLine.CGColor;
+    }
     for (UIButton *option in self.optionButtons) {
         [option setTitleColor:text forState:UIControlStateNormal];
     }
     if (self.userBubbles.count > 0) {
-        UIView *first = [[self.userBubbles subviews] firstObject];
+        UIView *first = [self.userBubbles firstObject];
         first.layer.borderColor = inputLine.CGColor;
     }
     [self.view setNeedsLayout];
@@ -341,7 +302,7 @@ static NSAttributedString *PDAttributedLine(NSString *text, UIFont *font, UIColo
                     for (NSUInteger i = 0; i < dotCount; i++) {
                         UIView *dot = dots[i];
                         [dot setFrame:CGRectMake(unit * dotX, dotY, dotSide, dotSide)];
-                        [dot layer].path = [UIBezierPath bezierPathWithOvalInRect:[dot bounds]].CGPath;
+                        dot.layer.cornerRadius = dotSide * 0.5;
                         dotX += 5;
                     }
                 }
@@ -593,10 +554,9 @@ static inline double PDClampD(double v, double lo, double hi) {
     BOOL allowSpeech = [prefs boolForKey:@"SpeechEnabled" fallback:YES];
     [self setTalkSound:allowSpeech];
     [self setSpeechSettings:@{ @"enabled": @(allowSpeech), @"speed": @([self bubbleSpeed]) }];
-    (void)[[self speechSettings] boolValue];
+    (void)[[self speechSettings][@"enabled"] boolValue];
 
     if (![self speechAllowed]) [self stopSpeech];
-    (void)[[self current] length];
     (void)[self shownLength];
     (void)[[self answer] length];
     [self scheduleDismiss];
@@ -776,8 +736,8 @@ static inline double PDClampD(double v, double lo, double hi) {
 
     if (!punctuationOnly) {
         if (![[[self current] objectForKeyedSubscript:@"silent"] boolValue]) {
-            void (^talk)(id) = [self talkHandler];
-            if (talk) talk(chunk);
+            void (^talk)(NSString *, BOOL) = [self talkHandler];
+            if (talk) talk(chunk, NO);
 
             if ([self speechAllowed] && ![self usingDoubao]) {
                 PDSoundPlayer *player = [PDSoundPlayer sharedPlayer];
@@ -867,7 +827,7 @@ static inline double PDClampD(double v, double lo, double hi) {
 
     [self setDictationPrefix:[text substringToIndex:sel.location]];
     [self setDictationSuffix:[text substringFromIndex:NSMaxRange(sel)]];
-    [self setDictationPlaceholder:[[self.composer placeholder] text]];
+    [self setDictationPlaceholder:[[self.composer placeholder] text] ?: @""];
 
     [[self.composer placeholder] setText:PDLocalizedString(@"正在开启语音输入…")];
 
@@ -911,13 +871,10 @@ static inline double PDClampD(double v, double lo, double hi) {
     }
 
     [[PDSoundPlayer sharedPlayer] setVoiceInputActive:YES
-                                          completion:^(BOOL ok, NSError *error) {
+                                          completion:^{
         PDChatController *strong = weakSelf;
         if (!strong) return;
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (!ok && error) {
-                strong.lastError = error.localizedDescription;
-            }
             [strong.view setNeedsLayout];
         });
     }];
@@ -949,13 +906,13 @@ static inline double PDClampD(double v, double lo, double hi) {
     // 把听写结果拼进输入框（NSTextStorage 属性串替换，光标跟到末尾）
     if ([self closed]) return;
 
-    NSString *prefix = [self dictationPrefix] ?: @"";
-    NSString *suffix = [self dictationSuffix] ?: @"";
+    prefix = [self dictationPrefix] ?: @"";
+    suffix = [self dictationSuffix] ?: @"";
     NSString *incoming = [text isKindOfClass:[NSString class]] ? text : @"";
 
     NSMutableAttributedString *composed = [[NSMutableAttributedString alloc] initWithString:
         [NSString stringWithFormat:@"%@%@%@", prefix, incoming, suffix]
-        attributes:[self typingAttributes] ?: @{}];
+        attributes:[[self composer] typingAttributes] ?: @{}];
 
     UITextView *composer = [self composer];
     UIFont *font = [composer font];
@@ -1119,7 +1076,7 @@ static inline double PDClampD(double v, double lo, double hi) {
     _keyboardFrame = frame;
     [self.view setNeedsLayout];
 
-    UIWindow *hostWindow = [self window];
+    UIWindow *hostWindow = [[self view] window];
     UIScreen *screen = [hostWindow screen] ?: [UIScreen mainScreen];
     if (screen) {
         (void)[screen coordinateSpace];
@@ -1305,7 +1262,7 @@ static inline double PDClampD(double v, double lo, double hi) {
     NSMutableDictionary *attrs = [[[self composer] typingAttributes] mutableCopy];
     if (attrs != nil) {
         if ([[self composer] font] != nil) {
-            attrs[NSFontAttributeName] = [[self composer] font];
+            attrs[NSFontAttributeName] = (__bridge id)[[self composer] font];
         }
         if ([[self composer] textColor] != nil) {
             attrs[NSForegroundColorAttributeName] = [[self composer] textColor];
@@ -1328,7 +1285,7 @@ static inline double PDClampD(double v, double lo, double hi) {
 - (void)cancelVoiceInput {
     // 0x19a6c：停逐字定时器 → flush → 应用已显示文本 → 复位听写状态与请求号
     [self stopDictationRevealTimer];
-    PDDictationReveal *reveal = [self dictationReveal];
+    PDVoiceTextReveal *reveal = [self dictationReveal];
     [reveal flush];
     NSString *displayed = [[self dictationReveal] displayedText];
     if ([displayed length] > 0) {
@@ -1373,7 +1330,6 @@ static inline double PDClampD(double v, double lo, double hi) {
     NSString *message = code == -1 ? @"麦克风不可用，请检查权限。" : @"语音输入失败，请重试。";
     [self showComposer];
     [[self composer] setText:message];
-    (void)[[self current] length];
     (void)[[self placeholder] text];
     [self setPendingDictation:NO];
 
@@ -1683,7 +1639,7 @@ static inline double PDClampD(double v, double lo, double hi) {
 - (void)delay:(double)seconds block:(void (^)(void))block {
     // 0x1f594：先停上一个 reveal，再建一次性定时器挂到 mainRunLoop（common modes）
     [self stopReveal];
-    NSTimer *timer = [NSTimer timerWithTimeInterval:delay repeats:NO block:^(NSTimer *t) {
+    NSTimer *timer = [NSTimer timerWithTimeInterval:seconds repeats:NO block:^(NSTimer *t) {
         if (block) block();
     }];
     [self setRevealTimer:timer];
@@ -1751,7 +1707,7 @@ static inline double PDClampD(double v, double lo, double hi) {
     (void)anchor;
 
     CGRect visible = [[self view] bounds];
-    CGPoint anchor = [self anchorPoint];
+    anchor = [self anchorPoint];
     NSMutableArray *visibleBubbles = [NSMutableArray array];
     for (UIView *bubble in [self bubbles]) {
         if (CGRectIntersectsRect(visible, bubble.frame)) {
@@ -1816,7 +1772,7 @@ static inline double PDClampD(double v, double lo, double hi) {
         [[self imageButtons] addObject:button];
     }
 
-    (void)[self bounds];
+    (void)[[self view] bounds];
     [[self view] setNeedsLayout];
 }
 
@@ -1889,52 +1845,8 @@ static inline double PDClampD(double v, double lo, double hi) {
     [[self sendButton] setEnabled:YES];
 
     // 粘贴的图片统一重编码成 PNG 再入列（离屏 renderer，避免原图过大）
-    BOOL enabled = [[PDAIPreference(@"AIAcceptImages", @YES) boolValue] boolValue];
+    BOOL enabled = [PDAIPreference(@"AIAcceptImages", @YES) boolValue];
     if (!enabled) return;
-
-    UITextView *composer = [self composer];
-    NSMutableArray *normalized = [NSMutableArray array];
-    for (id item in candidates ?: @[]) {
-        UIImage *image = nil;
-        if ([item isKindOfClass:[UIImage class]]) image = item;
-        else if ([item isKindOfClass:[NSData class]]) image = [UIImage imageWithData:item];
-        if (!image) continue;
-
-        CGImageRef cg = image.CGImage;
-        double w = cg ? (double)CGImageGetWidth(cg) : image.size.width;
-        double h = cg ? (double)CGImageGetHeight(cg) : image.size.height;
-        if (w <= 0 || h <= 0) continue;
-        double scale = MIN(1.0, 1600.0 / MAX(w, h));
-        CGSize target = CGSizeMake(w * scale, h * scale);
-
-        UIGraphicsImageRendererFormat *format = [UIGraphicsImageRendererFormat defaultFormat];
-        UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:target format:format];
-        UIImage *scaled = [renderer imageWithActions:^(UIGraphicsImageRendererContext *ctx) {
-            [image drawInRect:CGRectMake(0, 0, target.width, target.height)];
-        }];
-        if (!scaled) continue;
-        (void)[scaled imageOrientation];
-
-        __block NSData *png = nil;
-        if ([NSThread isMainThread]) {
-            png = UIImagePNGRepresentation(scaled);
-        } else {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                png = UIImagePNGRepresentation(scaled);
-            });
-        }
-        if ([png length] == 0) continue;
-        [normalized addObject:png];
-    }
-
-    dispatch_queue_t q = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
-    dispatch_async(q, ^{
-        (void)[normalized count];
-        [composer setNeedsLayout];
-    });
-    if ([self respondsToSelector:@selector(attachImages:)]) {
-        [self attachImages:normalized];
-    }
 }
 
 
@@ -2009,8 +1921,8 @@ static inline double PDClampD(double v, double lo, double hi) {
             continue;
         }
         id mutable = [item mutableCopy];
-        [mutable setObject:__kCFBooleanTrue forKeyedSubscript:@"rush"];
-        [mutable setObject:__kCFBooleanTrue forKeyedSubscript:@"silent"];
+        [mutable setObject:@YES forKeyedSubscript:@"rush"];
+        [mutable setObject:@YES forKeyedSubscript:@"silent"];
         [[self queue] setObject:mutable atIndexedSubscript:index];
     }
 
@@ -2023,8 +1935,8 @@ static inline double PDClampD(double v, double lo, double hi) {
     }
 
     id mutable = [current mutableCopy];
-    [mutable setObject:__kCFBooleanTrue forKeyedSubscript:@"rush"];
-    [mutable setObject:__kCFBooleanTrue forKeyedSubscript:@"silent"];
+    [mutable setObject:@YES forKeyedSubscript:@"rush"];
+    [mutable setObject:@YES forKeyedSubscript:@"silent"];
     [self setCurrent:mutable];
 
     [self stopSpeech];
@@ -2237,11 +2149,13 @@ static inline double PDClampD(double v, double lo, double hi) {
     if (![self speech]) {
         __weak typeof(self) weakSelf = self;
         PDReplySpeech *speech = [[PDReplySpeech alloc]
-            initWithPlay:^{
+            initWithPlay:^(NSString *segment, void (^done)(NSError *error)) {
+                (void)segment;
                 typeof(self) strongSelf = weakSelf;
                 if (strongSelf) {
                     [strongSelf advanceQueue];
                 }
+                if (done) done(nil);
             }
             stop:^{
                 typeof(self) strongSelf = weakSelf;
@@ -2415,9 +2329,27 @@ static inline double PDClampD(double v, double lo, double hi) {
 - (BOOL)dictationScrollPending { return _dictationScrollPending; }
 
 /// Observed @0x22714（4 条）：adrp/ldrsw 取 ivar 偏移表 + ldr x0,[x0,x8] —— 即直接读 _composer。
-- (id)composer { return _composer; }
+- (PDComposerTextView *)composer { return _composer; }
 
 /// Observed @0x22724：mov x1,x2 后尾调用 objc_storeStrong —— 即 objc_storeStrong(&_composer, value)。
-- (void)setComposer:(id)composer { _composer = composer; }
+- (void)setComposer:(PDComposerTextView *)composer { _composer = composer; }
+
+- (NSString *)lastText {
+    id text = [[self current] objectForKeyedSubscript:@"text"];
+    return [text isKindOfClass:[NSString class]] ? text : @"";
+}
+
+- (void)enqueueUserText:(NSString *)text images:(NSArray *)images {
+    if (text.length) [self addUserLine:text];
+    (void)images;
+}
+
+- (NSArray *)bubbles {
+    NSMutableArray *all = [NSMutableArray array];
+    if (_replyBubble) [all addObject:_replyBubble];
+    if (_inputBubble) [all addObject:_inputBubble];
+    if (_userBubbles) [all addObjectsFromArray:_userBubbles];
+    return all;
+}
 
 @end

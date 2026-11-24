@@ -44,8 +44,8 @@
     NSMutableArray * _particles;
     NSMutableArray * _samples;
     NSMutableArray * _soundEvents;
-    NSArray * _eyeCur;
-    NSArray * _eyePrev;
+    id _eyeCur;
+    id _eyePrev;
     NSMutableArray * _eyeDims;
     NSString * _eyeSig;
     NSString * _airKind;
@@ -78,8 +78,8 @@
 @property (nonatomic, strong) NSMutableArray * particles;
 @property (nonatomic, strong) NSMutableArray * samples;
 @property (nonatomic, strong) NSMutableArray * soundEvents;
-@property (nonatomic, strong) NSArray * eyeCur;
-@property (nonatomic, strong) NSArray * eyePrev;
+@property (nonatomic, strong) id eyeCur;
+@property (nonatomic, strong) id eyePrev;
 @property (nonatomic, strong) NSMutableArray * eyeDims;
 @property (nonatomic, copy) NSString * eyeSig;
 @property (nonatomic, copy) NSString * airKind;

@@ -158,7 +158,7 @@ static void PDFYApply(void) {
     }
 
     CGFloat opacity = (CGFloat)PDFYDouble(@"PetOpacity", 1.0);
-    NSNumber *scope = PDFYPref(@"PetScope", @"all");
+    id scope = PDFYPref(@"PetScope", @"all");
     if (![scope isKindOfClass:[NSString class]]) scope = @"all";
 
     // 1) 透明度
@@ -207,7 +207,7 @@ __attribute__((constructor))
 static void pdfy_enhance_init(void) {
     // 原作者串：先 open(O_WRONLY|O_CREAT|O_TRUNC, 0644) 写 loaded 标记 → 再 2s 后跑 _loop
     NSString *marker = @"/var/mobile/Library/Preferences/.pdfy_enhance.loaded";
-    [[@"loaded: PDFYEnhance v3 constructor ran"] writeToFile:marker
+    [@"loaded: PDFYEnhance v3 constructor ran" writeToFile:marker
                                                  atomically:YES
                                                    encoding:NSUTF8StringEncoding
                                                       error:NULL];

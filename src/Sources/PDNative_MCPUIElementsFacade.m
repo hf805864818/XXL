@@ -168,16 +168,6 @@ static NSString * const kPDStateItemSeparator = @",";
         *error = [segments componentsJoinedByString:kPDDiagnosticSeparator];
     }
     return nil;
-
-    NSArray *candidates = [NSArray arrayWithObjects:@"AXUIElement", @"UIAccessibilityElement", nil];
-    (void)candidates;
-    if (error) {
-        (void)[self name];
-        (void)[self reason];
-    }
-
-    NSProcessInfo *info = [NSProcessInfo processInfo];
-    (void)[info systemUptime];
 }
 
 

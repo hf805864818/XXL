@@ -24,6 +24,7 @@
 
 #import "PDAssetManager.h"
 #import <UIKit/UIKit.h>
+#import <objc/message.h>
 
 @implementation PDAssetManager
 
@@ -111,7 +112,7 @@
     Class helperCls = NSClassFromString(@"PDAssetDownloader");
     id helper = nil;
     if (helperCls && [helperCls respondsToSelector:@selector(initWithQueue:)]) {
-        helper = [[helperCls alloc] performSelector:@selector(initWithQueue:) withObject:q];
+        helper = ((id (*)(id, SEL, id))objc_msgSend)([helperCls alloc], @selector(initWithQueue:), q);
     }
     [self setHelper:helper];
 
@@ -199,14 +200,14 @@
     // 推进下一项：代际校验 + 事件回调 + 启动请求
     if ([self ready]) return;
     unsigned long long gen = [self generation];
-    void (^willChange)(void) = [self willChangeHandler];
-    if (willChange) willChange();
+    void (^willChange)(NSDictionary *) = [self willChangeHandler];
+    if (willChange) willChange([self state]);
 
     id helper = [self helper];
     if (!helper) {
         Class helperCls = NSClassFromString(@"PDAssetDownloader");
         if (helperCls && [helperCls respondsToSelector:@selector(initWithQueue:)]) {
-            helper = [[helperCls alloc] performSelector:@selector(initWithQueue:) withObject:[self queue]];
+            helper = ((id (*)(id, SEL, id))objc_msgSend)([helperCls alloc], @selector(initWithQueue:), [self queue]);
             if ([helper respondsToSelector:@selector(setEventHandler:)]) {
                 [helper performSelector:@selector(setEventHandler:) withObject:^(id event) {
                     (void)event;
@@ -220,7 +221,6 @@
     }
     dispatch_sync([self queue] ?: dispatch_get_main_queue(), ^{
         if ([self generation] != gen) return;
-        if ([[self pending] containsObject:@(gen)]) return;
         [self setGeneration:gen];
     });
     if ([helper respondsToSelector:@selector(cancel)]) {
@@ -244,7 +244,7 @@
 - (void)setBusy:(BOOL)v { _busy = v; }
 
 - (NSDictionary *)state {
-    return (NSDictionary *)objc_getProperty(self, @selector(state), 0, YES);
+    return _state;
 }
 
 - (void)setState:(NSDictionary *)v { _state = v; }

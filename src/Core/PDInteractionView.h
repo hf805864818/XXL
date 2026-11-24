@@ -13,10 +13,10 @@
 
 @property (nonatomic, weak) PDPetView * pet;
 
-- (long long)drawRect:(id)arg1;
-- (BOOL)pointInside:(CGPoint)arg1 withEvent:(id)arg2;
-- (void)touchesBegan:(id)arg1 withEvent:(id)arg2;
-- (void)touchesMoved:(id)arg1 withEvent:(id)arg2;
-- (void)touchesEnded:(id)arg1 withEvent:(id)arg2;
-- (void)touchesCancelled:(id)arg1 withEvent:(id)arg2;
+- (void)drawRect:(CGRect)rect;
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event;
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event;
 @end

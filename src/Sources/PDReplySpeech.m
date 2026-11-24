@@ -16,6 +16,10 @@
 
 #pragma mark - PDReplySpeech
 
+static NSArray *_PDDoubaoSpeechSegments(NSString *text) {
+    return text.length ? @[text] : @[];
+}
+
 @implementation PDReplySpeech
 
 /// 46 条（0x16670）。`+0x18`=_play、`+0x20`=_stop（objc_retainBlock，即对 block 做 copy）；

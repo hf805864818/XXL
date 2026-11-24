@@ -47,18 +47,6 @@
         return [pet pointInside:p withEvent:event];
     }
     return NO;
-
-    if (![self isUserInteractionEnabled]) return NO;
-    if ([self isHidden]) return NO;
-    if (![self interactionEnabled]) return NO;
-    if ([[self superview] respondsToSelector:@selector(isPaused)] && [[self superview] performSelector:@selector(isPaused)]) {
-        return NO;
-    }
-    CGPathRef hitPath = (CGPathRef)[self path];
-    if (!hitPath) return NO;
-    CALayer *layer = [self layer];
-    CGPoint local = [layer convertPoint:point fromLayer:[self layer]];
-    return CGPathContainsPoint(hitPath, NULL, local, false);
 }
 
 

@@ -247,10 +247,10 @@ static double WNReadNum(NSDictionary *d, id key, double fallback) {
 - (void)setSamples:(NSMutableArray *)v { _samples = v; }
 - (NSMutableArray *)soundEvents { return _soundEvents; }
 - (void)setSoundEvents:(NSMutableArray *)v { _soundEvents = v; }
-- (NSArray *)eyeCur { return _eyeCur; }
-- (void)setEyeCur:(NSArray *)v { _eyeCur = v; }
-- (NSArray *)eyePrev { return _eyePrev; }
-- (void)setEyePrev:(NSArray *)v { _eyePrev = v; }
+- (id)eyeCur { return _eyeCur; }
+- (void)setEyeCur:(id)v { _eyeCur = v; }
+- (id)eyePrev { return _eyePrev; }
+- (void)setEyePrev:(id)v { _eyePrev = v; }
 - (NSMutableArray *)eyeDims { return _eyeDims; }
 - (void)setEyeDims:(NSMutableArray *)v { _eyeDims = v; }
 - (NSString *)eyeSig { return _eyeSig; }

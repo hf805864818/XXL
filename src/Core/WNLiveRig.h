@@ -53,13 +53,13 @@ typedef struct WNBallAnchor {
     NSDictionary * _model;
     NSDictionary * _sourceModel;
     NSDictionary * _tables;
-    NSDictionary * _positions;
+    NSData * _positions;
     NSArray * _alpha;
     NSArray * _order;
     NSString * _scheme;
     NSString * _outfit;
-    NSDictionary * _highlight;
-    NSDictionary * _toyBall;
+    id _highlight;
+    id _toyBall;
     NSMutableDictionary * _springs;
     NSMutableDictionary * _rot;
     NSMutableDictionary * _warps;
@@ -67,7 +67,7 @@ typedef struct WNBallAnchor {
     NSDictionary * _pivots;
     NSDictionary * _outfitInfo;
     NSDictionary * _compiledDeformers;
-    NSData * _localVertices;
+    NSMutableData * _localVertices;
     NSURL * _resourceURL;   // 【可编辑化扩展】资源根，供 PDTextureResolver 定位素材
 }
 
@@ -76,13 +76,13 @@ typedef struct WNBallAnchor {
 @property (nonatomic, strong) NSDictionary * model;
 @property (nonatomic, strong) NSDictionary * sourceModel;
 @property (nonatomic, strong) NSDictionary * tables;
-@property (nonatomic, strong) NSDictionary * positions;
+@property (nonatomic, strong) NSData * positions;
 @property (nonatomic, strong) NSArray * alpha;
 @property (nonatomic, strong) NSArray * order;
 @property (nonatomic, strong) NSString * scheme;
 @property (nonatomic, strong) NSString * outfit;
-@property (nonatomic, strong) NSDictionary * highlight;
-@property (nonatomic, strong) NSDictionary * toyBall;
+@property (nonatomic, strong) id highlight;
+@property (nonatomic, strong) id toyBall;
 @property (nonatomic, strong) NSMutableDictionary * springs;
 @property (nonatomic, strong) NSMutableDictionary * rot;
 @property (nonatomic, strong) NSMutableDictionary * warps;

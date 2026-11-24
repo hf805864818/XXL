@@ -28,17 +28,6 @@
     self.font = [UIFont systemFontOfSize:15];
     self.returnKeyType = UIReturnKeyDefault;
     return self;
-
-    [self setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
-    [self setContentInset:UIEdgeInsetsZero];
-    [self setLineFragmentPadding:0.0];
-    [self setShowsVerticalScrollIndicator:NO];
-    if ([[self text] length] == 0) [self setText:@""];
-    [self setUserInteractionEnabled:YES];
-    UIView *backdrop = [[UIView alloc] initWithFrame:CGRectZero];
-    backdrop.userInteractionEnabled = NO;
-    [self addSubview:backdrop];
-    (void)UIEdgeInsetsZero;
 }
 
 
@@ -110,8 +99,8 @@
 }
 
 
-- (NSString *)placeholder { return _placeholder; }
-- (void)setPlaceholder:(NSString *)v { _placeholder = v; }
+- (UILabel *)placeholder { return _placeholder; }
+- (void)setPlaceholder:(UILabel *)v { _placeholder = v; }
 
 #pragma mark - 二进制存取器（逐条 8-16 指令，纯 ivar 读写）
 - (void)setUnit:(double)v { _unit = v; }

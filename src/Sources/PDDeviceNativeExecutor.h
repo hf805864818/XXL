@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "PetDFY.h"
 
-@interface PDDeviceNativeExecutor : NSObject {
-}
+@interface PDDeviceNativeExecutor : NSObject
++ (instancetype)sharedInstance;
 
 /// 总入口：权限 → AX 作用域 → 锁屏检查 → 分发。
 - (id)execute:(NSString *)tool arguments:(NSDictionary *)args;

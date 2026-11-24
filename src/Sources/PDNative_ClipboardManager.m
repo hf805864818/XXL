@@ -25,6 +25,7 @@
 //
 
 #import "PDNative_ClipboardManager.h"
+#import <objc/message.h>
 
 #import <CommonCrypto/CommonDigest.h>
 #import <UIKit/UIKit.h>
@@ -281,7 +282,6 @@ static dispatch_queue_t PDClipboardQueue(void) {
                 NSMutableString *joined = [[NSMutableString alloc] initWithData:manifestData
                                                                        encoding:NSUTF8StringEncoding];
                 for (NSString *item in items) {
-                    if ([item hasPrefix:@"\u0000"]) continue;
                     [lines addObject:item];
                 }
                 id imageFlag = items.count ? @([self pd_manifestHasBinaryPayload:manifestData]) : @NO;

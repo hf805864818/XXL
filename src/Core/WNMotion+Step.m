@@ -116,7 +116,7 @@ motion_look_targets:;
         if (pointerInside && !pressing) {          // [0x46e88 / 0x46eb0]
             BOOL behind = (dist < 600.0) && ((px * p.facing) < -50.0);  // [0x46eb8..0x46ed8]
             if (behind) {
-                goto motion_behind_pointer;        // → 0x48944：转身
+                return;                            // 0x48944：转身分支尚未还原
             }
         }
         // [0x46edc] 未转身：清转身累积，坐姿抬到 12，困倦归零
@@ -293,48 +293,6 @@ motion_common:;
     //   以及 @"sit"/@"sleep"/@"crouch"/@"air"/@"spin"/@"land"/@"drag"/@"flap"/@"wake" 分支。
     return;
 
-motion_behind_pointer:
-    // NOT RUN: [0x48944] 指针在身后时的转身判定（p.turnAcc 累积 → 翻转 facing）
-    return;
-
-    // 表情/眼神状态机推进（eyeSig 变化时切眼型，thinking 时出气泡）
-    NSString *face = [self currentFaceName];
-    NSDictionary *faceDef = [self faceAt:face ?: @"neutral"];
-    BOOL thinking = [self thinking];
-    BOOL thoughtShown = [self thoughtShown];
-    (void)faceDef;
-
-    NSString *eyeTarget = @"open";
-    if (thinking && !thoughtShown) {
-        eyeTarget = @"half";
-        [self setThoughtShown:YES];
-        [self event:@"thought" detail:@{@"face": face ?: @"neutral"}];
-    } else if ([@[@"sleep", @"doze"] containsObject:face]) {
-        eyeTarget = @"closed";
-    }
-
-    NSString *currentSig = [self eyeSig];
-    NSString *currentEye = [self eyeCur];
-    NSString *desiredSig = [NSString stringWithFormat:@"%@/%@", eyeTarget, face ?: @"neutral"];
-    if ([self responsiveInteraction]) {
-        if (currentSig && ![currentSig isEqualToString:desiredSig]) {
-            [self setEyePrev:currentEye];
-            [self setEyeCur:eyeTarget];
-            [self setEyeSig:desiredSig];
-        }
-    } else if (currentSig && ![currentSig isEqualToString:desiredSig]) {
-        [self setEyePrev:currentEye];
-        [self setEyeSig:desiredSig];
-    } else if (!currentSig) {
-        [self setEyePrev:currentEye];
-        [self setEyeSig:desiredSig];
-    }
-
-    NSArray *dims = [self eyeDims];
-    if ([dims isKindOfClass:[NSArray class]] && dims.count >= 2) {
-        (void)[dims[0] boolValue];
-        (void)[dims[1] doubleValue];
-    }
 }
 
 

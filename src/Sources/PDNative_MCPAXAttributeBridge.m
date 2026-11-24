@@ -17,6 +17,9 @@
 //
 
 #import "PDNative_MCPAXAttributeBridge.h"
+#import "PDNative_MCPLogger.h"
+#import <mach-o/dyld.h>
+#import <dlfcn.h>
 #import <dlfcn.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -83,7 +86,7 @@ static AXError        (*pPDAXUIElementCopyAttributeValue)(AXUIElementRef, CFStri
 static AXError        (*pPDAXUIElementSetAttributeValue)(AXUIElementRef, CFStringRef, CFTypeRef)    = NULL;
 static AXError        (*pPDAXUIElementCopyParameterizedAttributeValue)(AXUIElementRef, CFStringRef, CFTypeRef, CFTypeRef *) = NULL;
 static AXError        (*pPDAXUIElementCopyElementAtPosition)(AXUIElementRef, float, float, AXUIElementRef *) = NULL;
-static AXError        (*pPDAXUIElementCopyMultipleAttributeValues)(AXUIElementRef, CFArrayRef, AXCopyMultipleAttributeOptions, CFArrayRef *) = NULL;
+static AXError        (*pPDAXUIElementCopyMultipleAttributeValues)(AXUIElementRef, CFArrayRef, uint32_t, CFArrayRef *) = NULL;
 static AXError        (*pPDAXUIElementSetMessagingTimeout)(AXUIElementRef, float)                   = NULL;
 static pid_t          (*pPDAXUIElementGetPid)(AXUIElementRef, pid_t *)                             = NULL;
 static AXValueRef     (*pPDAXValueCreate)(AXValueType, const void *)                              = NULL;
@@ -352,15 +355,16 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
 
 - (AXUIElementRef)copyApplicationElementForPid:(pid_t)pid error:(NSError **)error {
     // 0x8cd94：运行时可用性检查 → AXUIElementCreateApplication → 失败组错误串
-    NSString *runtimeError = nil;
+    NSError *runtimeError = nil;
     if (![self ensureRuntimeAvailable:&runtimeError]) {
-        if (error) *error = [NSString stringWithFormat:@"AX create_application unavailable: %@",
-                             runtimeError ?: @"unknown"];
+        if (error) *error = [NSError errorWithDomain:@"PDNative_MCPAX" code:-1
+                                            userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"AX create_application unavailable: %@", runtimeError.localizedDescription ?: @"unknown"]}];
         return NULL;
     }
     AXUIElementRef app = AXUIElementCreateApplication((pid_t)pid);
     if (!app) {
-        if (error) *error = [NSString stringWithFormat:@"AX create_application failed for PID %d", (int)pid];
+        if (error) *error = [NSError errorWithDomain:@"PDNative_MCPAX" code:-2
+                                            userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"AX create_application failed for PID %d", (int)pid]}];
         return NULL;
     }
     return app;
@@ -483,18 +487,6 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
     }
     return map;
 
-    NSMutableDictionary *out = [NSMutableDictionary dictionary];
-    for (id key in attributeKeys) {
-        NSString *keyString = [key description];
-        if ([keyString isKindOfClass:[NSString class]] && [keyString length] > 0) {
-            id value = [self copyAttributeObject:element attribute:(__bridge CFStringRef)keyString];
-            if (value) out[keyString] = value;
-        }
-        if ([keyString isEqualToString:@"XCUIElementType"]) {
-            out[@"isType"] = @YES;
-        }
-    }
-    return out;
 }
 
 
@@ -512,10 +504,6 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
     }
     return map;
 
-    for (id key in attributeKeys) {
-        NSString *k = [key description];
-        if ([k isEqualToString:@"AXLabel"] && [k length] > 0) break;
-    }
 }
 
 
@@ -532,17 +520,16 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
                            attributeKey:(NSString *)key
                               parameter:(id)parameter {
     // 0x92150：parameter 必须是字符串（opt_class/isKindOfClass），再按 key 分流
-    if (!attributeKey) return NULL;
+    if (!key) return NULL;
     Class stringClass = [NSString class];
     if (parameter && ![parameter isKindOfClass:stringClass]) {
         parameter = [parameter description];
     }
-    NSString *key = [attributeKey isKindOfClass:stringClass] ? attributeKey : @"";
-    if ([key length] == 0) return NULL;
+    if (![key isKindOfClass:stringClass] || key.length == 0) return NULL;
     if ([key isEqualToString:@"childrenWithRange"]) {
         return NULL;      // 参数化属性，需要 range 参数
     }
-    return (__bridge_retained CFTypeRef)parameter;
+    return parameter;
 }
 
 
@@ -561,7 +548,7 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
     return nil;
 
     // 数值属性：私有框架里取符号兜底（dlopen/dlsym + dyld 扫描）
-    NSString *attrName = [[(id)attribute description] lowercaseString];
+    NSString *attrName = [[[NSString stringWithFormat:@"%@", (__bridge id)attribute] description] lowercaseString];
     if ([attrName containsString:@"frame"] || [attrName containsString:@"pid"]) {
         uint32_t images = _dyld_image_count();
         for (uint32_t i = 0; i < images; i++) {
@@ -577,7 +564,7 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
     }
     (void)[attrName length];
     if ([PDNative_MCPLogger isDebugLoggingEnabled]) {
-        [PDNative_MCPLogger logMessage:[NSString stringWithFormat:@"[AX] number attr=%@", (id)attribute]];
+        [PDNative_MCPLogger logMessage:[NSString stringWithFormat:@"[AX] number attr=%@", (__bridge id)attribute]];
     }
 }
 
@@ -586,8 +573,8 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
 /// 上层只在这个通道里取 NSNumber。
 - (NSDictionary *)copyNumericAttributeMap:(AXUIElementRef)element attributes:(NSArray<NSString *> *)keys {
     if (!element) return nil;
-    if (![attributes isKindOfClass:[NSArray class]]) return nil;
-    if ([attributes count] == 0) return nil;
+    if (![keys isKindOfClass:[NSArray class]]) return nil;
+    if ([keys count] == 0) return nil;
 
     void *copyFn = PDYAXMultipleValuesFunction();
     if (!copyFn) return nil;
@@ -596,19 +583,19 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
 
     CFTypeRef values = NULL;
     int err = ((int (*)(AXUIElementRef, CFArrayRef, int, CFTypeRef *))copyFn)(
-                  element, (__bridge CFArrayRef)attributes, 0, &values);
+                  element, (__bridge CFArrayRef)keys, 0, &values);
     if (err != 0 || !values) return nil;
 
     id list = CFBridgingRelease(values);
     if (![list isKindOfClass:[NSArray class]]) return nil;
 
     NSMutableDictionary *out = [NSMutableDictionary dictionary];
-    NSUInteger count = [attributes count];
+    NSUInteger count = [keys count];
     NSUInteger avail = [(NSArray *)list count];
     for (NSUInteger i = 0; i < count; i++) {
         id value = (i < avail) ? [(NSArray *)list objectAtIndex:i] : nil;
         if (!value || value == [NSNull null]) continue;
-        id key = attributes[i];
+        id key = keys[i];
         if (!key) continue;
         out[key] = value;
     }
@@ -643,17 +630,17 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
         }
     }
     NSMutableArray *result = [NSMutableArray array];
-    NSArray *childList = [children allObjects];
+    NSArray *childList = [children array];
     if ([childList count] == 0) return @[ [NSNull null] ];
 
     NSArray *attributeKeys2 = @[@"AXRole", @"AXLabel"];
     for (id child in childList) {
-        NSDictionary *direct2 = [self copyDirectAttributeMap:child attributeKeys:attributeKeys2];
-        NSDictionary *xc2 = [self copyXCAttributeMap:child attributeKeys:@[@"XCUIElementType"]];
+        NSDictionary *direct2 = [self copyDirectAttributeMap:(__bridge AXUIElementRef)child attributeKeys:attributeKeys2];
+        NSDictionary *xc2 = [self copyXCAttributeMap:(__bridge AXUIElementRef)child attributeKeys:@[@"XCUIElementType"]];
         NSMutableDictionary *merged = [NSMutableDictionary dictionary];
         if ([direct2 isKindOfClass:[NSDictionary class]]) [merged addEntriesFromDictionary:direct2];
         if ([xc2 isKindOfClass:[NSDictionary class]]) [merged addEntriesFromDictionary:xc2];
-        NSDictionary *wide = [self copyAttributeMap:child attributes:@[@"AXRole"]];
+        NSDictionary *wide = [self copyAttributeMap:(__bridge AXUIElementRef)child attributes:@[@"AXRole"]];
         if ([wide isKindOfClass:[NSDictionary class]]) [merged addEntriesFromDictionary:wide];
         if ([[merged allKeys] count] > 0) [result addObject:merged];
     }
@@ -721,29 +708,23 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
                                   error:(NSError **)error {
     // 0x8c9dc：命中必须在后台线程，且运行时可用、目标上下文有效
     if ([NSThread isMainThread]) {
-        if (error) *error = @"Native AX hit test requires a background query and valid target context";
+        if (error) *error = [NSError errorWithDomain:@"PDNative_MCPAX" code:-3 userInfo:@{NSLocalizedDescriptionKey: @"Native AX hit test requires a background query and valid target context"}];
         return NULL;
     }
-    NSString *runtimeError = nil;
+    NSError *runtimeError = nil;
     if (![self ensureRuntimeAvailable:&runtimeError]) {
-        if (error) *error = runtimeError ?: @"AX runtime unavailable";
+        if (error) *error = runtimeError ?: [NSError errorWithDomain:@"PDNative_MCPAX" code:-4 userInfo:@{NSLocalizedDescriptionKey: @"AX runtime unavailable"}];
         return NULL;
     }
     if (!application || contextId == 0) {
-        if (error) *error = [NSString stringWithFormat:@"%@ (ctx=%u pid=%d)",
-                             @"Native AX hit test requires a background query and valid target context",
-                             (unsigned int)contextId, (int)expectedPid];
+        if (error) *error = [NSError errorWithDomain:@"PDNative_MCPAX" code:-5 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"%@ (ctx=%u pid=%d)", @"Native AX hit test requires a background query and valid target context", (unsigned int)contextId, (int)expectedPid]}];
         return NULL;
     }
     AXUIElementRef hit = (AXUIElementRef)[self copyElementAtPoint:point
                                             usingKnownContextId:contextId
                                                       expectedPid:expectedPid
-                                                      diagnostics:YES
+                                                      diagnostics:nil
                                                             error:error];
-    if (!hit) {
-        CFTypeRef stale = (__bridge CFTypeRef)application;
-        if (stale) CFRelease(stale);
-    }
     return hit;
 }
 
@@ -789,9 +770,9 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
 
     // 三层降级：先按 displayId 枚举，再按 seed，再点命中（orderedSet 去重 + valueWithCGPoint 缓存键）
     NSMutableOrderedSet *visited = [NSMutableOrderedSet orderedSet];
-    NSValue *pointValue = [NSValue valueWithCGPoint:point];
+    NSValue *pointValue = [NSValue value:&point withObjCType:@encode(CGPoint)];
     NSString *trace = nil;
-    NSInteger pid = 0;
+    int pid = 0;
     if ([self respondsToSelector:@selector(getPid:fromElement:)]) {
         AXUIElementRef dummy = NULL;
         (void)[self getPid:&pid fromElement:dummy];
@@ -805,7 +786,7 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
         [visited addObjectsFromArray:elements];
     }
     (void)[visited count];
-    (void)[pointValue intValue];
+    (void)pointValue;
 
     if (diagnostics || [PDNative_MCPLogger isDebugLoggingEnabled]) {
         trace = [NSString stringWithFormat:@"hit@(%.0f,%.0f) candidates=%lu",
@@ -852,28 +833,9 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
     if (diagnostics) {
         diagnostics[@"strategy"] = @"known_context_hit_test";
         diagnostics[@"contextId"] = @(contextId);
-        diagnostics[@"point"] = NSStringFromPoint(point);
+        diagnostics[@"point"] = [NSString stringWithFormat:@"{%.0f,%.0f}", point.x, point.y];
     }
     return hit;
-
-    NSMutableArray *trail = [NSMutableArray array];
-    [trail addObject:[NSString stringWithFormat:@"ctx=%d", (int)[knownContextId intValue]]];
-    int pidOut = 0;
-    if ([self respondsToSelector:@selector(getPid:fromElement:)]) {
-        [self getPid:&pidOut fromElement:NULL];
-    }
-    [trail addObject:[NSString stringWithFormat:@"pid=%d", (int)pidOut]];
-    if ([PDNative_MCPLogger isDebugLoggingEnabled]) {
-        [PDNative_MCPLogger logMessage:[NSString stringWithFormat:@"[AX] element@point %@",
-                                        [trail componentsJoinedByString:@"; "]]];
-        (void)[trail count];
-    }
-    if (error) {
-        NSString *axErr = [self respondsToSelector:@selector(errorStringForAXError:)]
-            ? [self performSelector:@selector(errorStringForAXError:) withObject:@(0)] : nil;
-        (void)[axErr length];
-    }
-    (void)CFRelease;
 }
 
 
@@ -977,7 +939,7 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
     }
     NSMutableArray *trail = [NSMutableArray array];
     [trail addObject:[NSString stringWithFormat:@"p=%@ pid=%d",
-                      [NSValue valueWithCGPoint:point], (int)getpid()]];
+                      [NSString stringWithFormat:@"{%.0f,%.0f}", point.x, point.y], (int)getpid()]];
     if ([trail count] > 0 && [self respondsToSelector:@selector(copyApplicationElementForPid:error:)]) {
         AXUIElementRef bound = [self copyApplicationElementForPid:(pid_t)getpid() error:NULL];
         if (bound) CFRelease(bound);
@@ -1054,9 +1016,6 @@ static void (*PDYAXSetClientTypeFunction(void))(int) {
         @"userTestingSnapshotParameterized": [NSNumber numberWithInt:1]
     };
     id probe = [self copyUserTestingSnapshotForElement:element options:snapshot];
-    if (!probe && error) {
-        *error = [self errorStringForAXError:0];
-    }
     return probe;
 }
 
@@ -1167,9 +1126,9 @@ static NSArray<NSNumber *> *PDAXDisplayIdCandidates(void) {
     NSMutableArray *notes = [NSMutableArray array];
     [notes addObject:[NSString stringWithFormat:@"pid=%d", (int)getpid()]];
     (void)[notes count];
-    [notes addObject:[NSString stringWithFormat:@"point=%@", [NSValue valueWithCGPoint:CGPointZero]]];
+    [notes addObject:[NSString stringWithFormat:@"point=%@", @"{0,0}"]];
     if (appElement) {
-        CGPoint origin = [[NSValue valueWithCGPoint:CGPointZero] CGPointValue];
+        CGPoint origin = CGPointZero;
         CGRect frame = CGRectMake(origin.x, origin.y, 100.0, 100.0);
         if (CGRectGetHeight(frame) > 0.0 && CGRectGetMinY(frame) >= 0.0) {
             [notes addObject:@"frame=ok"];

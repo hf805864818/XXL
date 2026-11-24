@@ -95,7 +95,7 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
     _rot = [NSMutableDictionary dictionary];
     _warps = [NSMutableDictionary dictionary];
     _pivots = [NSMutableDictionary dictionary];
-    _localVertices = [NSMutableDictionary dictionary];
+    _localVertices = [NSMutableData data];
     // 二进制建的是 NSMutableDictionary（compileMesh 0x49f20..0x4a220），键=变形器名
     _compiledDeformers = [NSMutableDictionary dictionary];
 
@@ -114,38 +114,6 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
     lastT = 0;
     deformersDirty = YES;
     return self;
-
-    // 载入 model.json 并挑出对应服装/主题（predicate 过滤 + firstObject）
-    NSURL *modelURL = [[self resourceURL] URLByAppendingPathComponent:@"live/model.json"];
-    NSData *data = [NSData dataWithContentsOfURL:modelURL];
-    if (data.length) {
-        id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
-        if ([json isKindOfClass:[NSDictionary class]]) {
-            NSArray *models = ((NSDictionary *)json)[@"models"];
-            if ([models isKindOfClass:[NSArray class]] && [models count] > 0) {
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id == %@", scheme ?: @"deepseek"];
-                NSArray *hits = [models filteredArrayUsingPredicate:predicate];
-                NSDictionary *chosen = [hits firstObject] ?: [models firstObject];
-                NSArray *faceParts = [[chosen[@"faces"] componentsSeparatedByString:@","] copy];
-                if ([faceParts count] > 0) {
-                    [self setFaceDefinitions:faceParts];
-                }
-                NSMutableDictionary *groups = [NSMutableDictionary dictionary];
-                if ([chosen[@"groups"] isKindOfClass:[NSDictionary class]]) {
-                    [groups addEntriesFromDictionary:chosen[@"groups"]];
-                }
-                [self setGroupTilt:groups];
-                if ([self respondsToSelector:@selector(initWithSeed:freeGround:)]) {
-                    [self initWithSeed:(unsigned long long)seed freeGround:freeGround];
-                }
-                [self step:1.0 / 60.0 buildMesh:NO];
-                double tiltScale = [chosen[@"tilt"] doubleValue];
-                if (tiltScale == 0.0 && ![chosen[@"tilt"] isKindOfClass:[NSNumber class]]) {
-                    [NSException raise:@"LiveRigError" format:@"missing tilt for %@", scheme ?: @"default"];
-                }
-            }
-        }
-    }
 }
 
 
@@ -187,8 +155,6 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
     PDTextureResolver *resolver =
         [PDTextureResolver resolverWithRoot:[_resourceURL path] scheme:_scheme outfit:_outfit];
     return [resolver featurePathForName:name];
-
-    return [NSString stringWithFormat:@"%@/%@", [self scheme] ?: @"deepseek", part ?: @""];
 }
 
 
@@ -332,9 +298,6 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
     if (r <= 0) r = 20.0;
     CGPoint p = CGPointMake(c.x + cos(angle) * r, c.y + sin(angle) * r);
     return [self renderPointToStage:p];
-
-    (void)[self outfit];
-    (void)[self point:CGPointMake(128.0, 200.0) deformer:@"hand"];
 }
 
 
@@ -343,19 +306,6 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
     CGPoint hand = [self ballHandAtAngle:angle];
     // 接触点比手部位置略低
     return CGPointMake(hand.x, hand.y + 4.0);
-
-    NSString *outfitId = [self outfit];
-    NSDictionary *pivots = [self pivots];
-    (void)outfitId;
-    double radius = 0.0;
-    if ([pivots isKindOfClass:[NSDictionary class]]) {
-        id radiusValue = pivots[@"ballRadius"];
-        if ([radiusValue respondsToSelector:@selector(doubleValue)]) radius = [radiusValue doubleValue];
-    }
-    CGPoint pivot = [self point:CGPointMake(128.0, 200.0) deformer:@"ball"];
-    CGPoint stagePoint = [self renderPointToStage:pivot];
-    (void)stagePoint; (void)radius;
-    return NO;
 }
 
 
@@ -912,10 +862,10 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
                     }
 
                     // 32 字节记录：{double x, double y, parent, double param}
-                    struct { double x, y; __unsafe_unretained id parent; double param; } rec;
+                    struct { double x, y; void *parent; double param; } rec;
                     rec.x = vx;
                     rec.y = vy;
-                    rec.parent = (__bridge __unsafe_unretained id)parentName;
+                    rec.parent = (__bridge void *)parentName;
                     rec.param = param;
                     [local appendBytes:&rec length:sizeof(rec)];         // 0x4a554
                 }
@@ -946,11 +896,11 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
 - (NSDictionary *)tables { return _tables; }
 - (void)setTables:(NSDictionary *)v { _tables = v; }
 
-- (NSDictionary *)positions { return _positions; }
-- (void)setPositions:(NSDictionary *)v { _positions = v; }
+- (NSData *)positions { return _positions; }
+- (void)setPositions:(NSData *)v { _positions = v; }
 
-- (NSDictionary *)alpha { return _alpha; }
-- (void)setAlpha:(NSDictionary *)v { _alpha = v; }
+- (NSArray *)alpha { return _alpha; }
+- (void)setAlpha:(NSArray *)v { _alpha = v; }
 
 - (NSArray *)order { return _order; }
 - (void)setOrder:(NSArray *)v { _order = v; }
@@ -961,23 +911,23 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
 - (NSString *)outfit { return _outfit; }
 - (void)setOutfit:(NSString *)v { _outfit = v; }
 
-- (NSNumber *)highlight { return _highlight; }
-- (void)setHighlight:(NSNumber *)v { _highlight = v; }
+- (id)highlight { return _highlight; }
+- (void)setHighlight:(id)v { _highlight = v; }
 
-- (NSNumber *)toyBall { return _toyBall; }
-- (void)setToyBall:(NSNumber *)v { _toyBall = v; }
+- (id)toyBall { return _toyBall; }
+- (void)setToyBall:(id)v { _toyBall = v; }
 
-- (NSDictionary *)springs { return _springs; }
-- (void)setSprings:(NSDictionary *)v { _springs = v; }
+- (NSMutableDictionary *)springs { return _springs; }
+- (void)setSprings:(NSMutableDictionary *)v { _springs = v; }
 
 - (NSDictionary *)rot { return _rot; }
-- (void)setRot:(NSDictionary *)v { _rot = v; }
+- (void)setRot:(NSMutableDictionary *)v { _rot = v; }
 
-- (NSDictionary *)warps { return _warps; }
-- (void)setWarps:(NSDictionary *)v { _warps = v; }
+- (NSMutableDictionary *)warps { return _warps; }
+- (void)setWarps:(NSMutableDictionary *)v { _warps = v; }
 
-- (NSDictionary *)rootWas { return _rootWas; }
-- (void)setRootWas:(NSDictionary *)v { _rootWas = v; }
+- (NSMutableDictionary *)rootWas { return _rootWas; }
+- (void)setRootWas:(NSMutableDictionary *)v { _rootWas = v; }
 
 - (NSDictionary *)pivots { return _pivots; }
 - (void)setPivots:(NSDictionary *)v { _pivots = v; }

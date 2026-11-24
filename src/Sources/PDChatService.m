@@ -214,8 +214,8 @@ static NSString *const kPDMaintenanceNotificationName = @"com.susudear.petdfy/co
     [cfg setTimeoutIntervalForResource:300.0];
     [cfg setHTTPMaximumConnectionsPerHost:2];
 
-    NSString *dir = [self dataDirectory];
-    NSString *historyPath = [dir stringByAppendingPathComponent:@"conversation.json"];
+    NSString *dataDirPath = [self dataDirectory];
+    NSString *historyPath = [dataDirPath stringByAppendingPathComponent:@"conversation.json"];
     NSData *data = [NSData dataWithContentsOfFile:historyPath];
     if (data.length) {
         id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
@@ -491,7 +491,7 @@ extern BOOL _PDAIImageRetryAllowed(id a, id b, id c);
         [self setCallIndex:nextIndex];
     }
     if ([[self lastText] length] == 0) {
-        [self skipRemaining:YES];
+        [self skipRemaining:@YES];
     }
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
         [self persistHistory];
@@ -543,7 +543,7 @@ extern BOOL _PDAIImageRetryAllowed(id a, id b, id c);
 
     [self setGeneration:([self generation] + 1)];
 
-    BOOL acceptImages = [[PDAIPreference(@"AIAcceptImages", @YES) boolValue] boolValue];
+    BOOL acceptImages = [PDAIPreference(@"AIAcceptImages", @YES) boolValue];
     BOOL hasImages = [images isKindOfClass:[NSArray class]] && images.count > 0;
     if (hasImages && !acceptImages) {
         NSError *err = [self errorWithMessage:@"请先在供应商设置中开启“接受图片”。" code:-20];
@@ -593,7 +593,6 @@ extern BOOL _PDAIImageRetryAllowed(id a, id b, id c);
         (void)snapshot;
     });
 
-    [[self service] enqueueEvent:snapshot wake:YES preempt:NO];
     [self requestRound];
 }
 
@@ -712,7 +711,7 @@ extern id _PDAIRequestBody(id prompt, id history, id tools, id options,
     }
 
     // 0x2a82c–0x2a8xx：系统提示词 = 记忆 + 交接笔记 + 运行状态
-    NSString *memory = [self memory] ?: @"";
+    NSString *memory = [[self memory] description] ?: @"";
     NSString *handoff = [self handoffText] ?: @"";
     // 0x2a8c4–0x2a900：stateProvider 是个 block，直接取 [block+0x10]（invoke）调用，
     // 返回值就是运行状态 JSON。头文件原写 void(^)(void) 是早期按名字猜的，已改。
@@ -798,7 +797,7 @@ extern id _PDAINormalizeResponse(id json, id settings, NSError **error);
                 generation:(unsigned long long)generation
                 recovering:(BOOL)recovering {
     // 0x29e3c：代际/busy 闸门 → dataTaskWithRequest:completionHandler: → resume
-    if ([self generation] != expectedGeneration) return;
+    if ([self generation] != generation) return;
     if ([self busy]) return;
     NSURLSession *activeSession = [self session];
     if (!activeSession) return;
@@ -823,8 +822,6 @@ extern id _PDAINormalizeResponse(id json, id settings, NSError **error);
         });
     }];
     [self setTask:task];
-    [self setRetryBytes:retryBytes ?: @0];
-    [self setSentImages:sentImages ?: @[]];
     [[self task] resume];
 }
 
@@ -887,9 +884,9 @@ extern id _PDAINormalizeResponse(id json, id settings, NSError **error);
     (void)[self busy];
     [self persistHistory];
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{ });
-    void (^legacy)(void) = [self legacyCompletion];
+    void (^legacy)(NSError *) = [self legacyCompletion];
     [self setLegacyCompletion:nil];
-    if (legacy) legacy();
+    if (legacy) legacy(nil);
     if ([self respondsToSelector:@selector(startTurn)]) [self performSelector:@selector(startTurn)];
     void (^handler)(BOOL, NSError *) = [self turnStateHandler];
     if (handler) handler(NO, error);
@@ -944,7 +941,7 @@ extern id _PDAINormalizeResponse(id json, id settings, NSError **error);
 
         id result = [[self memory] executeTool:@"delete_file" arguments:@{@"path": path ?: @""}];
         BOOL ok = [result isKindOfClass:[NSString class]] && [result hasPrefix:@"[deleted]"];
-        [[self memory] removeConversationHandoffs];
+        [[self memory] removeConversationHandoffs:NULL];
         [self setMaintainingData:NO];
         if (completion) {
             if (ok) completion(result, nil);
@@ -991,10 +988,10 @@ extern id _PDAINormalizeResponse(id json, id settings, NSError **error);
     }
 
     if ([op isEqual:@"clean_workspace"]) {
-        [[self memory] removeGeneratedFiles:^(id result, NSError *error) {
-            [self setMaintainingData:NO];
-            if (completion) completion(result, error);
-        }];
+        NSError *cleanError = nil;
+        BOOL cleaned = [[self memory] removeGeneratedFiles:&cleanError];
+        [self setMaintainingData:NO];
+        if (completion) completion(@{@"cleaned": @(cleaned)}, cleanError);
         return;
     }
 
@@ -1097,9 +1094,9 @@ extern id _PDAINormalizeResponse(id json, id settings, NSError **error);
         turnState(NO, [self error:@"本轮已中断。" code:0xc00]);
     }
 
-    void (^legacy)(void) = [self legacyCompletion];
+    void (^legacy)(NSError *) = [self legacyCompletion];
     [self setLegacyCompletion:nil];
-    if (legacy) legacy();
+    if (legacy) legacy(nil);
 }
 
 

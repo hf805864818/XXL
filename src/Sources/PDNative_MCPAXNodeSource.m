@@ -475,10 +475,10 @@ allowParameterizedHitTest:(BOOL)allowParameterizedHitTest
     if ([baseLabel length] > 0) {
         [snapshot setObject:baseLabel forKey:@"label"];
     }
-    if (includeFirstElement && element) {
-        [seen addObject:element];
+    if (includeFirst && element) {
+        [seen addObject:(__bridge id)element];
     }
-    if (includeVisibleCandidates) {
+    if (includeVisible) {
         NSArray *visible = [self snapshotProbeCandidatesForElement:element
                                                          baseLabel:baseLabel
                                               includeFirstElement:NO
@@ -488,7 +488,7 @@ allowParameterizedHitTest:(BOOL)allowParameterizedHitTest
         }
     }
     Class arrayClass = NSClassFromString(@"NSArray");
-    NSArray *candidates = [seen allObjects];
+    NSArray *candidates = [seen array];
     if (![candidates isKindOfClass:arrayClass]) candidates = @[];
     snapshot[@"candidates"] = [seen array];
     snapshot[@"count"] = @([seen count]);

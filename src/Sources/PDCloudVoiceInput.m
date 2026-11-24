@@ -113,6 +113,9 @@ static dispatch_queue_t PDVoiceWorkQueue(void) {
     void (^_textHandler)(NSString *);              /* +0xB0 */
     void (^_stateHandler)(BOOL);                   /* +0xB8 */
     void (^_completionHandler)(NSString *, NSError *); /* +0xC0 */
+    NSObject<OS_dispatch_queue> *_sharedWorkQueue;
+    NSString *_mode;
+    AudioQueueRef _queueRef;
 }
 
 - (void)consumePCM:(NSData *)pcm;
@@ -333,12 +336,9 @@ static dispatch_queue_t PDVoiceWorkQueue(void) {
                                                           ^(AudioQueueRef q, AudioQueueBufferRef buffer,
                                                             const AudioTimeStamp *ts, UInt32 packets,
                                                             const AudioStreamPacketDescription *desc) {
-        AudioQueueClient *client = [weakSelf current];
-        if (!client) return;
+        (void)weakSelf;
         AudioQueueAllocateBuffer(q, buffer->mAudioDataByteSize, &buffer);
         AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
-        [client consumePCM:[NSData dataWithBytes:buffer->mAudioData length:buffer->mAudioDataByteSize]];
-        [client completeOnQueue:dispatch_get_main_queue()];
     });
     if (status != noErr) {
         [self setStartError:[NSError errorWithDomain:@"PetDFY.CloudVoiceInput"
@@ -346,7 +346,7 @@ static dispatch_queue_t PDVoiceWorkQueue(void) {
                                             userInfo:@{NSLocalizedDescriptionKey: @"AudioQueue 创建失败"}]];
         return;
     }
-    [self setQueueRef:queue];
+    _queueRef = queue;
     AudioQueueStart(queue, NULL);
 
     // 定时看门狗

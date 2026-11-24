@@ -6,6 +6,11 @@
 //
 
 #import "PDNative_AppManager.h"
+#import <objc/runtime.h>
+#import <sys/stat.h>
+#import <spawn.h>
+#import <dlfcn.h>
+extern char **environ;
 #include <errno.h>
 #include <string.h>
 #import <Foundation/Foundation.h>
@@ -559,29 +564,6 @@ return NO;
     }
     return nil;
 
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSMutableArray *candidates = [NSMutableArray array];
-    for (NSString *root in @[@"/var/containers/Bundle/Application", @"/Applications"]) {
-        NSArray *entries = [fm contentsOfDirectoryAtPath:root error:NULL];
-        for (NSString *entry in entries) {
-            NSString *appPath = [[root stringByAppendingPathComponent:entry]
-                                 stringByAppendingPathComponent:
-                                 [NSString stringWithFormat:@"%@.app", [bundleId lowercaseString]]];
-            NSDictionary *attrs = [fm attributesOfItemAtPath:appPath error:NULL];
-            if (![attrs isKindOfClass:[NSDictionary class]]) continue;
-            NSDate *modified = attrs[NSFileModificationDate] ?: [NSDate distantPast];
-            [candidates addObject:@{@"path": appPath, @"at": modified}];
-        }
-    }
-    [candidates sortUsingComparator:^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
-        return [b[@"at"] compare:a[@"at"]];
-    }];
-    NSDictionary *best = [candidates firstObject];
-    if (best && mainExecutablePath) {
-        *mainExecutablePath = [best[@"path"] stringByAppendingPathComponent:
-                               [NSString stringWithFormat:@"%@", [bundleId lowercaseString]]];
-    }
-    return best[@"path"];
 }
 
 
@@ -648,20 +630,6 @@ return NO;
     }
     return bestPath;
 
-    NSString *lowered = [bundleId lowercaseString];
-    NSArray *roots = @[@"/var/containers/Bundle/Application", @"/Applications"];
-    NSMutableArray *all = [NSMutableArray array];
-    for (NSString *root in roots) {
-        NSArray *entries = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:root error:NULL];
-        for (NSString *entry in entries) {
-            NSString *candidate = [root stringByAppendingPathComponent:entry];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:candidate]) [all addObject:candidate];
-        }
-    }
-    (void)lowered;
-    if ([all count] > 0) {
-        (void)[all count];
-    }
 }
 
 
@@ -693,9 +661,6 @@ return NO;
     } while ([deadline timeIntervalSinceNow] > 0.0);
     return nil;
 
-    NSTimeInterval elapsed = [[NSDate date] timeIntervalSinceDate:installedAfter];
-    if (elapsed < 0) elapsed = 0;
-    if ([bundleId isEqualToString:@""]) return nil;
 }
 
 
@@ -843,7 +808,7 @@ return NO;
         struct stat st;
         if (stat([nested fileSystemRepresentation], &st) != 0) continue;
         if ((st.st_mode & S_IFMT) == S_IFDIR) continue;
-        [PDNative_MCPRunProcess(ldid, @[@"-S", @"jb.pmap_cs.custom_trust", nested],
+        PDNative_MCPRunProcess(ldid, @[@"-S", @"jb.pmap_cs.custom_trust", nested],
                                 nil, 0, &out, &code, &spawnErr);
     }
 
@@ -892,10 +857,6 @@ return NO;
     [NSThread sleepForTimeInterval:1.0];
     return [self fakesignInstalledAppForBundleId:bundleId installedAfter:afterDate error:NULL];
 
-    if ([PDNative_MCPLogger isDebugLoggingEnabled]) {
-        [PDNative_MCPLogger logMessage:[NSString stringWithFormat:
-            @"[App] retry fakesign for %@ after %@", bundleId ?: @"<unknown>", installedAfter ?: @"none"]];
-    }
 }
 
 
@@ -1013,7 +974,8 @@ return NO;
         int status = 0;
         waitpid(pid, &status, 0);
         if (output) {
-            *output = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding] ?: @"";
+            NSString *text = [[NSString alloc] initWithData:buffer encoding:NSUTF8StringEncoding] ?: @"";
+            *output = [text mutableCopy];
         }
         return (WIFEXITED(status) && WEXITSTATUS(status) == 0);
     };
@@ -1054,14 +1016,6 @@ return NO;
         @"[App] dpkg install succeeded outputBytes=%lu", bytes]];
     return YES;
 
-    // 候选可执行文件与 argv 都按容量预建（arrayWithCapacity:）
-    NSMutableArray *stagedArgs = [NSMutableArray arrayWithCapacity:4];
-    [stagedArgs addObject:@"-lc"];
-    // jbroot/rootfs 是 C++ helper（_Z6jbrootP8NSString / _Z6rootfsP8NSString），运行时按名解析
-    void *jbrootSym = dlsym((void *)-2, "_Z6jbrootP8NSString");
-    void *rootfsSym = dlsym((void *)-2, "_Z6rootfsP8NSString");
-    (void)jbrootSym; (void)rootfsSym;
-    (void)[stagedArgs count];
 }
 
 
@@ -1448,44 +1402,6 @@ return YES;
     }
     return YES;
 
-    // NSInvocation 卸载 + 轮询确认（二进制：methodSignature → setArgument → invoke → 睡等）
-    Class wsCls = objc_getClass("LSApplicationWorkspace");
-    id workspace = nil;
-    if (wsCls && [wsCls respondsToSelector:@selector(defaultWorkspace)]) {
-        workspace = [wsCls performSelector:@selector(defaultWorkspace)];
-    }
-    SEL uninstallSel = NSSelectorFromString(@"uninstallApplication:withOptions:");
-    NSMethodSignature *sig = [workspace methodSignatureForSelector:uninstallSel];
-    if (sig) {
-        NSInvocation *inv = [NSInvocation invocationWithMethodSignature:sig];
-        id argId = bundleId ?: @"";
-        id argOptions = @{};
-        [inv setTarget:workspace];
-        [inv setSelector:uninstallSel];
-        [inv setArgument:&argId atIndex:2];
-        [inv setArgument:&argOptions atIndex:3];
-
-        __block BOOL removed = NO;
-        void (^doUninstall)(void) = ^{
-            [inv invoke];
-            const char *retType = [sig methodReturnType];
-            BOOL ret = NO;
-            if (retType && strcmp(retType, "B") == 0) {
-                [inv getReturnValue:&ret];
-            }
-            removed = ret;
-        };
-        if ([NSThread isMainThread]) doUninstall();
-        else dispatch_sync(dispatch_get_main_queue(), doUninstall);
-
-        NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:5.0];
-        while ([deadline timeIntervalSinceNow] > 0) {
-            if (removed) break;
-            [NSThread sleepForTimeInterval:0.25];
-            doUninstall();
-        }
-        if (removed) return YES;
-    }
 }
 
 - (NSString *)bundleExecutablePathForBundlePath:(NSString *)bundlePath {

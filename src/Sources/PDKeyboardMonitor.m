@@ -95,14 +95,6 @@ static void PDKeyboardArbiterSetLastUpdate(id self, SEL _cmd, id arg1, id arg2) 
 - (void)start {
     if ([self hooked]) return;
 
-    Class arbiter = NSClassFromString(@"_UIKeyboardArbiter");
-    SEL updateSel = NSSelectorFromString(@"setLastUpdate:");
-    if (arbiter && updateSel) {
-        Method target = class_getInstanceMethod(arbiter, updateSel);
-        if (target) {
-            MSHookMessageEx(arbiter, updateSel, (IMP)PDKeyboardArbiterDidUpdate, NULL);
-        }
-    }
     [self setHooked:YES];
     [self refresh];
 
