@@ -213,3 +213,11 @@ typedef struct WNLook {
 - (unsigned long long)uploadFrame;
 - (void)setUploadFrame:(unsigned long long)arg1;
 @end
+
+
+#pragma mark - 编译补齐（PDStubs.m 提供实现）
+
+@interface WNRenderer (PDStub)
+/// view 坐标 → stage 坐标。原版实现缺失，当前恒等返回。
+- (CGPoint)toStage:(CGPoint)viewportPoint;
+@end
