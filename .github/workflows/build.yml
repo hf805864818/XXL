@@ -90,7 +90,8 @@ jobs:
       - name: Fallback build (dynamic_lookup, no libsubstrate)
         if: failure()
         run: |
-          sed -i '' 's/^PetDFY_LIBRARIES = substrate/PetDFY_LDFLAGS = -Wl,-undefined,dynamic_lookup/' Makefile
+          set -o pipefail
+          sed -i '' 's/^PetDFY_LIBRARIES = substrate/PetDFY_LDFLAGS = -Wl,-undefined,dynamic_lookup/' Makefile || true
           make clean all 2>&1 | tee build-fallback.log
 
       - name: Package (manual, avoid theos rebuild)
