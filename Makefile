@@ -26,7 +26,8 @@ TWEAK_NAME = PetDFY
 PetDFY_FILES = $(shell find src/Core src/Sources src/Ext -name '*.m')
 PetDFY_CFLAGS = -fobjc-arc -Wno-deprecated-declarations -Wno-unused-function \
                 -Wno-nullability-completeness -Wno-objc-multiple-method-names \
-                -Wno-unused-variable -Wno-unused-but-set-variable
+                -Wno-unused-variable -Wno-unused-but-set-variable \
+                -Isrc -Isrc/Core -Isrc/Sources -Isrc/Ext
 PetDFY_FRAMEWORKS = Foundation UIKit Metal MetalKit MetalPerformanceShaders QuartzCore \
                     CoreGraphics ImageIO AVFoundation AVFAudio AudioToolbox Security \
                     CoreFoundation CoreText Accelerate
@@ -39,7 +40,7 @@ include $(THEOS_MAKE_PATH)/tweak.mk
 # ---------------------------------------------------------------- 增强层
 TWEAK_NAME = PDFYEnhance
 PDFYEnhance_FILES = src/Auxiliary/PDFYEnhance.m
-PDFYEnhance_CFLAGS = -fobjc-arc -Wno-deprecated-declarations
+PDFYEnhance_CFLAGS = -fobjc-arc -Wno-deprecated-declarations -Isrc -Isrc/Core -Isrc/Sources
 PDFYEnhance_FRAMEWORKS = Foundation UIKit
 PDFYEnhance_INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries
 
@@ -48,7 +49,7 @@ include $(THEOS_MAKE_PATH)/tweak.mk
 # ---------------------------------------------------------------- 权限加固
 TWEAK_NAME = PDFYSecurity
 PDFYSecurity_FILES = src/Auxiliary/PDFYSecurity.m
-PDFYSecurity_CFLAGS = -fno-objc-arc
+PDFYSecurity_CFLAGS = -fno-objc-arc -Isrc -Isrc/Core
 PDFYSecurity_FRAMEWORKS = Foundation
 PDFYSecurity_INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries
 

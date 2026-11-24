@@ -82,6 +82,7 @@ jobs:
 
       - name: Build (arm64 + arm64e)
         run: |
+          set -o pipefail
           make clean all 2>&1 | tee build.log
           find .theos layout -name "*.dylib" -type f 2>/dev/null | while read f; do
             echo "$f"; lipo -info "$f"; done
@@ -94,6 +95,7 @@ jobs:
 
       - name: Package
         run: |
+          set -o pipefail
           make package FINALPACKAGE=1 2>&1 | tee package.log
           ls -l packages/
 
