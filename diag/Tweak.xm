@@ -14,7 +14,9 @@
 #import <objc/runtime.h>
 #import <unistd.h>
 
+// 双写：Caches 目录（标准位置）+ Media 目录（Filza / 文件 App 直接可见）
 static NSString *const kLogPath = @"/var/mobile/Library/Caches/petdfy-diag.log";
+static NSString *const kLogPathUser = @"/var/mobile/Media/petdfy-diag.log";
 static NSString *const kPrefsDomain = @"com.susudear.petdfyprefs";
 static NSString *const kBundlePath = @"/Library/Application Support/PetDFY.bundle";
 
@@ -28,22 +30,30 @@ static void PDLog(NSString *fmt, ...) {
 
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        if (![[NSFileManager defaultManager] fileExistsAtPath:kLogPath]) {
-            [[NSFileManager defaultManager] createFileAtPath:kLogPath contents:nil attributes:nil];
+        for (NSString *path in @[kLogPath, kLogPathUser]) {
+            if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                [[NSFileManager defaultManager] createFileAtPath:path contents:nil attributes:nil];
+                // 让 Media 下的文件对 Filza / 文件 App 可读
+                [[NSFileManager defaultManager] setAttributes:@{NSFilePosixPermissions: @0644}
+                                                 ofItemAtPath:path error:NULL];
+            }
         }
     });
 
     NSString *line = [NSString stringWithFormat:@"[%@] %@\n",
                       [NSDate dateWithTimeIntervalSince1970:[[NSDate date] timeIntervalSince1970]],
                       msg];
-    NSFileHandle *fh = [NSFileHandle fileHandleForWritingAtPath:kLogPath];
-    if (!fh) return;
-    @try {
-        [fh seekToEndOfFile];
-        [fh writeData:[line dataUsingEncoding:NSUTF8StringEncoding]];
-        [fh closeFile];
-    } @catch (NSException *e) {
-        NSLog(@"[PetDFYDiag] write failed: %@", e.reason);
+    NSData *payload = [line dataUsingEncoding:NSUTF8StringEncoding];
+    for (NSString *path in @[kLogPath, kLogPathUser]) {
+        NSFileHandle *fh = [NSFileHandle fileHandleForWritingAtPath:path];
+        if (!fh) continue;
+        @try {
+            [fh seekToEndOfFile];
+            [fh writeData:payload];
+            [fh closeFile];
+        } @catch (NSException *e) {
+            NSLog(@"[PetDFYDiag] write %@ failed: %@", path, e.reason);
+        }
     }
 }
 
