@@ -67,19 +67,4 @@
 /// Observed @0x24b18（cleanup）/ @0x24b20（ldr x8,[block,0x28] → dispatch_async(main_q, completion)）。
 - (void)cancelWithCompletion:(void (^)(void))completion;
 
-#pragma mark - 状态（属性 backing 即二进制 ivar，声明已上移到接口体）
-
-@property (nonatomic, assign, getter=isActive)    BOOL active;     // 0x98
-@property (nonatomic, assign, getter=isFinishing) BOOL finishing;  // 0x99
-
-@property (nonatomic, copy)   NSString *transcript;                // 0xa0
-@property (nonatomic, strong) NSError  *startError;                // 0xa8
-
-/// 0xb0 — 二进制调用点只传一个参数：text
-@property (nonatomic, copy) void (^textHandler)(NSString *text);
-/// 0xb8 — 二进制调用点只传一个 BOOL
-@property (nonatomic, copy) void (^stateHandler)(BOOL active);
-/// 0xc0
-@property (nonatomic, copy) void (^completionHandler)(NSString *transcript, NSError *error);
-
 @end

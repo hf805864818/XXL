@@ -67,7 +67,7 @@
 @property (nonatomic, copy) NSString * lastText;
 @property (nonatomic, copy) void (^legacyCompletion)(NSError *);
 @property (nonatomic, strong) NSMutableArray *history;
-@property (nonatomic, copy) id (^stateProvider)(void);
+@property (nonatomic, copy) void (^stateProvider)(void);
 @property (nonatomic, copy) void (^toolHandler)(NSString *, NSDictionary *, void (^)(id, NSError *));
 @property (nonatomic, copy) void (^deviceToolHandler)(NSString *, NSDictionary *, void (^)(id, NSError *));
 @property (nonatomic, copy) void (^turnStateHandler)(BOOL, NSError *);

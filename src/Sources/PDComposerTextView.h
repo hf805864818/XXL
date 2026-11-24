@@ -23,10 +23,4 @@
 - (BOOL)canPerformAction:(SEL)arg1 withSender:(id)arg2;
 - (void)paste:(id)arg1;
 - (void)layoutSubviews;
-- (double)unit;
-- (void)setUnit:(NSNumber *)arg1;
-- (BOOL)multiline;
-- (void)setMultiline:(BOOL)arg1;
-- (void (^)(NSArray *))imagePasteHandler;
-- (void)setImagePasteHandler:(void (^)(void))arg1;
 @end

@@ -129,7 +129,7 @@
 @property (nonatomic, copy) void (^talkHandler)(NSString *, BOOL);
 @property (nonatomic, copy) void (^sendHandler)(NSString *);
 @property (nonatomic, copy) void (^answerHandler)(NSString *);
-@property (nonatomic, copy) void (^confirmationShownHandler)(NSString *);
+@property (nonatomic, copy) void (^confirmationShownHandler)(BOOL);
 @property (nonatomic, copy) void (^actionsHandler)(NSArray *);
 @property (nonatomic, copy) BOOL (^bodyBusyProvider)(void);
 @property (nonatomic, copy) BOOL (^soundEnabledProvider)(void);
