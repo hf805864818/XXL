@@ -7,4 +7,3 @@ Maintainer: hf805864818
 Author: hf805864818
 Section: Tweaks
 Depends: mobilesubstrate | ellekit | libhooker, firmware (>= 16.0)
-Installed-Size: 100
