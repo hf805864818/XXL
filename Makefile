@@ -32,7 +32,6 @@ PetDFY_FRAMEWORKS = Foundation UIKit Metal MetalKit MetalPerformanceShaders Quar
                     CoreGraphics ImageIO AVFoundation AVFAudio AudioToolbox Security \
                     CoreFoundation CoreText Accelerate
 PetDFY_PRIVATE_FRAMEWORKS = MobileCoreServices
-PetDFY_LIBRARIES = substrate
 PetDFY_LDFLAGS = -Wl,-undefined,dynamic_lookup
 PetDFY_INSTALL_PATH = /Library/MobileSubstrate/DynamicLibraries
 
