@@ -30,6 +30,11 @@
 #import <MetalKit/MetalKit.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+
+// ARC 下 libobjc 的 C 接口未导出声明，这里补上（与二进制一致：成对 push/pop）
+extern void *objc_autoreleasePoolPush(void);
+extern void  objc_autoreleasePoolPop(void *pool);
 #import <math.h>
 
 @implementation WNRenderer (Draw)
@@ -622,14 +627,16 @@
         NSUInteger height = [[hit objectForKey:@"height"] unsignedIntegerValue];
         if (![hitIndices isKindOfClass:[NSData class]] || count == 0) continue;
 
-        [mask addPositions:positions
-                        UV:[hit objectForKey:@"uv"]
-                   indices:hitIndices
+        id uvValue = [hit objectForKey:@"uv"];
+        NSData *uvData = [uvValue isKindOfClass:[NSData class]] ? uvValue : nil;
+        [mask addPositions:(float *)[positions bytes]
+                        UV:(float *)[uvData bytes]
+                   indices:(unsigned short *)[hitIndices bytes]
                      count:count
-                      rgba:rgba
+                      rgba:(char *)[rgba bytes]
                      width:width
                     height:height
-                   opacity:alpha];
+                   opacity:(float)alpha];
     }
 
     // 把当前 live 网格的 uv / 索引也交给蒙版（0x5b?：indexCount/positionOffset/appendBytes）
@@ -670,7 +677,7 @@
     NSData *positions = [[self liveRig] positions];
     if (![positions isKindOfClass:[NSData class]] || positions.length < 8) return CGRectNull;
 
-    const float *v = (const float *)[positions retainAutorelease].bytes;   // 0x596c4
+    const float *v = (const float *)[positions bytes];   // 0x596c4
     NSUInteger count = positions.length / 8;                               // 0x596b0 cmp #7
 
     double minX = DBL_MAX, minY = DBL_MAX;      // 0x596d8
@@ -918,7 +925,7 @@
 
     BOOL ok = NO;
     CGImageDestinationRef dest = CGImageDestinationCreateWithURL((__bridge CFURLRef)url,
-                                                                kUTTypePNG, 1, NULL);
+                                                                CFSTR("public.png"), 1, NULL);
     if (dest) {
         CGImageDestinationAddImage(dest, image, NULL);
         ok = CGImageDestinationFinalize(dest);
@@ -932,10 +939,10 @@
     return ok;
 }
 
-@end
-
 #pragma mark - 编译补齐实现
 
 /// 原版把骨骼变形结果写回顶点；当前 WNLiveRig 侧已完成，这里留空。
 - (void)updateMesh {
 }
+
+@end
