@@ -94,6 +94,7 @@ jobs:
           make clean all 2>&1 | tee build-fallback.log
 
       - name: Package
+        if: always() && !cancelled()
         run: |
           set -o pipefail
           make package FINALPACKAGE=1 2>&1 | tee package.log
@@ -101,7 +102,7 @@ jobs:
 
       - name: Verify deb
         id: verify
-        if: success()
+        if: always() && !cancelled()
         run: |
           DEB=$(ls packages/*.deb | head -1)
           ARCH=$(dpkg-deb -f "$DEB" Architecture)
@@ -122,7 +123,7 @@ jobs:
           } >> $GITHUB_STEP_SUMMARY
 
       - name: Collect dylibs
-        if: success()
+        if: always() && !cancelled()
         run: |
           mkdir -p out
           cp -v packages/*.deb out/ 2>/dev/null || true
@@ -131,7 +132,7 @@ jobs:
           shasum -a 256 out/* | tee out/SHA256.txt
 
       - name: Upload artifact
-        if: success()
+        if: always() && !cancelled()
         uses: actions/upload-artifact@v4
         with:
           name: PetDFY-${{ steps.ver.outputs.version }}
