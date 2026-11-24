@@ -272,20 +272,6 @@ static double PDSemitoneToHz(int n) {
         add(5, 0.25, 0.30, @"sine");
     }
     return notes;
-
-    NSArray *notes = nil;
-    if ([arguments isKindOfClass:[NSDictionary class]]) {
-        notes = arguments[@"notes"];
-    }
-    if (![notes isKindOfClass:[NSArray class]] || [notes count] == 0) {
-        notes = [NSArray arrayWithObject:@(arc4random_uniform(3) + 1)];
-    }
-    NSString *first = [notes firstObject];
-    if ([first isKindOfClass:[NSString class]] && [first length] > 0) {
-        (void)[first characterAtIndex:0];
-        if ([first respondsToSelector:@selector(boolValue)]) (void)[first boolValue];
-    }
-    if ([notes count] > 1) (void)[notes count];
 }
 
 
@@ -365,25 +351,6 @@ static double PDSemitoneToHz(int n) {
     }
     (void)rg;
     return buf;
-
-    // 合成缓冲：先清零再按指数包络叠加（bzero/log/exp）
-    NSUInteger frames = 4410;
-    size_t bytes = frames * sizeof(float);
-    void *raw = malloc(bytes);
-    if (!raw) return nil;
-    bzero(raw, bytes);
-    float *out = (float *)raw;
-    double envelope = exp(-0.002);
-    for (NSUInteger i = 0; i < frames; i++) {
-        double t = (double)i / (double)frames;
-        double decay = exp(-4.0 * t * log(2.0 + envelope));
-        out[i] = (float)(0.2 * decay);
-    }
-    NSData *data = [NSData dataWithBytesNoCopy:raw length:bytes freeWhenDone:YES];
-    return data;
-
-    (void)asin(0.0);
-    (void)pow(2.0, 3.0);
 }
 
 
@@ -542,7 +509,8 @@ static double PDSemitoneToHz(int n) {
         [self.speechNode scheduleFile:speechFile
                                atTime:nil
                 completionCallbackType:AVAudioPlayerNodeCompletionDataPlayedBack
-                     completionHandler:^{
+                     completionHandler:^(AVAudioPlayerNodeCompletionCallbackType cbType) {
+            (void)cbType;
             __typeof(self) s = weakSelf;
             if (!s) return;
             dispatch_async(s.audioQueue, ^{
