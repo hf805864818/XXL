@@ -2306,7 +2306,7 @@ static inline double PDClampD(double v, double lo, double hi) {
 - (void)setTalkHandler:(id)v { _talkHandler = v; }
 - (void)setSendHandler:(id)v { _sendHandler = v; }
 - (void)setAnswerHandler:(id)v { _answerHandler = v; }
-- (void)setConfirmationShownHandler:(id)v { _confirmationShownHandler = v; }
+- (void)setConfirmationShownHandler:(void (^)(NSString *))v { _confirmationShownHandler = v; }
 - (void)setActionsHandler:(id)v { _actionsHandler = v; }
 - (void)setBodyBusyProvider:(id)v { _bodyBusyProvider = v; }
 - (void)setSoundEnabledProvider:(id)v { _soundEnabledProvider = v; }

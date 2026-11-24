@@ -1466,7 +1466,7 @@ extern id _PDAINormalizeResponse(id json, id settings, NSError **error);
 #pragma mark - 二进制存取器（逐条 8-16 指令，纯 ivar 读写）
 - (void)setHistoryURL:(id)v { _historyURL = v; }
 - (void)setBusy:(BOOL)v { _busy = v; }
-- (void)setStateProvider:(id)v { _stateProvider = v; }
+- (void)setStateProvider:(id (^)(void))v { _stateProvider = v; }
 - (void)setToolHandler:(id)v { _toolHandler = v; }
 - (void)setDeviceToolHandler:(id)v { _deviceToolHandler = v; }
 - (void)setTurnStateHandler:(id)v { _turnStateHandler = v; }
