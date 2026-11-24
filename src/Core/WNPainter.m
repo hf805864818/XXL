@@ -208,7 +208,8 @@
     // 精灵绘制前的坐标变换（0x? TranslateCTM/ScaleCTM/RotateCTM + CGImageGetWidth/Height）
     id rigNow = [self rig];
     id model = [rigNow sourceModel];
-    NSDictionary *tables = [self tables];
+    NSDictionary *tables = [rigNow respondsToSelector:@selector(tables)]
+        ? (NSDictionary *)[rigNow performSelector:@selector(tables)] : nil;
     (void)model; (void)tables;
 
     CGImageRef spriteImage = NULL;
@@ -662,9 +663,8 @@
     CGColorRelease(color);
 
     CGImageRef img = CGBitmapContextCreateImage(ctx);
-    CGContextRestoreGState(ctx);
     if (cs) CGColorSpaceRelease(cs);
-    return glowImage;
+    return img;
 }
 
 
@@ -735,10 +735,6 @@
         CGImageRef img = [self image:@"shadow"];
         if (img) [self draw:img context:ctx rect:CGRectZero];
         CGContextRestoreGState(ctx);
-    }
-
-        CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, 0.28);
-        CGContextFillEllipseInRect(context, CGRectMake(96.0, 208.0, 64.0, 18.0));
     }
 }
 
