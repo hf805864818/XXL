@@ -255,7 +255,7 @@
 
     CGPathRef hitPath = NULL;
     if ([self respondsToSelector:@selector(interactionPath)]) {
-        hitPath = (CGPathRef)[self performSelector:@selector(interactionPath)];
+        hitPath = (__bridge CGPathRef)[self performSelector:@selector(interactionPath)];
     }
     UIView *region = [self interactionView];
     if (hitPath && !CGPathIsEmpty(hitPath)) {
@@ -528,11 +528,11 @@
 
     [self cancelInteraction];
 
-    void (^handler)(id) = [self gestureActionHandler];
+    void (^handler)(NSString *, CGPoint) = [self gestureActionHandler];
     if (!handler) return;
 
     id action = [self doubleTapAction];
-    handler(action);
+    handler(action, CGPointZero);
 }
 
 /// 56 条指令。值未变直接返回；变了则先取消进行中的交互，再按新值开关单击/双击识别器。
@@ -669,7 +669,8 @@
 
     if (stage.width <= 0 || stage.height <= 0) return;
 
-    CGPoint viewport = [self lastHoverViewport];
+    CGSize viewportSize = [self lastHoverViewport];
+    CGPoint viewport = CGPointMake(viewportSize.width, viewportSize.height);
     CGPoint stagePoint = [renderer toStage:viewport];
     (void)stagePoint;
 
@@ -684,7 +685,7 @@
     }
     [self setLastHoverReach:reach];
     [self setLastHoverPosition:stagePoint];
-    [self setLastHoverViewport:viewport];
+    [self setLastHoverViewport:viewportSize];
 }
 
 
