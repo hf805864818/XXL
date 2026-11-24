@@ -286,8 +286,6 @@ static double WNReadNum(NSDictionary *d, id key, double fallback) {
 /// 4 条指令（0x4ab40）。`mov w2, 0` 后尾跳 hitConfirmed 变体，即 hitConfirmed = NO。
 - (BOOL)pointerDown:(CGPoint)point milliseconds:(double)ms {
     return [self pointerDown:point milliseconds:ms hitConfirmed:NO];
-
-    (void)[NSArray arrayWithObject:@(milliseconds)];
 }
 
 
