@@ -160,6 +160,21 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Publish Release
+        if: always() && !cancelled()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: PetDFY ${{ steps.ver.outputs.version }}
+          body: |
+            自动构建产物
+            - 版本：${{ steps.ver.outputs.version }}
+            - 架构：${{ steps.verify.outputs.arch }}
+            - SHA256：${{ steps.verify.outputs.sha256 }}
+          files: packages/*.deb
+          fail_on_unmatched_files: false
+          make_latest: true
+
       - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
