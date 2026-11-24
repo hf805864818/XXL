@@ -169,3 +169,9 @@
 - (void)setTalkPulse:(double)value;
 
 @end
+
+
+#pragma mark - 编译补齐
+
+/// 原版有、还原遗漏的访问器：返回随机种子（ivar randomState）
+- (id)seed;
