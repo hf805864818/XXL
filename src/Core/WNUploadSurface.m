@@ -37,8 +37,8 @@
 @synthesize paintKey = _paintKey;
 @synthesize paintRig = _paintRig;
 
-@end
 
 - (struct CGContext *)context {
     return context;
 }
+@end
