@@ -7,7 +7,6 @@
 //    3. 每条打一次日志，方便在设备上抓"哪些路径还没还原"
 //
 
-#import "PDStubs.h"
 #import "PDPetView.h"
 #import "WNRenderer.h"
 #import "WNLiveRig.h"
