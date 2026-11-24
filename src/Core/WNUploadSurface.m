@@ -39,3 +39,6 @@
 
 @end
 
+- (struct CGContext *)context {
+    return context;
+}
