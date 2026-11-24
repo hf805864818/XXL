@@ -127,3 +127,26 @@
 - (BOOL)menuPressActive;
 - (void)setMenuPressActive:(BOOL)arg1;
 @end
+
+
+#pragma mark - 编译补齐（PDStubs.m 提供实现）
+
+// 逆向还原时遗漏的入口：被调用但既无声明也无实现。
+// 声明放这里（而不是单独头文件），保证所有 import PDPetView.h 的地方都能看到。
+@interface PDPetView (PDStub)
+- (nullable MTKView *)mtkView;
+- (void)setPet:(nullable id)pet;
+- (void)advanceKeyboardAnimation:(nullable id)flag;
+- (nullable id)liveRig;
+- (nullable NSString *)expression;
+- (void)pointerLeave;
+- (nullable NSString *)mode;
+- (nullable id)state;
+- (nullable NSMutableArray *)samples;
+- (void)pointerHover:(CGPoint)point;
+@end
+
+/// iOS 私有：UIPanGestureRecognizer 的最小移动距离
+@interface UIPanGestureRecognizer (PDPrivate)
+- (void)setAllowableMovement:(CGFloat)movement;
+@end
