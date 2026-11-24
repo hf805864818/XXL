@@ -64,7 +64,7 @@
     long long previous = [self pd_readActiveInterfaceOrientation];
     [self setActiveInterfaceOrientation:o];
     long long current = [self activeInterfaceOrientation];
-    void (^handler)(long long, double) = [self changeHandler];
+    void (^handler)(UIInterfaceOrientation, double) = [self changeHandler];
     (void)current;
     if (previous != o && notify && handler) {
         handler(o, d);
