@@ -27,3 +27,7 @@
 @synthesize backgroundPositions = _backgroundPositions;
 
 @end
+
+- (id)quad {
+    return nil;
+}
