@@ -12,6 +12,7 @@
 //
 
 #import "PDNative_MCPAXNodeSource.h"
+#import "PDNative_ScreenGeometry.h"
 #import <math.h>
 #import <objc/message.h>
 
@@ -365,8 +366,10 @@ allowParameterizedHitTest:(BOOL)allowParameterizedHitTest
         return nil;
     }
 
-    CGAffineTransform screenTransform = CGAffineTransformIdentity;
-    CGRect screen = _PDNative_MCPGetScreenGeometry(&screenTransform);
+    PDMCPScreenGeometry geometry = {0};
+    PDNative_MCPGetScreenGeometry(&geometry);
+    CGAffineTransform screenTransform = geometry.fixedToScreen;
+    CGRect screen = geometry.screenBounds;
 
     __block NSTimeInterval deadline = self->_queryDeadline;
     BOOL (^expired)(void) = ^BOOL{

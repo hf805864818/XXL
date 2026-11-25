@@ -1,10 +1,10 @@
 Package: com.ojbkclub.petdfy
 Name: 大肥鱼〇V〇
-Version: 0.1.8-e1
+Version: 0.1.8-e2
 Architecture: iphoneos-arm64e
 Description: 大肥鱼〇V〇 桌面宠物 — 可编辑源码重建版（T3 基线）。包含 15 套服装素材、发色引擎、布局外置与两个辅助 dylib。
 Maintainer: hf805864818
 Author: 屿哥精选（原作） / 逆向重建
 Section: Tweaks
-Depends: mobilesubstrate, preferenceloader, firmware (>= 16.0)
+Depends: mobilesubstrate | ellekit | libhooker, preferenceloader, firmware (>= 16.0)
 Installed-Size: 9050

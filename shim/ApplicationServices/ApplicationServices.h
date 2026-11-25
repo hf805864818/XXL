@@ -57,6 +57,19 @@ AXError AXUIElementCopyApplicationAndContextAtPosition(AXUIElementRef systemWide
 AXError AXUIElementCopyApplicationAtPosition(AXUIElementRef systemWide, float x, float y, AXUIElementRef *application);
 AXError AXUIElementSetClientType(AXUIElementRef element, CFStringRef type);
 
+
+#pragma weak AXUIElementCreateApplication
+#pragma weak AXUIElementCreateSystemWide
+#pragma weak AXUIElementCopyAttributeValue
+#pragma weak AXUIElementSetAttributeValue
+#pragma weak AXUIElementCopyMultipleAttributeValues
+#pragma weak AXUIElementCopyParameterizedAttributeValue
+#pragma weak AXUIElementCopyElementAtPosition
+#pragma weak AXUIElementGetPid
+#pragma weak AXUIElementSetMessagingTimeout
+#pragma weak AXValueCreate
+#pragma weak AXValueGetValue
+
 #ifdef __cplusplus
 }
 #endif

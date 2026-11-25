@@ -11,6 +11,12 @@
 #import "PDNative_AccessibilityManager.h"
 #import <dlfcn.h>
 #import <mach/mach_time.h>
+#pragma weak IOHIDEventSystemClientCreate
+#pragma weak IOHIDEventCreateKeyboardEvent
+#pragma weak IOHIDEventAppendEvent
+#pragma weak IOHIDEventSetIntegerValue
+#pragma weak IOHIDEventSetSenderID
+#pragma weak IOHIDEventSystemClientDispatchEvent
 #import <unistd.h>
 
 #pragma mark - IOKit 私有 HID 声明（无 SDK 头，按二进制调用形态声明）

@@ -35,6 +35,12 @@
 
 #import "PDNative_IOSMCPHIDManager.h"
 #import <string.h>
+#pragma weak IOHIDEventSystemClientCreate
+#pragma weak IOHIDEventCreateKeyboardEvent
+#pragma weak IOHIDEventAppendEvent
+#pragma weak IOHIDEventSetIntegerValue
+#pragma weak IOHIDEventSetSenderID
+#pragma weak IOHIDEventSystemClientDispatchEvent
 #import <unistd.h>
 #import <UIKit/UIKit.h>
 #import <mach/mach_time.h>
