@@ -145,11 +145,6 @@ static void PDOverlayPrefsChanged(CFNotificationCenterRef center,
 - (BOOL)ensureWindow {
     if (_window) return YES;
 
-    if (![[self assets] ready]) {
-        _lastError = @"assets not ready";
-        return NO;
-    }
-
     UIWindowScene *scene = [self mainScene];
     UIWindow *sceneWindow = scene.windows.firstObject;
     if (!scene || !sceneWindow || !sceneWindow.windowScene) {   // 0x7154/0x7174 windowScene
@@ -165,6 +160,7 @@ static void PDOverlayPrefsChanged(CFNotificationCenterRef center,
         return NO;
     }
 
+    if (!_root) _root = [PDRootController new];
     PDWindow *w = [[PDWindow alloc] initWithWindowScene:scene];
     w.frame = scene.coordinateSpace.bounds;
     w.windowLevel = UIWindowLevelStatusBar + 1;   // 盖在状态栏之上
@@ -242,8 +238,30 @@ static void PDOverlayPrefsChanged(CFNotificationCenterRef center,
 
 /// 资源根目录（Observed，fcn 0x42c98）：二进制是 C 函数，直接返回硬编码串。
 /// 姊妹函数 0x42ca4 返回数据目录 `/var/mobile/Library/Application Support/PetDFY`。
+static NSString *PDJailbreakRootPath(void) {
+    const char *env = getenv("JB_ROOT_PATH");
+    if (env && env[0]) return [NSString stringWithUTF8String:env];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray *apps = [fm contentsOfDirectoryAtPath:@"/var/containers/Bundle/Application" error:NULL];
+    for (NSString *name in apps) {
+        if (![name hasPrefix:@".jbroot-"]) continue;
+        NSString *root = [@"/var/containers/Bundle/Application" stringByAppendingPathComponent:name];
+        if ([fm fileExistsAtPath:[root stringByAppendingPathComponent:@"Library"]]) return root;
+    }
+    if ([fm fileExistsAtPath:@"/var/jb/Library"]) return @"/var/jb";
+    return nil;
+}
+
 static NSString *PDResourceBundlePath(void) {
-    return @"/Library/Application Support/PetDFY.bundle";
+    NSString *relative = @"/Library/Application Support/PetDFY.bundle";
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if ([fm fileExistsAtPath:relative]) return relative;
+    NSString *root = PDJailbreakRootPath();
+    if (root) {
+        NSString *candidate = [root stringByAppendingPathComponent:relative];
+        if ([fm fileExistsAtPath:candidate]) return candidate;
+    }
+    return relative;
 }
 
 #pragma mark - 启动
@@ -267,8 +285,14 @@ static NSString *PDResourceBundlePath(void) {
     }
 
     // 3) 建窗口
-    [self ensureWindow];
-    if (!_window) return;
+    if (![self ensureWindow]) {
+        __weak typeof(self) weakSelf = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)),
+                       dispatch_get_main_queue(), ^{
+            [weakSelf start];
+        });
+        return;
+    }
 
     // 4) 监听器
     if (!_orientationMonitor) {

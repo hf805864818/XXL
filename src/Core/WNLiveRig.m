@@ -112,6 +112,37 @@ static double WNPoseValue(id container, NSString *key, double dflt) {
     _springs[@"sit"]      = [self newSpring:@"sit" k:120.0 c:0.02 limit:1.0];
 
     lastT = 0;
+    // ---- [e2] 注入 live/model.json（原实现位于 return 之后，不可达）----
+    {
+        NSURL *modelURL = [[self resourceURL] URLByAppendingPathComponent:@"live/model.json"];
+        NSData *modelData = [NSData dataWithContentsOfURL:modelURL];
+        if (modelData.length) {
+            id json = [NSJSONSerialization JSONObjectWithData:modelData options:0 error:NULL];
+            id models = [json isKindOfClass:[NSDictionary class]] ? json[@"models"] : nil;
+            NSDictionary *chosen = nil;
+            if ([models isKindOfClass:[NSDictionary class]]) {
+                chosen = models[_outfit] ?: models[@"maid"];
+            } else if ([models isKindOfClass:[NSArray class]]) {
+                NSPredicate *pred = [NSPredicate predicateWithFormat:@"id == %@", _outfit];
+                chosen = [[(NSArray *)models filteredArrayUsingPredicate:pred] firstObject]
+                         ?: [(NSArray *)models firstObject];
+            }
+            if ([chosen isKindOfClass:[NSDictionary class]]) {
+                _model = chosen;
+                _sourceModel = chosen;
+                NSLog(@"[PetDFY] model injected: outfit=%@ parts=%lu deformers=%lu",
+                      _outfit,
+                      (unsigned long)[(NSArray *)chosen[@"parts"] count],
+                      (unsigned long)[(NSDictionary *)chosen[@"deformers"] count]);
+            } else {
+                NSLog(@"[PetDFY] model inject failed: outfit=%@ modelsClass=%@",
+                      _outfit, NSStringFromClass([models class]));
+            }
+        } else {
+            NSLog(@"[PetDFY] live/model.json missing under %@", [self resourceURL].path);
+        }
+    }
+
     deformersDirty = YES;
     return self;
 }
